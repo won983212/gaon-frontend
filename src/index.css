@@ -5,6 +5,7 @@ body {
     overflow: initial !important;
 }
 body {
+    background-color: #efefef;
     font-size: 15px;
     line-height: 1.46668;
     font-weight: 400;
@@ -14,4 +15,11 @@ body {
 }
 * {
     box-sizing: border-box;
+}
+:root {
+    --primary: rgb(67, 67, 67);
+    --primary-dark: rgb(57, 57, 57);
+    --primary-light: rgb(125, 125, 125);
+    --text: rgb(173, 173, 173);
+    --background: rgb(255, 255, 255);
 }

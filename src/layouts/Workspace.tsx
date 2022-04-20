@@ -5,6 +5,11 @@ import styled from 'styled-components';
 import useSWR from 'swr';
 import gravatar from 'gravatar';
 import Channel from '../pages/Channel';
+import ChannelList from '../components/ChannelList';
+import MenuItem from '../components/MenuItem';
+import { Channels1, Channels2 } from '../utils/channelManager';
+
+
 
 interface WorkspaceProps {
     children: React.ReactNode;
@@ -31,7 +36,7 @@ function Workspace({ children }: WorkspaceProps) {
 
     return (
         <div>
-            <Header>
+            {/*<Header>
                 <RightMenu>
                     <span>
                         <ProfileImg
@@ -43,15 +48,17 @@ function Workspace({ children }: WorkspaceProps) {
                         />
                     </span>
                 </RightMenu>
-            </Header>
-            <button onClick={onLogout}>Logout</button>
+                        </Header>*/}
             <WorkspaceWrapper>
-                <Workspaces>Spaces</Workspaces>
                 <Channels>
-                    <WorkspaceName>Here</WorkspaceName>
-                    <MenuScroll>Menu scroll</MenuScroll>
+                    <WorkspaceName>Project Area</WorkspaceName>
+                    <MenuScroll>
+                        <MenuItem />
+                        <ChannelList channels={Channels1} />
+                        <ChannelList channels={Channels2} />
+                    </MenuScroll>
+                    <WorkspaceName>Profile Area</WorkspaceName>
                 </Channels>
-                <Chats>Here</Chats>
                 {children}
             </WorkspaceWrapper>
         </div>
@@ -64,7 +71,7 @@ export const RightMenu = styled.div`
 
 export const Header = styled.header`
     height: 38px;
-    background: #350d36;
+    background: var(--primary);
     color: #ffffff;
     box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.1);
     padding: 5px;
@@ -126,9 +133,9 @@ export const Workspaces = styled.div`
     display: inline-flex;
     flex-direction: column;
     align-items: center;
-    background: #3f0e40;
-    border-top: 1px solid rgb(82, 38, 83);
-    border-right: 1px solid rgb(82, 38, 83);
+    background: var(--primary);
+    border-top: 1px solid var(--primary-light);
+    border-right: 1px solid var(--primary-light);
     vertical-align: top;
     text-align: center;
     padding: 15px 0 0;
@@ -138,11 +145,11 @@ export const Channels = styled.nav`
     width: 260px;
     display: inline-flex;
     flex-direction: column;
-    background: #3f0e40;
-    color: rgb(188, 171, 188);
+    background: var(--primary);
+    color: var(--text);
     vertical-align: top;
 
-    & a {
+    & .menuitem {
         padding-left: 36px;
         color: inherit;
         text-decoration: none;
@@ -192,11 +199,11 @@ export const WorkspaceName = styled.button`
     border: none;
     width: 100%;
     text-align: left;
-    border-top: 1px solid rgb(82, 38, 83);
-    border-bottom: 1px solid rgb(82, 38, 83);
+    border-top: 1px solid var(--primary-light);
+    border-bottom: 1px solid var(--primary-light);
     font-weight: 900;
     font-size: 24px;
-    background: transparent;
+    background: var(--primary-dark);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -208,7 +215,8 @@ export const WorkspaceName = styled.button`
 `;
 
 export const MenuScroll = styled.div`
-    height: calc(100vh - 102px);
+    margin-top: 16px;
+    height: calc(100vh - 144px);
     overflow-y: auto;
 `;
 
