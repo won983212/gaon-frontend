@@ -6,6 +6,10 @@ type ReturnType<T> = [
     React.Dispatch<React.SetStateAction<T>>
 ];
 
+/**
+ * form-input 처리하는 hook.
+ * @param initial 초기값
+ */
 export default function useInput<T>(initial: T): ReturnType<T> {
     const [value, setValue] = useState(initial);
     const onChanged = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {

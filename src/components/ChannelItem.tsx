@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { MdQuestionAnswer } from 'react-icons/md';
 import styled from 'styled-components';
-import { ChannelType } from '../utils/types';
+import { ChannelType } from '@/utils/types';
 
 interface ChannelItemProps {
     channel: ChannelType;
@@ -13,7 +13,9 @@ function ChannelItem({ channel }: ChannelItemProps) {
         <NavLink
             key={channel.id}
             to={`/workspace/channel/${channel.id}`}
-            className={(navData) => (navData.isActive ? 'menuitem selected' : 'menuitem')}
+            className={(navData) =>
+                navData.isActive ? 'menuitem selected' : 'menuitem'
+            }
         >
             <Icon>
                 <MdQuestionAnswer />

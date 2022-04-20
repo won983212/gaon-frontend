@@ -1,18 +1,11 @@
-import axios from 'axios';
 import { useCallback, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
-import useSWR from 'swr';
 import useInput from '@/hooks/useInput';
+import { getUsersSWR, doLogin } from '@/api/auth';
 
 function Login() {
-    const { data, error, mutate } = useSWR(
-        '/api/users',
-        (url) => axios.get(url).then((response) => response.data),
-        {
-            dedupingInterval: 100000
-        }
-    );
+    const { data, error, mutate } = getUsersSWR();
     const [logInError, setLogInError] = useState(false);
     const [email, onChangeEmail] = useInput('');
     const [password, onChangePassword] = useInput('');
@@ -20,14 +13,7 @@ function Login() {
         (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             setLogInError(false);
-            axios
-                .post(
-                    '/api/users/login',
-                    { email, password },
-                    {
-                        withCredentials: true
-                    }
-                )
+            doLogin(email, password)
                 .then((response) => {
                     mutate(response.data, false);
                 })
@@ -95,7 +81,7 @@ function Login() {
 const LoginContainer = styled.div`
     text-align: center;
     margin-top: 50px;
-`
+`;
 
 const LoginForm = styled.div`
     background-color: white;

@@ -8,26 +8,18 @@ import Channel from '../pages/Channel';
 import ChannelList from '../components/ChannelList';
 import MenuItem from '../components/MenuItem';
 import { Channels1, Channels2 } from '../utils/channelManager';
-
-
+import { getUsersSWR, doLogout } from '@/api/auth';
 
 interface WorkspaceProps {
     children: React.ReactNode;
 }
 
 function Workspace({ children }: WorkspaceProps) {
-    const { data, error, mutate } = useSWR('/api/users', (url) =>
-        axios.get(url).then((response) => response.data)
-    );
-
+    const { data, error, mutate } = getUsersSWR();
     const onLogout = useCallback(() => {
-        axios
-            .post('/api/users/logout', null, {
-                withCredentials: true
-            })
-            .then(() => {
-                mutate(false, false);
-            });
+        doLogout().then(() => {
+            mutate(undefined, false);
+        });
     }, [mutate]);
 
     if (!data) {

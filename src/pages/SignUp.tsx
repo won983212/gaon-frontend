@@ -1,8 +1,8 @@
-import axios from 'axios';
 import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import useInput from '@/hooks/useInput';
+import { doSignUp } from '@/api/auth';
 
 function SignUp() {
     const [email, onChangeEmail] = useInput('');
@@ -16,12 +16,7 @@ function SignUp() {
     const onSubmit = useCallback(
         (e: React.FormEvent) => {
             e.preventDefault();
-            axios
-                .post('/api/users', {
-                    email,
-                    nickname,
-                    password
-                })
+            doSignUp(email, nickname, password)
                 .then((response) => {
                     setSignUpSuccess(response.data === 'ok');
                 })

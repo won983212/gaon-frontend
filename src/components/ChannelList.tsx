@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import { MdExpandMore } from 'react-icons/md';
 import ChannelItem from './ChannelItem';
-import { ChannelType } from '../utils/types';
+import { ChannelType } from '@/utils/types';
 
 interface ChannelListProps {
     channels: ChannelType[];
