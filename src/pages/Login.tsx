@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import useSWR from 'swr';
-import useInput from '../hooks/useInput';
+import useInput from '@/hooks/useInput';
 
 function Login() {
     const { data, error, mutate } = useSWR(
