@@ -1,57 +1,4 @@
-import { doLogout, getUsersSWR } from '@/api/auth';
-import React, { useCallback } from 'react';
-import { Navigate } from 'react-router';
 import styled from 'styled-components';
-import ChannelList from '../components/ChannelList';
-import MenuItem from '../components/MenuItem';
-import { Channels1, Channels2 } from '../utils/channelManager';
-
-interface WorkspaceProps {
-    children: React.ReactNode;
-}
-
-function Workspace({ children }: WorkspaceProps) {
-    const { data, error, mutate } = getUsersSWR();
-    const onLogout = useCallback(() => {
-        doLogout().then(() => {
-            mutate(undefined, false);
-        });
-    }, [mutate]);
-
-    if (!data) {
-        return <Navigate replace to="/login" />;
-    }
-
-    return (
-        <div>
-            {/*<Header>
-                <RightMenu>
-                    <span>
-                        <ProfileImg
-                            src={gravatar.url(data.nickname, {
-                                s: '28px',
-                                d: 'retro'
-                            })}
-                            alt={data.nickname}
-                        />
-                    </span>
-                </RightMenu>
-                        </Header>*/}
-            <WorkspaceWrapper>
-                <Channels>
-                    <WorkspaceName>Project Area</WorkspaceName>
-                    <MenuScroll>
-                        <MenuItem />
-                        <ChannelList channels={Channels1} />
-                        <ChannelList channels={Channels2} />
-                    </MenuScroll>
-                    <WorkspaceName>Profile Area</WorkspaceName>
-                </Channels>
-                {children}
-            </WorkspaceWrapper>
-        </div>
-    );
-}
 
 export const RightMenu = styled.div`
     float: right;
@@ -64,6 +11,24 @@ export const Header = styled.header`
     box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.1);
     padding: 5px;
     text-align: center;
+`;
+
+export const ChannelHeader = styled.header`
+    height: 64px;
+    display: flex;
+    width: 100%;
+    background-color: var(--primary-dark);
+    color: white;
+    border-left: 1px solid var(--primary-light);
+    --saf-0: rgba(var(--sk_foreground_low, 29, 28, 29), 0.13);
+    box-shadow: 0 1px 0 var(--saf-0);
+    padding: 20px 16px 20px 20px;
+    font-weight: bold;
+    align-items: center;
+`;
+
+export const ContentContainer = styled.div`
+    width: 100%;
 `;
 
 export const ProfileImg = styled.img`
@@ -258,5 +223,3 @@ export const WorkspaceButton = styled.button`
     color: black;
     cursor: pointer;
 `;
-
-export default Workspace;

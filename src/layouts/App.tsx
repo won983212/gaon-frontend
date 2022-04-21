@@ -2,10 +2,10 @@ import loadable from '@loadable/component';
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-const Login = loadable(() => import('../pages/Login'));
-const SignUp = loadable(() => import('../pages/SignUp'));
-const Channels = loadable(() => import('../pages/Channels'));
-const DirectMessage = loadable(() => import('../pages/DirectMessage'));
+const Login = loadable(() => import('@/pages/Login'));
+const SignUp = loadable(() => import('@/pages/SignUp'));
+const Channels = loadable(() => import('@/pages/Channels'));
+const DirectMessage = loadable(() => import('@/pages/DirectMessage'));
 
 function App() {
     return (

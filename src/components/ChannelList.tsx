@@ -6,9 +6,10 @@ import { MdExpandMore } from 'react-icons/md';
 
 interface ChannelListProps {
     channels: IChannel[];
+    name: string;
 }
 
-function ChannelList({ channels }: ChannelListProps) {
+function ChannelList({ channels, name }: ChannelListProps) {
     const [collapsed, setCollapsed] = useState(false);
     const onToggleCollapse = useCallback(() => {
         setCollapsed((prev) => !prev);
@@ -20,7 +21,7 @@ function ChannelList({ channels }: ChannelListProps) {
                 <CollapseButton collapse={collapsed} onClick={onToggleCollapse}>
                     <MdExpandMore />
                 </CollapseButton>
-                <span>List</span>
+                <span>{name}</span>
             </h2>
             <div>
                 {!collapsed &&

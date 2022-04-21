@@ -1,7 +1,7 @@
 import { IUser } from '@/types';
 import { getWithSWR, post } from './client';
 
-export const getUsersSWR = () => getWithSWR<IUser>('/api/users');
+export const getUsersSWR = () => getWithSWR<IUser | false>('/api/users');
 
 export const doLogout = () => post<'ok'>('/api/users/logout');
 
