@@ -1,7 +1,7 @@
 import { Channels } from '../layouts/Workspace';
-import { ChannelType } from './types';
+import { IChannel } from '../types';
 
-export const Channels1: ChannelType[] = [
+export const Channels1: IChannel[] = [
     {
         id: 1,
         name: 'CH1'
@@ -20,7 +20,7 @@ export const Channels1: ChannelType[] = [
     }
 ];
 
-export const Channels2: ChannelType[] = [
+export const Channels2: IChannel[] = [
     {
         id: 5,
         name: 'CH5'

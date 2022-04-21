@@ -1,11 +1,11 @@
+import { IChannel } from '@/types';
 import React from 'react';
-import { NavLink } from 'react-router-dom';
 import { MdQuestionAnswer } from 'react-icons/md';
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { ChannelType } from '@/utils/types';
 
 interface ChannelItemProps {
-    channel: ChannelType;
+    channel: IChannel;
 }
 
 function ChannelItem({ channel }: ChannelItemProps) {
@@ -17,15 +17,15 @@ function ChannelItem({ channel }: ChannelItemProps) {
                 navData.isActive ? 'menuitem selected' : 'menuitem'
             }
         >
-            <Icon>
+            <IconContainer>
                 <MdQuestionAnswer />
-            </Icon>
+            </IconContainer>
             <h2>{channel.name}</h2>
         </NavLink>
     );
 }
 
-const Icon = styled.div`
+const IconContainer = styled.div`
     margin-right: 8px;
 `;
 

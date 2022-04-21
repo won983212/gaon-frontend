@@ -1,18 +1,4 @@
-import React from 'react';
-import Workspace from '../layouts/Workspace';
 import styled from 'styled-components';
-import { useParams } from 'react-router';
-import { getChannelNameById } from '../utils/channelManager';
-
-function Channel() {
-    const { channelId } = useParams();
-    const channelNum = channelId ? +channelId : 0;
-    return (
-        <Workspace>
-            <Header>{getChannelNameById(channelNum)}</Header>
-        </Workspace>
-    );
-}
 
 export const Container = styled.div`
     display: flex;
@@ -49,5 +35,3 @@ export const DragOver = styled.div`
     justify-content: center;
     font-size: 40px;
 `;
-
-export default Channel;

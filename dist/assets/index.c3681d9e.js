@@ -1,0 +1,1 @@
+import{W as e}from"./Workspace.57977ab1.js";import{j as r}from"./index.ca6c3dbc.js";import"./styled-components.browser.esm.db5bdad4.js";function i(){return r(e,{children:r("p",{children:"DM part"})})}export{i as default};

@@ -1,11 +1,11 @@
+import ChannelItem from '@/components/ChannelItem';
+import CollapseButton from '@/components/CollapseButton';
+import { IChannel } from '@/types';
 import React, { useCallback, useState } from 'react';
-import styled from 'styled-components';
 import { MdExpandMore } from 'react-icons/md';
-import ChannelItem from './ChannelItem';
-import { ChannelType } from '@/utils/types';
 
 interface ChannelListProps {
-    channels: ChannelType[];
+    channels: IChannel[];
 }
 
 function ChannelList({ channels }: ChannelListProps) {
@@ -33,32 +33,5 @@ function ChannelList({ channels }: ChannelListProps) {
         </>
     );
 }
-
-const CollapseButton = styled.button<{ collapse: boolean }>`
-    background: transparent;
-    border: none;
-    width: 26px;
-    height: 26px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    margin-left: 10px;
-    cursor: pointer;
-
-    & svg {
-        transition: 200ms;
-        ${({ collapse }) =>
-            collapse
-                ? `
-                transform: rotateZ(180deg);
-            }`
-                : `
-            & i {
-                transform: none;
-            }
-            `};
-    }
-`;
 
 export default ChannelList;

@@ -1,14 +1,10 @@
-import axios from 'axios';
+import { doLogout, getUsersSWR } from '@/api/auth';
 import React, { useCallback } from 'react';
 import { Navigate } from 'react-router';
 import styled from 'styled-components';
-import useSWR from 'swr';
-import gravatar from 'gravatar';
-import Channel from '../pages/Channel';
 import ChannelList from '../components/ChannelList';
 import MenuItem from '../components/MenuItem';
 import { Channels1, Channels2 } from '../utils/channelManager';
-import { getUsersSWR, doLogout } from '@/api/auth';
 
 interface WorkspaceProps {
     children: React.ReactNode;
