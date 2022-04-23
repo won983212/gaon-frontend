@@ -14,3 +14,10 @@ export interface IUser {
     nickname: string;
     email: string;
 }
+
+export interface IUserProfile {
+    nickname: string;
+    status: string;
+    jobTitle: string;
+    imgSrc: string;
+}

@@ -3,6 +3,7 @@ import { getChannelsSWR } from '@/api/workspace';
 import ChannelList from '@/components/ChannelList';
 import Menu from '@/components/Menu';
 import MenuItem from '@/components/SidebarItem';
+import { UserProfile } from '@/components/UserProfile';
 import gravatar from 'gravatar';
 import React, { useCallback, useState } from 'react';
 import { Navigate } from 'react-router';
@@ -87,7 +88,14 @@ function Workspace({ children }: WorkspaceProps) {
                         </Menu>
                     )}
                     <WorkspaceName onClick={onToggleProfileMenu}>
-                        Profile Area
+                        <UserProfile    nickname="Jo"
+                                        imgSrc={gravatar.url(data.nickname, {
+                                            s: '36px',
+                                            d: 'retro'
+                                        })} 
+                                        jobTitle="Project Manager"
+                                        status="offline"
+                                        />
                     </WorkspaceName>
                 </Channels>
                 <ContentContainer>
