@@ -60,7 +60,6 @@ function Workspace({ children }: WorkspaceProps) {
                                 />
                             );
                         })}
-                        ;
                     </MenuScroll>
                     {showProfileMenu && (
                         <Menu
