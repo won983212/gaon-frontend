@@ -22,7 +22,3 @@ export const ProfileContainer = styled.div`
     font-weight: lighter;
     margin-top: 3%;
 `;
-
-export const ProfileInfo = styled.div `
-
-`;
