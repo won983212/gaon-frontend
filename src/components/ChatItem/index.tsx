@@ -92,9 +92,9 @@ interface IChatText {
 interface IChatAvatar {
     src: string;
     userName: string;
-    date?: string;
+    date: string;
 }
 
 interface IChatBorder {
-    date?: string;
+    date: string;
 }
