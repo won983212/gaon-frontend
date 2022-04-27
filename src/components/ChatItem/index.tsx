@@ -8,14 +8,15 @@ import {
     ChatFileImg,
     ChatFileInfo,
     ChatImageThumbnail,
-    ChatList
+    ChatList,
+    NewChatBorder
 } from './style';
 
 // 대화내용의 첫 내용은 반드시 들어가야함.
 export function ChatAvatar({ src, userName, date }: IChatAvatar) {
     return (
         <ChatItem>
-            <ChatAvatarImg src={src} />
+            <ChatAvatarImg src={src} draggable={false}/>
             <div>
                 {userName}
                 <ChatDateSpan>{date}</ChatDateSpan>
@@ -48,6 +49,10 @@ export function ChatPicture({ src, date }: IChatImage) {
     );
 }
 
+export function NewChat({content}: IChatText) {
+    return (<NewChatBorder>{content}</NewChatBorder>)
+}
+
 // 첨부파일
 export function ChatAttachment({
     iconSrc,
@@ -57,7 +62,7 @@ export function ChatAttachment({
     date
 }: IChatAttachment) {
     return (
-        <ChatItem>
+        <ChatItem draggable={false}>
             <ChatFileBox>
                 <ChatFileImg src={iconSrc}></ChatFileImg>
                 <ChatFileInfo>
