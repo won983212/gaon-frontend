@@ -1,4 +1,4 @@
-import { IChannelCategory, IUser } from '@/types';
+import { IChannelGroup, IUser } from '@/types';
 import { rest } from 'msw';
 
 const authHandlers = [
@@ -45,25 +45,25 @@ const workspaceHandlers = [
     rest.get('/api/workspace/:workspaceId/channels', async (req, res, ctx) => {
         const { workspaceId } = req.params;
         return res(
-            ctx.json<IChannelCategory[]>([
+            ctx.json<IChannelGroup[]>([
                 {
                     id: 1,
                     name: 'Category1',
                     channels: [
-                        { id: 1, name: 'Channel1' },
-                        { id: 2, name: 'Channel2' },
-                        { id: 3, name: 'Channel3' },
-                        { id: 4, name: 'Channel4' }
+                        { id: 1, type: 'chatting', name: 'Channel1' },
+                        { id: 2, type: 'chatting', name: 'Channel2' },
+                        { id: 3, type: 'board-sharing', name: 'Channel3' },
+                        { id: 4, type: 'board-sharing', name: 'Channel4' }
                     ]
                 },
                 {
                     id: 2,
                     name: 'Category2',
                     channels: [
-                        { id: 5, name: 'Channel1' },
-                        { id: 6, name: 'Channel2' },
-                        { id: 7, name: 'Channel3' },
-                        { id: 8, name: 'Channel4' }
+                        { id: 5, type: 'web-sharing', name: 'Channel1' },
+                        { id: 6, type: 'web-sharing', name: 'Channel2' },
+                        { id: 7, type: 'web-sharing', name: 'Channel3' },
+                        { id: 8, type: 'web-sharing', name: 'Channel4' }
                     ]
                 }
             ])

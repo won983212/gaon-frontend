@@ -39,7 +39,7 @@ export const ProfileImg = styled.img`
     right: 16px;
 `;
 
-export const ProfileModal = styled.div`
+export const ProfileMenu = styled.div`
     display: flex;
     padding: 20px;
 

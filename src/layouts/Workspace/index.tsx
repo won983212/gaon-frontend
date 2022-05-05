@@ -2,7 +2,6 @@ import { doLogout, getUsersSWR } from '@/api/auth';
 import { getChannelsSWR } from '@/api/workspace';
 import ChannelList from '@/components/ChannelList';
 import Menu from '@/components/Menu';
-import MenuItem from '@/components/SidebarItem';
 import { UserProfile } from '@/components/UserProfile';
 import gravatar from 'gravatar';
 import React, { useCallback, useState } from 'react';
@@ -13,7 +12,7 @@ import {
     ContentContainer,
     LogOutButton,
     MenuScroll,
-    ProfileModal,
+    ProfileMenu,
     WorkspaceName,
     WorkspaceWrapper
 } from './style';
@@ -51,7 +50,6 @@ function Workspace({ children }: WorkspaceProps) {
                 <Channels>
                     <WorkspaceName>Project Area</WorkspaceName>
                     <MenuScroll>
-                        <MenuItem />
                         {channelCategories?.map((category) => {
                             return (
                                 <ChannelList
@@ -67,7 +65,7 @@ function Workspace({ children }: WorkspaceProps) {
                             style={{ left: 8, bottom: 64 }}
                             onClose={onCloseProfileMenu}
                         >
-                            <ProfileModal>
+                            <ProfileMenu>
                                 <img
                                     src={gravatar.url(userData.username, {
                                         s: '36px',
@@ -81,7 +79,7 @@ function Workspace({ children }: WorkspaceProps) {
                                     </span>
                                     <span id="profile-active">Active</span>
                                 </div>
-                            </ProfileModal>
+                            </ProfileMenu>
                             <LogOutButton onClick={onLogout}>
                                 Logout
                             </LogOutButton>

@@ -1,6 +1,6 @@
 import { IChannel } from '@/types';
 import React from 'react';
-import { MdQuestionAnswer } from 'react-icons/md';
+import { MdFormatPaint, MdOutlineWeb, MdQuestionAnswer } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -18,9 +18,15 @@ function ChannelItem({ channel }: ChannelItemProps) {
             }
         >
             <IconContainer>
-                <MdQuestionAnswer />
+                {channel.type === 'chatting' ? (
+                    <MdQuestionAnswer />
+                ) : channel.type === 'board-sharing' ? (
+                    <MdFormatPaint />
+                ) : (
+                    <MdOutlineWeb />
+                )}
             </IconContainer>
-            <h2>{channel.name}</h2>
+            <p>{channel.name}</p>
         </NavLink>
     );
 }
