@@ -138,7 +138,7 @@ export const Channels = styled.nav`
     & h2 {
         height: 36px;
         line-height: 36px;
-        margin: 0;
+        margin: 12px 0 0 0;
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
@@ -168,8 +168,7 @@ export const WorkspaceName = styled.button`
 `;
 
 export const MenuScroll = styled.div`
-    margin-top: 16px;
-    height: calc(100vh - 144px);
+    height: calc(100vh - 128px);
     overflow-y: auto;
 `;
 
