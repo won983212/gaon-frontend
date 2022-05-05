@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    ChatItem,
     ChatAvatarImg,
     ChatBorderDiv,
     ChatDateSpan,
@@ -8,7 +7,7 @@ import {
     ChatFileImg,
     ChatFileInfo,
     ChatImageThumbnail,
-    ChatList,
+    ChatItem,
     NewChatBorder
 } from './style';
 
@@ -16,7 +15,7 @@ import {
 export function ChatAvatar({ src, userName, date }: IChatAvatar) {
     return (
         <ChatItem>
-            <ChatAvatarImg src={src} draggable={false}/>
+            <ChatAvatarImg src={src} draggable={false} />
             <div>
                 {userName}
                 <ChatDateSpan>{date}</ChatDateSpan>
@@ -26,15 +25,15 @@ export function ChatAvatar({ src, userName, date }: IChatAvatar) {
 }
 
 // 날짜 구분선
-export function ChatBorder({ date }: IChatBorder) {
-    return <ChatBorderDiv>{date}</ChatBorderDiv>;
+export function ChatBorder({ children }: IChatBorder) {
+    return <ChatBorderDiv>{children}</ChatBorderDiv>;
 }
 
 // 텍스트
-export function ChatPlainText({ content }: IChatText) {
+export function ChatPlainText({ children }: IChatText) {
     return (
         <ChatItem>
-            <div>{content}</div>
+            <div>{children}</div>
         </ChatItem>
     );
 }
@@ -49,8 +48,8 @@ export function ChatPicture({ src, date }: IChatImage) {
     );
 }
 
-export function NewChat({content}: IChatText) {
-    return (<NewChatBorder>{content}</NewChatBorder>)
+export function NewChat({ children }: IChatText) {
+    return <NewChatBorder>{children}</NewChatBorder>;
 }
 
 // 첨부파일
@@ -90,7 +89,7 @@ interface IChatImage {
 }
 
 interface IChatText {
-    content: string;
+    children: React.ReactNode;
     date?: string;
 }
 
@@ -101,5 +100,5 @@ interface IChatAvatar {
 }
 
 interface IChatBorder {
-    date: string;
+    children: React.ReactNode;
 }
