@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 // 아바타 이미지, 크기는 글자크기의 2.5배이다.
 export const ChatAvatarImg = styled.img`
@@ -29,8 +29,9 @@ export const ChatBorderDiv = styled.div`
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    &:before, &:after {
-        content: "";
+    &:before,
+    &:after {
+        content: '';
         flex: 1 1;
         border-bottom: 1px solid;
         margin: auto;
@@ -44,7 +45,6 @@ export const ChatBorderDiv = styled.div`
     &:after {
         margin-left: 10px;
     }
-
 `;
 
 // TODO: 아래 border 색상 부분을 테마에 맞추어 수정한다.
@@ -86,7 +86,7 @@ export const ChatFileInfo = styled.div`
     margin-left: 10px;
     margin-top: 5px;
     margin-right: 1em;
-`; 
+`;
 
 // 리스트 요소
 export const ChatItem = styled.li`
@@ -98,6 +98,7 @@ export const ChatItem = styled.li`
 export const ChatList = styled.ol`
     list-style: none;
     margin: 0;
+    flex: 1;
     padding-left: 3em;
 `;
 
@@ -119,8 +120,9 @@ export const NewChatBorder = styled.div`
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    &:before, &:after {
-        content: "";
+    &:before,
+    &:after {
+        content: '';
         flex: 1 1;
         border-bottom: 1px solid;
         margin: auto;

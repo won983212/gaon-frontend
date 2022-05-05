@@ -1,21 +1,34 @@
+import ChatInput from '@/components/ChatInput';
 import { ChatAvatar, ChatBorder, ChatPlainText } from '@/components/ChatItem';
 import { ChatList } from '@/components/ChatItem/style';
 import Workspace from '@/layouts/Workspace';
 import gravatar from 'gravatar';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useParams } from 'react-router';
 import styled from 'styled-components';
 
 function Channels() {
     const { channelId } = useParams();
+    const [chatInput, setChatInput] = useState('');
     const avatar = gravatar.url('Jo', {
         s: '36px',
         d: 'retro'
     });
-    // 발표가 급하니 일단 채널에 임시로..
+
+    const onChangeText = useCallback(
+        (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+            setChatInput(e.target.value);
+        },
+        []
+    );
+
+    const onChatSubmit = useCallback(() => {
+        setChatInput('');
+    }, []);
+
     return (
         <Workspace>
-            <ChatPadding>
+            <ChatArea>
                 <ChatList>
                     <ChatAvatar src={avatar} userName="Jo" date="2022-04-25" />
                     <ChatPlainText>안녕하세요.</ChatPlainText>
@@ -28,12 +41,20 @@ function Channels() {
                     <ChatAvatar src={avatar} userName="Jo" date="2022-04-25" />
                     <ChatPlainText>안녕히 계세요~</ChatPlainText>
                 </ChatList>
-            </ChatPadding>
+                <ChatInput
+                    text={chatInput}
+                    onChangeText={onChangeText}
+                    onSubmit={onChatSubmit}
+                />
+            </ChatArea>
         </Workspace>
     );
 }
-const ChatPadding = styled.div`
+const ChatArea = styled.div`
     padding: 2em;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 54px);
 `;
 
 export default Channels;
