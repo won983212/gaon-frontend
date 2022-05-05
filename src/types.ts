@@ -5,7 +5,7 @@ export interface IChannel {
     name: string;
 }
 
-export interface IChannelCategory {
+export interface IChannelGroup {
     id: number;
     name: string;
     channels: IChannel[];

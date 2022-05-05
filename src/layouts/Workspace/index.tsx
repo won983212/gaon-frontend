@@ -24,7 +24,7 @@ interface WorkspaceProps {
 
 function Workspace({ children }: WorkspaceProps) {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
-    const { data, error, mutate } = getUsersSWR();
+    const { data: userData, mutate } = getUsersSWR();
     const { data: channelCategories } = getChannelsSWR(0);
 
     const onLogout = useCallback(() => {
@@ -41,7 +41,7 @@ function Workspace({ children }: WorkspaceProps) {
         setShowProfileMenu((prev) => !prev);
     }, []);
 
-    if (!data) {
+    if (!userData) {
         return <Navigate replace to="/login" />;
     }
 
@@ -69,15 +69,15 @@ function Workspace({ children }: WorkspaceProps) {
                         >
                             <ProfileModal>
                                 <img
-                                    src={gravatar.url(data.username, {
+                                    src={gravatar.url(userData.username, {
                                         s: '36px',
                                         d: 'retro'
                                     })}
-                                    alt={data.username}
+                                    alt={userData.username}
                                 />
                                 <div>
                                     <span id="profile-name">
-                                        {data.username}
+                                        {userData.username}
                                     </span>
                                     <span id="profile-active">Active</span>
                                 </div>
@@ -89,12 +89,12 @@ function Workspace({ children }: WorkspaceProps) {
                     )}
                     <WorkspaceName onClick={onToggleProfileMenu}>
                         <UserProfile
-                            username={data.name}
-                            avatarUrl={gravatar.url(data.username, {
+                            username={userData.name}
+                            avatarUrl={gravatar.url(userData.username, {
                                 s: '36px',
                                 d: 'retro'
                             })}
-                            job={data.job}
+                            job={userData.job}
                         />
                     </WorkspaceName>
                 </Channels>
