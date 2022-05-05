@@ -69,15 +69,15 @@ function Workspace({ children }: WorkspaceProps) {
                         >
                             <ProfileModal>
                                 <img
-                                    src={gravatar.url(data.nickname, {
+                                    src={gravatar.url(data.username, {
                                         s: '36px',
                                         d: 'retro'
                                     })}
-                                    alt={data.nickname}
+                                    alt={data.username}
                                 />
                                 <div>
                                     <span id="profile-name">
-                                        {data.nickname}
+                                        {data.username}
                                     </span>
                                     <span id="profile-active">Active</span>
                                 </div>
@@ -88,14 +88,14 @@ function Workspace({ children }: WorkspaceProps) {
                         </Menu>
                     )}
                     <WorkspaceName onClick={onToggleProfileMenu}>
-                        <UserProfile    nickname="Jo"
-                                        imgSrc={gravatar.url(data.nickname, {
-                                            s: '36px',
-                                            d: 'retro'
-                                        })} 
-                                        jobTitle="Project Manager"
-                                        status="offline"
-                                        />
+                        <UserProfile
+                            username={data.name}
+                            avatarUrl={gravatar.url(data.username, {
+                                s: '36px',
+                                d: 'retro'
+                            })}
+                            job={data.job}
+                        />
                     </WorkspaceName>
                 </Channels>
                 <ContentContainer>

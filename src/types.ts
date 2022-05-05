@@ -1,3 +1,5 @@
+export type IStatus = 'online' | 'offline' | 'missed';
+
 export interface IChannel {
     id: number;
     name: string;
@@ -10,14 +12,11 @@ export interface IChannelCategory {
 }
 
 export interface IUser {
-    id: number;
-    nickname: string;
+    userId: string;
+    username: string;
+    name: string;
     email: string;
-}
-
-export interface IUserProfile {
-    nickname: string;
-    status: string;
-    jobTitle: string;
-    imgSrc: string;
+    avatarUrl: string;
+    status: IStatus;
+    job: string;
 }

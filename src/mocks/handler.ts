@@ -2,19 +2,24 @@ import { IChannelCategory, IUser } from '@/types';
 import { rest } from 'msw';
 
 const authHandlers = [
-    rest.get<IUser>('/api/users', async (req, res, ctx) => {
+    rest.get<IUser>('/api/user/me', async (req, res, ctx) => {
         return res(
-            ctx.json({
-                id: 1,
-                email: 'a',
-                nickname: 'test_user'
+            ctx.json<IUser>({
+                userId: 'jo',
+                username: 'Sleeeeeepy',
+                avatarUrl:
+                    'https://gaon.com/image/profile?username=jo&hashtag=1234',
+                email: 'jo@mail.com',
+                name: '정민',
+                status: 'online',
+                job: 'Project Manager'
             })
         );
     }),
     rest.post<{
         email: string;
         password: string;
-    }>('/api/users/login', async (req, res, ctx) => {
+    }>('/api/auth/login', async (req, res, ctx) => {
         const { email, password } = req.body;
 
         if (email !== '1@1.1' || password !== '1') {
@@ -23,9 +28,14 @@ const authHandlers = [
 
         return res(
             ctx.json<IUser>({
-                id: 1,
-                email: 'a',
-                nickname: 'test_user'
+                userId: 'jo',
+                username: 'Sleeeeeepy',
+                avatarUrl:
+                    'https://gaon.com/image/profile?username=jo&hashtag=1234',
+                email: 'jo@mail.com',
+                name: '정민',
+                status: 'online',
+                job: 'Project Manager'
             })
         );
     })
