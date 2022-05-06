@@ -22,6 +22,13 @@ export const Header = styled.header`
     align-items: center;
 `;
 
+export const ChatArea = styled.div`
+    padding: 2em 2em 1em 2em;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 64px);
+`;
+
 export const DragOver = styled.div`
     position: absolute;
     top: 64px;

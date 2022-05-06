@@ -1,11 +1,11 @@
 import ChatInput from '@/components/ChatInput';
+import { ChatArea } from './style';
 import { ChatAvatar, ChatBorder, ChatPlainText } from '@/components/ChatItem';
 import { ChatList } from '@/components/ChatItem/style';
 import Workspace from '@/layouts/Workspace';
 import gravatar from 'gravatar';
 import React, { useCallback, useState } from 'react';
 import { useParams } from 'react-router';
-import styled from 'styled-components';
 
 function Channels() {
     const { channelId } = useParams();
@@ -50,12 +50,5 @@ function Channels() {
         </Workspace>
     );
 }
-
-const ChatArea = styled.div`
-    padding: 2em;
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 54px);
-`;
 
 export default Channels;

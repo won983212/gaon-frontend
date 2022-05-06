@@ -1,8 +1,9 @@
 import { IChannel } from '@/types';
 import React from 'react';
-import { MdFormatPaint, MdOutlineWeb, MdQuestionAnswer } from 'react-icons/md';
+import { MdQuestionAnswer } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+import { HiOutlinePresentationChartLine } from 'react-icons/all';
 
 interface ChannelItemProps {
     channel: IChannel;
@@ -20,10 +21,8 @@ function ChannelItem({ channel }: ChannelItemProps) {
             <IconContainer>
                 {channel.type === 'chatting' ? (
                     <MdQuestionAnswer />
-                ) : channel.type === 'board-sharing' ? (
-                    <MdFormatPaint />
                 ) : (
-                    <MdOutlineWeb />
+                    <HiOutlinePresentationChartLine />
                 )}
             </IconContainer>
             <p>{channel.name}</p>

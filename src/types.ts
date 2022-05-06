@@ -1,4 +1,4 @@
-export type ChannelType = 'chatting' | 'board-sharing' | 'web-sharing';
+export type ChannelType = 'chatting' | 'conference';
 
 export interface IChannel {
     id: number;

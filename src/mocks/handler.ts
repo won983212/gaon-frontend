@@ -4,22 +4,22 @@ import { rest } from 'msw';
 const dummyChannels: IChannelGroup[] = [
     {
         id: 1,
-        name: 'Category1',
+        name: 'Group1',
         channels: [
-            { id: 1, type: 'chatting', name: 'Channel1' },
-            { id: 2, type: 'chatting', name: 'Channel2' },
-            { id: 3, type: 'board-sharing', name: 'Channel3' },
-            { id: 4, type: 'board-sharing', name: 'Channel4' }
+            { id: 1, type: 'chatting', name: 'Chatting1' },
+            { id: 2, type: 'chatting', name: 'Chatting2' },
+            { id: 3, type: 'chatting', name: 'Chatting3' },
+            { id: 4, type: 'conference', name: 'Conference1' }
         ]
     },
     {
         id: 2,
-        name: 'Category2',
+        name: 'Group2',
         channels: [
-            { id: 5, type: 'web-sharing', name: 'Channel1' },
-            { id: 6, type: 'web-sharing', name: 'Channel2' },
-            { id: 7, type: 'web-sharing', name: 'Channel3' },
-            { id: 8, type: 'web-sharing', name: 'Channel4' }
+            { id: 5, type: 'chatting', name: 'Chatting1' },
+            { id: 6, type: 'chatting', name: 'Chatting2' },
+            { id: 7, type: 'conference', name: 'Conference1' },
+            { id: 8, type: 'conference', name: 'Conference2' }
         ]
     }
 ];

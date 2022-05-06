@@ -168,7 +168,7 @@ export const WorkspaceName = styled.button`
 `;
 
 export const MenuScroll = styled.div`
-    height: calc(100vh - 128px);
+    flex: 1;
     overflow-y: auto;
 `;
 
