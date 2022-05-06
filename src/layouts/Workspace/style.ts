@@ -29,6 +29,9 @@ export const ChannelHeader = styled.header`
 
 export const ContentContainer = styled.div`
     width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 `;
 
 export const ProfileImg = styled.img`

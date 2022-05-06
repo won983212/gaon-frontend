@@ -1,11 +1,11 @@
 import { doLogout, getUsersSWR } from '@/api/auth';
-import { getChannelInfoSWR, getChannelsSWR } from '@/api/workspace';
+import { getChannelsSWR } from '@/api/workspace';
 import ChannelList from '@/components/ChannelList';
 import Menu from '@/components/Menu';
 import { UserProfile } from '@/components/UserProfile';
 import gravatar from 'gravatar';
 import React, { useCallback, useState } from 'react';
-import { Navigate, useParams } from 'react-router';
+import { Navigate } from 'react-router';
 import {
     ChannelHeader,
     Channels,
@@ -17,20 +17,17 @@ import {
     WorkspaceWrapper
 } from './style';
 import { ProjectProfile } from '@/components/ProjectProfile';
+import useChannel from '@/hooks/useChannel';
 
 interface WorkspaceProps {
     children: React.ReactNode;
 }
 
 function Workspace({ children }: WorkspaceProps) {
-    const { channelId } = useParams();
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const { data: userData, mutate } = getUsersSWR();
     const { data: channelCategories } = getChannelsSWR(0);
-    const { data: channelInfo } = getChannelInfoSWR(
-        0,
-        channelId === undefined ? 0 : +channelId
-    );
+    const { data: channelInfo } = useChannel();
 
     const onLogout = useCallback(() => {
         doLogout().then(() => {

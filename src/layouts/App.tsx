@@ -4,8 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 const Login = loadable(() => import('@/pages/Login'));
 const SignUp = loadable(() => import('@/pages/SignUp'));
-const Chatting = loadable(() => import('@/pages/Chatting'));
-const DirectMessage = loadable(() => import('@/pages/DirectMessage'));
+const Channels = loadable(() => import('@/pages/Channels'));
 
 function App() {
     return (
@@ -14,11 +13,10 @@ function App() {
                 <Route path="/" element={<Login />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
-                <Route path="workspace" element={<Chatting />}>
-                    <Route path="channel" element={<Chatting />}>
-                        <Route path=":channelId" element={<Chatting />} />
+                <Route path="workspace" element={<Channels />}>
+                    <Route path="channel" element={<Channels />}>
+                        <Route path=":channelId" element={<Channels />} />
                     </Route>
-                    <Route path="dm" element={<DirectMessage />} />
                 </Route>
             </Routes>
         </BrowserRouter>

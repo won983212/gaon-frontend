@@ -122,7 +122,9 @@ function SignUp() {
                         이미 회원이라면?&nbsp;
                         <Link to="/login">로그인</Link>
                     </LinkContainer>
-                    <Button type="submit">회원가입</Button>
+                    <Button type="submit" fullWidth>
+                        회원가입
+                    </Button>
                 </Form>
             </FormWrapper>
         </FormContainer>

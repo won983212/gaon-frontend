@@ -15,7 +15,7 @@ import {
 } from './style';
 
 function Login() {
-    const { data, error, mutate } = getUsersSWR();
+    const { data, mutate } = getUsersSWR();
     const [logInError, setLogInError] = useState(false);
     const [email, onChangeEmail] = useInput('');
     const [password, onChangePassword] = useInput('');
@@ -81,7 +81,9 @@ function Login() {
                         아이디가 없다면&nbsp;
                         <Link to="/signup">회원가입</Link>
                     </LinkContainer>
-                    <Button type="submit">로그인</Button>
+                    <Button type="submit" fullWidth>
+                        로그인
+                    </Button>
                 </Form>
             </FormWrapper>
         </FormContainer>

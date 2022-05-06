@@ -27,7 +27,6 @@ export const ModalPanel = styled.div`
 
 export const Content = styled.div`
     padding: 16px;
-    border-bottom: 1px solid #dee2e6;
     border-top: 1px solid #dee2e6;
 `;
 
