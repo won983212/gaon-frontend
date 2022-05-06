@@ -1,6 +1,6 @@
 import autosize from 'autosize';
 import React, { useCallback, useEffect, useRef } from 'react';
-import { ChatArea } from './style';
+import { ChatArea as ChatForm } from './style';
 
 interface ChatInputProps {
     text: string;
@@ -15,7 +15,7 @@ export default function ChatInput({
     onChangeText,
     placeHolder
 }: ChatInputProps) {
-    const chatInputRef = useRef(null);
+    const chatInputRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
         if (chatInputRef.current) {
@@ -23,15 +23,21 @@ export default function ChatInput({
         }
     }, []);
 
-    const onKeyDownText = useCallback((e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            onSubmit();
-        }
-    }, []);
+    const onKeyDownText = useCallback(
+        (e: React.KeyboardEvent) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                onSubmit();
+                if (chatInputRef.current) {
+                    chatInputRef.current.style.height = '32px';
+                }
+            }
+        },
+        [onSubmit]
+    );
 
     return (
-        <ChatArea>
+        <ChatForm>
             <textarea
                 value={text}
                 onKeyDown={onKeyDownText}
@@ -40,6 +46,6 @@ export default function ChatInput({
                 ref={chatInputRef}
             />
             <button onClick={onSubmit}>전송</button>
-        </ChatArea>
+        </ChatForm>
     );
 }

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ChatArea = styled.div`
+export const ChatArea = styled.form`
     width: 100%;
     background: #fff;
     padding: 10px;
