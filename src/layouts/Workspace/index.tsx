@@ -16,6 +16,7 @@ import {
     WorkspaceName,
     WorkspaceWrapper
 } from './style';
+import { ProjectProfile } from '@/components/ProjectProfile';
 
 interface WorkspaceProps {
     children: React.ReactNode;
@@ -53,7 +54,15 @@ function Workspace({ children }: WorkspaceProps) {
         <div>
             <WorkspaceWrapper>
                 <Channels>
-                    <WorkspaceName>Project Area</WorkspaceName>
+                    <WorkspaceName>
+                        <ProjectProfile
+                            projectName="cc"
+                            avatarUrl={gravatar.url('cc', {
+                                s: '36px',
+                                d: 'retro'
+                            })}
+                        />
+                    </WorkspaceName>
                     <MenuScroll>
                         {channelCategories?.map((category) => {
                             return (

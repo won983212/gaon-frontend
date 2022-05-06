@@ -50,6 +50,7 @@ function Channels() {
         </Workspace>
     );
 }
+
 const ChatArea = styled.div`
     padding: 2em;
     display: flex;
