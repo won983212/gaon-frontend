@@ -1,7 +1,7 @@
 import axios from 'axios';
 import useSWR from 'swr';
 
-export function getWithSWR<T = any>(url: string) {
+export function useCommonSWR<T = any>(url: string) {
     return useSWR(
         url,
         (url) =>

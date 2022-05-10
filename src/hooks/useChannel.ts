@@ -1,6 +1,9 @@
 import { useParams } from 'react-router';
 import { getChannelInfoSWR } from '@/api/workspace';
 
+/**
+ * 현재 들어가있는 channel 정보 얻어오기
+ */
 export default function useChannel() {
     const { channelId } = useParams();
     return getChannelInfoSWR(

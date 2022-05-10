@@ -1,7 +1,7 @@
 import { IUser } from '@/types';
-import { getWithSWR, post } from './client';
+import { post, useCommonSWR } from './client';
 
-export const getUsersSWR = () => getWithSWR<IUser | false>('/api/user/me');
+export const getUsersSWR = () => useCommonSWR<IUser | false>('/api/user/me');
 
 export const doLogout = () => post<'ok'>('/api/auth/logout');
 

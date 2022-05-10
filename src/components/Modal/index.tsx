@@ -6,10 +6,10 @@ export type Buttons = 'ok' | 'yesno' | 'yesnocancel';
 export type Action = 'ok' | 'yes' | 'no' | 'cancel';
 
 export interface ModelProps {
-    isOpen: boolean;
-    buttons?: Buttons;
-    onAction: (action: Action) => void;
-    children: React.ReactNode;
+    isOpen: boolean; // modal이 열려있는지?
+    buttons?: Buttons; // 어떤 버튼으로 구성되어있는지?
+    onAction: (action: Action) => void; // 버튼 클릭시 callback
+    children: React.ReactNode; // contents
 }
 
 export default function Modal({
