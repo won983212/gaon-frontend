@@ -1,5 +1,5 @@
-import { doLogout, getUsersSWR } from '@/api/auth';
-import { getChannelsSWR } from '@/api/workspace';
+import { doLogout, useUsersSWR } from '@/api/auth';
+import { useChannelsSWR } from '@/api/workspace';
 import ChannelList from '@/components/ChannelList';
 import Menu from '@/components/Menu';
 import { UserProfile } from '@/components/UserProfile';
@@ -25,8 +25,8 @@ interface WorkspaceProps {
 
 function Workspace({ children }: WorkspaceProps) {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
-    const { data: userData, mutate } = getUsersSWR();
-    const { data: channelCategories } = getChannelsSWR(0);
+    const { data: userData, mutate } = useUsersSWR();
+    const { data: channelCategories } = useChannelsSWR(0);
     const { data: channelInfo } = useChannel();
 
     const onLogout = useCallback(() => {

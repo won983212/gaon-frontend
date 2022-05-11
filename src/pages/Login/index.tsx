@@ -1,4 +1,4 @@
-import { doLogin, getUsersSWR } from '@/api/auth';
+import { doLogin, useUsersSWR } from '@/api/auth';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import useInput from '@/hooks/useInput';
@@ -15,7 +15,7 @@ import {
 } from './style';
 
 function Login() {
-    const { data, mutate } = getUsersSWR();
+    const { data, mutate } = useUsersSWR();
     const [logInError, setLogInError] = useState(false);
     const [email, onChangeEmail] = useInput('');
     const [password, onChangePassword] = useInput('');
