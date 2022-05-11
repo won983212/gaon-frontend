@@ -1,5 +1,7 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
+
+const config = require('./apiconfig.json');
 const path = require('path');
 
 // https://vitejs.dev/config/
@@ -8,7 +10,7 @@ export default defineConfig({
     publicDir: 'public',
     server: {
         proxy: {
-            '/api': 'http://localhost:3095'
+            '/api': config.url
         }
     },
     resolve: {
