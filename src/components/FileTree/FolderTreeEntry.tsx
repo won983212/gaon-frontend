@@ -23,8 +23,8 @@ export default function FolderTreeEntry({
     }, []);
 
     return (
-        <FolderBlock onClick={onClickFolder}>
-            <NameWrapper>
+        <FolderBlock>
+            <NameWrapper onClick={onClickFolder}>
                 {open ? <AiOutlineFolderOpen /> : <AiOutlineFolder />}
                 &nbsp;&nbsp;{name}
             </NameWrapper>
