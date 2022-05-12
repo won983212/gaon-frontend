@@ -1,5 +1,16 @@
 import styled, { css } from 'styled-components';
 
+export const TabContainerBlock = styled.div`
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+`;
+
+export const ContentArea = styled.div`
+    flex: 1;
+    overflow-y: auto;
+`;
+
 export const TabHeaders = styled.ul`
     list-style: none;
     margin: 4px 8px;

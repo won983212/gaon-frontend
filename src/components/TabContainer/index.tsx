@@ -1,5 +1,10 @@
 import React, { useCallback, useState } from 'react';
-import { TabHeaderItem, TabHeaders } from '@/components/TabContainer/style';
+import {
+    ContentArea,
+    TabContainerBlock,
+    TabHeaderItem,
+    TabHeaders
+} from '@/components/TabContainer/style';
 
 interface TabContainerProps {
     tabNames: string[];
@@ -31,7 +36,7 @@ export default function TabContainer({
     );
 
     return (
-        <div>
+        <TabContainerBlock>
             <TabHeaders>
                 {tabNames.map((value, idx) => (
                     <TabHeaderItem
@@ -43,7 +48,7 @@ export default function TabContainer({
                     </TabHeaderItem>
                 ))}
             </TabHeaders>
-            <div>{childrenArray[selected]}</div>
-        </div>
+            <ContentArea>{childrenArray[selected]}</ContentArea>
+        </TabContainerBlock>
     );
 }

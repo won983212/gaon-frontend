@@ -15,6 +15,7 @@ import { ChannelHeader } from '@/layouts/Workspace/style';
 import { useFilesSWR } from '@/api/conference';
 import UserList from '@/components/UserList';
 import { useNavigate } from 'react-router';
+import Terminal from '@/components/Terminal';
 
 function Conference() {
     const navigate = useNavigate();
@@ -61,7 +62,7 @@ function Conference() {
             </InnerEditor>
             <BottomMenuBar>
                 <TabContainer tabNames={['콘솔']}>
-                    <p>Tab1</p>
+                    <Terminal />
                 </TabContainer>
             </BottomMenuBar>
         </CodeEditorTab>

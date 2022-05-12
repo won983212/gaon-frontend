@@ -25,6 +25,7 @@ export const SideMenuBar = styled.div`
 `;
 
 export const BottomMenuBar = styled.div`
+    display: flex;
     height: 200px;
     border-top: 1px solid var(--primary-light);
     background-color: var(--primary-dark);
