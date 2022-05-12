@@ -1,27 +1,12 @@
 import React from 'react';
-import styled from 'styled-components';
 import gravatar from 'gravatar';
 import { MdMic, MdMicOff } from 'react-icons/all';
 import ProfileImage from '@/components/ProfileImage';
-
-const UserListBlock = styled.ul`
-    list-style: none;
-    padding: 0 12px 0 16px;
-`;
-
-const UserItem = styled.div`
-    margin-top: 12px;
-    display: flex;
-    align-items: center;
-    color: var(--text);
-`;
-
-export const UsernameBlock = styled.div`
-    color: var(--text);
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-`;
+import {
+    UserItem,
+    UserListBlock,
+    UsernameBlock
+} from '@/components/UserList/style';
 
 const dummyUserList = [
     { name: '이현', mute: false },

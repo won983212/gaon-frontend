@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import Modal from '@/components/Modal';
+import Modal, { Action } from '@/components/Modal';
 import useChannel from '@/hooks/useChannel';
 import {
     BottomMenuBar,
@@ -14,18 +14,35 @@ import FileTree from '@/components/FileTree';
 import { ChannelHeader } from '@/layouts/Workspace/style';
 import { useFilesSWR } from '@/api/conference';
 import UserList from '@/components/UserList';
+import { useNavigate } from 'react-router';
 
 function Conference() {
+    const navigate = useNavigate();
     const { data: files } = useFilesSWR(0);
     const { data: channelInfo } = useChannel();
     const [showEnterDialog, setShowEnterDialog] = useState(true);
 
-    const onCloseEnterDialog = useCallback(() => {
-        setShowEnterDialog(false);
-    }, []);
+    const onCloseEnterDialog = useCallback(
+        (action: Action) => {
+            if (action === 'yes') {
+                setShowEnterDialog(false);
+            } else {
+                navigate('/workspace/channel');
+            }
+        },
+        [navigate]
+    );
 
     if (!files) {
         return null;
+    }
+
+    if (showEnterDialog) {
+        return (
+            <Modal isOpen={true} onAction={onCloseEnterDialog} buttons="yesno">
+                {channelInfo?.name} 회의에 참가하시겠습니까?
+            </Modal>
+        );
     }
 
     return (
@@ -47,13 +64,6 @@ function Conference() {
                     <p>Tab1</p>
                 </TabContainer>
             </BottomMenuBar>
-            <Modal
-                isOpen={showEnterDialog}
-                onAction={onCloseEnterDialog}
-                buttons="yesno"
-            >
-                {channelInfo?.name} 회의에 참가하시겠습니까?
-            </Modal>
         </CodeEditorTab>
     );
 }
