@@ -7,12 +7,12 @@ import gravatar from 'gravatar';
 import React, { useCallback, useState } from 'react';
 import { Navigate } from 'react-router';
 import {
-    ChannelHeader,
     Channels,
     ContentContainer,
     LogOutButton,
     MenuScroll,
     ProfileMenu,
+    ProfileName,
     WorkspaceName,
     WorkspaceWrapper
 } from './style';
@@ -96,7 +96,7 @@ function Workspace({ children }: WorkspaceProps) {
                             </LogOutButton>
                         </Menu>
                     )}
-                    <WorkspaceName onClick={onToggleProfileMenu}>
+                    <ProfileName onClick={onToggleProfileMenu}>
                         <UserProfile
                             username={userData.name}
                             avatarUrl={gravatar.url(userData.username, {
@@ -105,12 +105,9 @@ function Workspace({ children }: WorkspaceProps) {
                             })}
                             job={userData.job}
                         />
-                    </WorkspaceName>
+                    </ProfileName>
                 </Channels>
-                <ContentContainer>
-                    <ChannelHeader>{channelInfo?.name}</ChannelHeader>
-                    {children}
-                </ContentContainer>
+                <ContentContainer>{children}</ContentContainer>
             </WorkspaceWrapper>
         </div>
     );

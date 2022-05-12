@@ -1,30 +1,16 @@
 import styled from 'styled-components';
 
-export const RightMenu = styled.div`
-    float: right;
-`;
-
-export const Header = styled.header`
-    height: 38px;
-    background: var(--primary);
-    color: #ffffff;
-    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.1);
-    padding: 5px;
-    text-align: center;
-`;
-
 export const ChannelHeader = styled.header`
     height: 64px;
     display: flex;
     width: 100%;
-    background-color: var(--primary-dark);
+    background-color: var(--primary);
     color: white;
-    border-left: 1px solid var(--primary-light);
-    --saf-0: rgba(var(--sk_foreground_low, 29, 28, 29), 0.13);
-    box-shadow: 0 1px 0 var(--saf-0);
+    box-shadow: 4px 0 2px 2px #222222;
     padding: 20px 16px 20px 20px;
     font-weight: bold;
     align-items: center;
+    z-index: 1;
 `;
 
 export const ContentContainer = styled.div`
@@ -32,14 +18,6 @@ export const ContentContainer = styled.div`
     height: 100vh;
     display: flex;
     flex-direction: column;
-`;
-
-export const ProfileImg = styled.img`
-    width: 28px;
-    height: 28px;
-    position: absolute;
-    top: 5px;
-    right: 16px;
 `;
 
 export const ProfileMenu = styled.div`
@@ -82,28 +60,18 @@ export const LogOutButton = styled.button`
 export const WorkspaceWrapper = styled.div`
     display: flex;
     flex: 1;
-`;
-
-export const Workspaces = styled.div`
-    width: 65px;
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    background: var(--primary);
-    border-top: 1px solid var(--primary-light);
-    border-right: 1px solid var(--primary-light);
-    vertical-align: top;
-    text-align: center;
-    padding: 15px 0 0;
+    height: 100vh;
 `;
 
 export const Channels = styled.nav`
     width: 260px;
     display: inline-flex;
     flex-direction: column;
-    background: var(--primary);
+    background: var(--primary-dark);
     color: var(--text);
     vertical-align: top;
+    box-shadow: -4px 0 6px 4px #222222;
+    z-index: 1;
 
     & .menuitem {
         padding-left: 36px;
@@ -155,73 +123,23 @@ export const WorkspaceName = styled.button`
     border: none;
     width: 100%;
     text-align: left;
-    border-top: 1px solid var(--primary-light);
-    border-bottom: 1px solid var(--primary-light);
     font-weight: 900;
     font-size: 24px;
     background: var(--primary-dark);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    padding: 0;
     padding-left: 16px;
     margin: 0;
     color: white;
     cursor: pointer;
 `;
 
+export const ProfileName = styled(WorkspaceName)`
+    background: var(--primary-darker);
+`;
+
 export const MenuScroll = styled.div`
     flex: 1;
     overflow-y: auto;
-`;
-
-export const WorkspaceModal = styled.div`
-    padding: 10px 0 0;
-
-    & h2 {
-        padding-left: 20px;
-    }
-
-    & > button {
-        width: 100%;
-        height: 28px;
-        padding: 4px;
-        border: none;
-        background: transparent;
-        border-top: 1px solid rgb(28, 29, 28);
-        cursor: pointer;
-
-        &:last-of-type {
-            border-bottom: 1px solid rgb(28, 29, 28);
-        }
-    }
-`;
-
-export const Chats = styled.div`
-    flex: 1;
-`;
-
-export const AddButton = styled.button`
-    color: white;
-    font-size: 24px;
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-`;
-
-export const WorkspaceButton = styled.button`
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background: white;
-    border: 3px solid #3f0e40;
-    margin-bottom: 15px;
-    font-size: 18px;
-    font-weight: 700;
-    color: black;
-    cursor: pointer;
 `;
