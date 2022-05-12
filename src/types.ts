@@ -12,6 +12,12 @@ export interface IChannelGroup {
     channels: IChannel[];
 }
 
+export interface IFileNode {
+    id?: string;
+    name: string;
+    files?: IFileNode[];
+}
+
 export type IStatus = 'online' | 'offline' | 'missed';
 
 export interface IUser {

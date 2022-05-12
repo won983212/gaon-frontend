@@ -5,15 +5,10 @@ import FolderTreeEntry from '@/components/FileTree/FolderTreeEntry';
 import { ThemeProvider } from 'styled-components';
 import { IconContext } from 'react-icons';
 import { FileTreeBlock } from '@/components/FileTree/style';
-
-export type FileNode = {
-    id?: string;
-    name: string;
-    files?: FileNode[];
-};
+import { IFileNode } from '@/types';
 
 interface FileTreeProps {
-    files: FileNode[];
+    files: IFileNode[];
 }
 
 const Files = function ({ files }: FileTreeProps) {
@@ -26,13 +21,13 @@ const Files = function ({ files }: FileTreeProps) {
                 if (item.files) {
                     // directory
                     return (
-                        <FolderTreeEntry name={item.name}>
+                        <FolderTreeEntry key={item.id} name={item.name}>
                             <Files files={item.files} />
                         </FolderTreeEntry>
                     );
                 } else {
                     // file
-                    return <FileTreeEntry name={item.name} />;
+                    return <FileTreeEntry key={item.id} name={item.name} />;
                 }
             })}
         </>

@@ -2,7 +2,7 @@ import { doLogout, useUsersSWR } from '@/api/auth';
 import { useChannelsSWR } from '@/api/workspace';
 import ChannelList from '@/components/ChannelList';
 import Menu from '@/components/Menu';
-import { UserProfile } from '@/components/UserProfile';
+import Profile from '@/components/Profile';
 import gravatar from 'gravatar';
 import React, { useCallback, useState } from 'react';
 import { Navigate } from 'react-router';
@@ -10,14 +10,15 @@ import {
     Channels,
     ContentContainer,
     LogOutButton,
+    MenuIconWrapper,
     MenuScroll,
     ProfileMenu,
     ProfileName,
     WorkspaceName,
+    WorkspaceProfileWrapper,
     WorkspaceWrapper
 } from './style';
-import { ProjectProfile } from '@/components/ProjectProfile';
-import useChannel from '@/hooks/useChannel';
+import { MdMenu } from 'react-icons/all';
 
 interface WorkspaceProps {
     children: React.ReactNode;
@@ -27,7 +28,6 @@ function Workspace({ children }: WorkspaceProps) {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const { data: userData, mutate } = useUsersSWR();
     const { data: channelCategories } = useChannelsSWR(0);
-    const { data: channelInfo } = useChannel();
 
     const onLogout = useCallback(() => {
         doLogout().then(() => {
@@ -52,13 +52,19 @@ function Workspace({ children }: WorkspaceProps) {
             <WorkspaceWrapper>
                 <Channels>
                     <WorkspaceName>
-                        <ProjectProfile
-                            projectName="cc"
-                            avatarUrl={gravatar.url('cc', {
-                                s: '36px',
-                                d: 'retro'
-                            })}
-                        />
+                        <WorkspaceProfileWrapper>
+                            <Profile
+                                username="cc"
+                                avatarUrl={gravatar.url('cc', {
+                                    s: '36px',
+                                    d: 'retro'
+                                })}
+                                rectAvatar
+                            />
+                        </WorkspaceProfileWrapper>
+                        <MenuIconWrapper>
+                            <MdMenu size={16} />
+                        </MenuIconWrapper>
                     </WorkspaceName>
                     <MenuScroll>
                         {channelCategories?.map((category) => {
@@ -97,7 +103,7 @@ function Workspace({ children }: WorkspaceProps) {
                         </Menu>
                     )}
                     <ProfileName onClick={onToggleProfileMenu}>
-                        <UserProfile
+                        <Profile
                             username={userData.name}
                             avatarUrl={gravatar.url(userData.username, {
                                 s: '36px',

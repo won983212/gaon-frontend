@@ -119,6 +119,8 @@ export const Channels = styled.nav`
 
 export const WorkspaceName = styled.button`
     height: 64px;
+    display: flex;
+    align-items: center;
     line-height: 64px;
     border: none;
     width: 100%;
@@ -133,6 +135,15 @@ export const WorkspaceName = styled.button`
     margin: 0;
     color: white;
     cursor: pointer;
+`;
+
+export const WorkspaceProfileWrapper = styled.div`
+    flex: 1;
+`;
+
+export const MenuIconWrapper = styled.div`
+    color: var(--primary-light);
+    margin-right: 12px;
 `;
 
 export const ProfileName = styled(WorkspaceName)`

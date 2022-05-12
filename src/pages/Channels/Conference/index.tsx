@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import Modal, { Action } from '@/components/Modal';
+import Modal from '@/components/Modal';
 import useChannel from '@/hooks/useChannel';
 import {
     BottomMenuBar,
@@ -12,14 +12,21 @@ import TabContainer from '@/components/TabContainer';
 import CodeEditor from '@/pages/Channels/Conference/CodeEditor';
 import FileTree from '@/components/FileTree';
 import { ChannelHeader } from '@/layouts/Workspace/style';
+import { useFilesSWR } from '@/api/conference';
+import UserList from '@/components/UserList';
 
 function Conference() {
+    const { data: files } = useFilesSWR(0);
     const { data: channelInfo } = useChannel();
     const [showEnterDialog, setShowEnterDialog] = useState(true);
 
-    const onCloseEnterDialog = useCallback((action: Action) => {
+    const onCloseEnterDialog = useCallback(() => {
         setShowEnterDialog(false);
     }, []);
+
+    if (!files) {
+        return null;
+    }
 
     return (
         <CodeEditorTab>
@@ -30,67 +37,8 @@ function Conference() {
                 </CodeEditorWrapper>
                 <SideMenuBar>
                     <TabContainer tabNames={['탐색기', '참가자']}>
-                        <FileTree
-                            files={[
-                                {
-                                    name: 'client',
-                                    files: [
-                                        {
-                                            name: 'ui',
-                                            files: [
-                                                { name: 'Toggle.js' },
-                                                { name: 'Button.js' },
-                                                { name: 'Button.style.js' }
-                                            ]
-                                        },
-                                        {
-                                            name: 'ux',
-                                            files: [
-                                                { name: 'Toggle.js' },
-                                                { name: 'Button.js' },
-                                                { name: 'Button.style.js' }
-                                            ]
-                                        },
-                                        {
-                                            name: 'Menu',
-                                            files: [
-                                                { name: 'Tree.js' },
-                                                { name: 'Tree.style.js' }
-                                            ]
-                                        },
-                                        {
-                                            name: 'Menu',
-                                            files: [
-                                                { name: 'Tree.js' },
-                                                { name: 'Tree.style.js' }
-                                            ]
-                                        },
-                                        {
-                                            name: 'Menu',
-                                            files: [
-                                                { name: 'Tree.js' },
-                                                { name: 'Tree.style.js' }
-                                            ]
-                                        },
-                                        {
-                                            name: 'configs',
-                                            files: [
-                                                { name: 'Tree.js' },
-                                                { name: 'Tree.style.js' }
-                                            ]
-                                        },
-                                        { name: 'setup.js' },
-                                        { name: 'setupTests.js' }
-                                    ]
-                                },
-                                {
-                                    name: 'packages',
-                                    files: [{ name: 'main.js' }]
-                                },
-                                { name: 'index.js' }
-                            ]}
-                        />
-                        <p>Tab2</p>
+                        <FileTree files={files} />
+                        <UserList />
                     </TabContainer>
                 </SideMenuBar>
             </InnerEditor>

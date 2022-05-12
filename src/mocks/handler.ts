@@ -1,4 +1,4 @@
-import { IChannel, IChannelGroup, IUser } from '@/types';
+import { IChannel, IChannelGroup, IFileNode, IUser } from '@/types';
 import { rest } from 'msw';
 
 const dummyChannels: IChannelGroup[] = [
@@ -22,6 +22,52 @@ const dummyChannels: IChannelGroup[] = [
             { id: 8, type: 'conference', name: 'Conference2' }
         ]
     }
+];
+
+const dummyFiles: IFileNode[] = [
+    { name: 'public', files: [] },
+    {
+        name: 'src',
+        files: [
+            {
+                name: 'api',
+                files: [
+                    { name: 'auth.ts' },
+                    { name: 'client.ts' },
+                    { name: 'conference.ts' },
+                    { name: 'workspace.ts' }
+                ]
+            },
+            {
+                name: 'hooks',
+                files: [
+                    { name: 'useChannel.ts' },
+                    { name: 'useInput.ts' },
+                    { name: 'useSocket.ts' },
+                    { name: 'withDefault.ts' }
+                ]
+            },
+            {
+                name: 'layouts',
+                files: [
+                    {
+                        name: 'Workspace',
+                        files: [{ name: 'index.tsx' }, { name: 'style.ts' }]
+                    },
+                    { name: 'App.tsx' }
+                ]
+            },
+            {
+                name: 'mocks',
+                files: [{ name: 'browser.ts' }, { name: 'handler.ts' }]
+            }
+        ]
+    },
+    { name: '.eslintrc' },
+    { name: '.gitignore' },
+    { name: 'package.json' },
+    { name: 'tsconfig.json' },
+    { name: 'README.md' }
 ];
 
 const authHandlers = [
@@ -84,7 +130,11 @@ const workspaceHandlers = [
             }
             return res(ctx.json<IChannel | undefined>(channel));
         }
-    )
+    ),
+    rest.get('/api/workspace/:workspaceId/files', async (req, res, ctx) => {
+        const { workspaceId } = req.params;
+        return res(ctx.json<IFileNode[]>(dummyFiles));
+    })
 ];
 
 export const handlers = authHandlers.concat(workspaceHandlers);
