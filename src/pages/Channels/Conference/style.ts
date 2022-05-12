@@ -21,6 +21,7 @@ export const CodeEditorWrapper = styled.div`
 export const SideMenuBar = styled.div`
     width: 260px;
     background-color: var(--primary-dark);
+    overflow-y: auto;
 `;
 
 export const BottomMenuBar = styled.div`
