@@ -146,6 +146,15 @@ export const MenuIconWrapper = styled.div`
     margin-right: 12px;
 `;
 
+export const ConferenceMenu = styled.div`
+    display: flex;
+    align-items: center;
+    padding: 0 8px 0 8px;
+    background: var(--primary-darker);
+    height: 48px;
+    border-bottom: 1px solid var(--primary);
+`;
+
 export const ProfileName = styled(WorkspaceName)`
     background: var(--primary-darker);
 `;

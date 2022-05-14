@@ -7,6 +7,7 @@ interface ButtonProps {
     size?: Size;
     variant?: Variant;
     fullWidth?: boolean;
+    noPadding?: boolean;
 }
 
 const Button = styled.button<ButtonProps>`
@@ -29,7 +30,7 @@ const Button = styled.button<ButtonProps>`
               `
             : css`
                   height: 1.75rem;
-                  font-size: 0.875rem;
+                  font-size: 0.8rem;
               `}
 
     ${(props) =>
@@ -51,7 +52,12 @@ const Button = styled.button<ButtonProps>`
     outline: none;
     cursor: pointer;
     border-radius: 4px;
-    padding: 0 1rem;
+
+    ${(props) =>
+        !props.noPadding &&
+        css`
+            padding: 0 1rem;
+        `}
 
     &:hover {
         background-color: var(--primary-lighter);

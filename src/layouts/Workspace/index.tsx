@@ -8,6 +8,7 @@ import React, { useCallback, useState } from 'react';
 import { Navigate } from 'react-router';
 import {
     Channels,
+    ConferenceMenu,
     ContentContainer,
     LogOutButton,
     MenuIconWrapper,
@@ -19,6 +20,8 @@ import {
     WorkspaceWrapper
 } from './style';
 import { MdMenu } from 'react-icons/all';
+import Button from '@/components/Button';
+import useChannel from '@/hooks/useChannel';
 
 interface WorkspaceProps {
     children: React.ReactNode;
@@ -26,6 +29,7 @@ interface WorkspaceProps {
 
 function Workspace({ children }: WorkspaceProps) {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
+    const { data: channelInfo } = useChannel();
     const { data: userData, mutate } = useUsersSWR();
     const { data: channelCategories } = useChannelsSWR(0);
 
@@ -101,6 +105,20 @@ function Workspace({ children }: WorkspaceProps) {
                                 Logout
                             </LogOutButton>
                         </Menu>
+                    )}
+                    {channelInfo && channelInfo.type === 'conference' && (
+                        <ConferenceMenu>
+                            <Button
+                                size="small"
+                                style={{ flex: 1, marginRight: 8 }}
+                                noPadding
+                            >
+                                코드
+                            </Button>
+                            <Button size="small" style={{ flex: 1 }} noPadding>
+                                화이트보드
+                            </Button>
+                        </ConferenceMenu>
                     )}
                     <ProfileName onClick={onToggleProfileMenu}>
                         <Profile
