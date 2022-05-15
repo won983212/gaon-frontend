@@ -22,6 +22,7 @@ import {
 import { MdMenu } from 'react-icons/all';
 import Button from '@/components/Button';
 import useChannel from '@/hooks/useChannel';
+import useConferenceTabIndex from '@/hooks/useConferenceTabIndex';
 
 interface WorkspaceProps {
     children: React.ReactNode;
@@ -32,6 +33,7 @@ function Workspace({ children }: WorkspaceProps) {
     const { data: channelInfo } = useChannel();
     const { data: userData, mutate } = useUsersSWR();
     const { data: channelCategories } = useChannelsSWR(0);
+    const { mutate: setConferenceTabIndex } = useConferenceTabIndex();
 
     const onLogout = useCallback(() => {
         doLogout().then(() => {
@@ -112,10 +114,16 @@ function Workspace({ children }: WorkspaceProps) {
                                 size="small"
                                 style={{ flex: 1, marginRight: 8 }}
                                 noPadding
+                                onClick={() => setConferenceTabIndex(0)}
                             >
                                 코드
                             </Button>
-                            <Button size="small" style={{ flex: 1 }} noPadding>
+                            <Button
+                                size="small"
+                                style={{ flex: 1 }}
+                                noPadding
+                                onClick={() => setConferenceTabIndex(1)}
+                            >
                                 화이트보드
                             </Button>
                         </ConferenceMenu>
