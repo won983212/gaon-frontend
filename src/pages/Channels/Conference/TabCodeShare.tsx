@@ -3,9 +3,9 @@ import { useFilesSWR } from '@/api/conference';
 import useChannel from '@/hooks/useChannel';
 import {
     BottomMenuBar,
-    CodeEditorWrapper,
+    ContentArea,
     FlexLayout,
-    InnerEditor,
+    InnerContent,
     SideMenuBar
 } from '@/pages/Channels/Conference/style';
 import { ChannelHeader } from '@/layouts/Workspace/style';
@@ -26,17 +26,17 @@ export default function TabCodeShare() {
     return (
         <FlexLayout>
             <ChannelHeader>{channelInfo?.name}</ChannelHeader>
-            <InnerEditor>
-                <CodeEditorWrapper>
+            <InnerContent>
+                <ContentArea>
                     <CodeEditor />
-                </CodeEditorWrapper>
+                </ContentArea>
                 <SideMenuBar>
                     <TabContainer tabNames={['탐색기', '참가자']}>
                         <FileTree files={files} />
                         <UserList />
                     </TabContainer>
                 </SideMenuBar>
-            </InnerEditor>
+            </InnerContent>
             <BottomMenuBar>
                 <TabContainer tabNames={['콘솔']}>
                     <Terminal />

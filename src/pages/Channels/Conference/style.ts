@@ -7,13 +7,13 @@ export const FlexLayout = styled.div`
     flex: 1;
 `;
 
-export const InnerEditor = styled.div`
+export const InnerContent = styled.div`
     display: flex;
     flex: 1;
     overflow-y: auto;
 `;
 
-export const CodeEditorWrapper = styled.div`
+export const ContentArea = styled.div`
     background-color: var(--primary);
     flex: 1;
 `;
