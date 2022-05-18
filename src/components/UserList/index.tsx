@@ -8,6 +8,7 @@ import {
     UsernameBlock
 } from '@/components/UserList/style';
 
+// TODO 드래그 방지 추가
 const dummyUserList = [
     { name: '이현', mute: false },
     { name: '이용욱', mute: true },

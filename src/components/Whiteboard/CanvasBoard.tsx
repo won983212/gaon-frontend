@@ -1,108 +1,121 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import DrawContext, { PaintStyle } from '@/components/Whiteboard/DrawContext';
 import autosize from 'autosize';
+import { toCanvasCoord } from '@/util/util';
+import { Eraser, ITool, Move, Pencil } from '@/components/Whiteboard/Tools';
+
+export type Tool = 'pencil' | 'eraser' | 'move';
 
 interface CanvasBoardProps {
     canvasWidth: number;
     canvasHeight: number;
-}
-
-interface Coord {
-    x: number;
-    y: number;
-}
-
-function toCanvasCoord(canvas: HTMLCanvasElement | null, e: MouseEvent) {
-    if (!canvas) {
-        return;
-    }
-    return {
-        x: e.pageX - canvas.offsetLeft,
-        y: e.pageY - canvas.offsetTop
-    };
-}
-
-function drawLine(canvas: HTMLCanvasElement | null, from: Coord, to: Coord) {
-    if (!canvas) {
-        return;
-    }
-
-    const context = canvas.getContext('2d');
-    if (!context) {
-        return;
-    }
-
-    context.strokeStyle = 'dodgerblue';
-    context.lineWidth = 2;
-
-    context.beginPath();
-    context.moveTo(from.x, from.y);
-    context.lineTo(to.x, to.y);
-    context.stroke();
+    tool: Tool;
+    lineStyle: PaintStyle;
 }
 
 export default function CanvasBoard({
     canvasWidth,
-    canvasHeight
+    canvasHeight,
+    tool,
+    lineStyle
 }: CanvasBoardProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [mousePos, setMousePos] = useState<Coord | undefined>(undefined);
+    const drawCtxRef = useRef<DrawContext | null>(null);
     const [isPressed, setIsPressed] = useState(false);
 
-    const startPaint = useCallback((e: MouseEvent) => {
-        const pos = toCanvasCoord(canvasRef.current, e);
-        if (pos) {
-            setIsPressed(true);
-            setMousePos(pos);
+    const startPaint = useCallback((e: React.MouseEvent) => {
+        if (e.button === 0) {
+            const pos = toCanvasCoord(e, canvasRef);
+            if (pos) {
+                setIsPressed(true);
+                if (drawCtxRef.current) {
+                    drawCtxRef.current.onPress(pos);
+                }
+            }
         }
     }, []);
 
-    const paint = useCallback(
-        (e: MouseEvent) => {
+    const paint = (e: React.MouseEvent) => {
+        if (e.button === 0) {
             e.preventDefault();
             e.stopPropagation();
             if (isPressed) {
-                const nextPos = toCanvasCoord(canvasRef.current, e);
-                if (mousePos && nextPos) {
-                    drawLine(canvasRef.current, mousePos, nextPos);
-                    setMousePos(nextPos);
+                const pos = toCanvasCoord(e, canvasRef);
+                if (pos && drawCtxRef.current) {
+                    drawCtxRef.current.onDragMove(pos);
                 }
             }
+        }
+    };
+
+    const endPaint = useCallback((e: React.MouseEvent) => {
+        if (e.button === 0) {
+            setIsPressed(false);
+            if (drawCtxRef.current) {
+                drawCtxRef.current.onRelease();
+            }
+        }
+    }, []);
+
+    const createTool = useCallback(
+        (tool: Tool, lineStyle: PaintStyle): ITool => {
+            switch (tool) {
+                case 'pencil':
+                    return new Pencil(lineStyle);
+                case 'eraser':
+                    return new Eraser(1);
+                case 'move':
+                    return new Move();
+                default:
+                    throw new Error('unknown tool: ' + tool);
+            }
         },
-        [isPressed, mousePos]
+        []
     );
 
-    const endPaint = useCallback((e: MouseEvent) => {
-        setIsPressed(false);
+    useEffect(() => {
+        if (canvasRef.current) {
+            autosize(canvasRef.current);
+        }
+        drawCtxRef.current = new DrawContext(
+            canvasRef,
+            createTool(tool, lineStyle)
+        );
     }, []);
 
     useEffect(() => {
-        const canvas = canvasRef.current;
-        if (!canvas) {
-            return;
+        if (drawCtxRef.current) {
+            drawCtxRef.current.setTool(createTool(tool, lineStyle));
         }
-
-        autosize(canvas);
-        canvas.addEventListener('mousedown', startPaint);
-        canvas.addEventListener('mouseup', endPaint);
-        canvas.addEventListener('mousemove', paint);
-        canvas.addEventListener('mouseleave', endPaint);
-
-        return () => {
-            canvas.removeEventListener('mousedown', startPaint);
-            canvas.removeEventListener('mouseup', endPaint);
-            canvas.removeEventListener('mousemove', paint);
-            canvas.removeEventListener('mouseleave', endPaint);
-        };
-    }, [endPaint, paint, startPaint]);
+    }, [tool, lineStyle]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) {
             return;
         }
-        canvas.width = canvasWidth;
-        canvas.height = canvasHeight;
+        const context = canvas.getContext('2d');
+        if (context) {
+            const devicePixelRatio = window.devicePixelRatio ?? 1;
+            canvas.width = canvasWidth * devicePixelRatio;
+            canvas.height = canvasHeight * devicePixelRatio;
+            canvas.style.width = canvasWidth + 'px';
+            canvas.style.height = canvasHeight + 'px';
+            context.scale(devicePixelRatio, devicePixelRatio);
+            if (drawCtxRef.current) {
+                drawCtxRef.current.repaint();
+            }
+        }
     }, [canvasWidth, canvasHeight]);
 
-    return <canvas ref={canvasRef} style={{ position: 'absolute' }} />;
+    return (
+        <canvas
+            ref={canvasRef}
+            style={{ position: 'absolute' }}
+            onMouseDown={startPaint}
+            onMouseUp={endPaint}
+            onMouseMove={paint}
+            onMouseLeave={endPaint}
+        />
+    );
 }

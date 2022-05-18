@@ -29,3 +29,8 @@ export interface IUser {
     status: IStatus;
     job: string;
 }
+
+export interface Position {
+    x: number;
+    y: number;
+}

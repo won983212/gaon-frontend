@@ -11,8 +11,8 @@ export const WhiteboardBlock = styled.div`
 
 export const Toolbox = styled.ul`
     position: absolute;
-    padding: 12px;
-    margin: 0;
+    padding: 0;
+    margin: 12px;
     display: flex;
     list-style: none;
 
@@ -22,10 +22,10 @@ export const Toolbox = styled.ul`
         border-radius: 8px;
 
         &.selected {
-            background-color: #efefef;
+            background-color: #dddddd;
         }
 
-        &:hover {
+        &:hover:not(.selected) {
             background-color: #efefef;
         }
     }

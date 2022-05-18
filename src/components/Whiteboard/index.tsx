@@ -8,16 +8,15 @@ import {
 } from 'react-icons/all';
 import { IconContext } from 'react-icons';
 import { Toolbox, WhiteboardBlock } from '@/components/Whiteboard/style';
-import CanvasBoard from '@/components/Whiteboard/CanvasBoard';
+import CanvasBoard, { Tool } from '@/components/Whiteboard/CanvasBoard';
+import { PaintStyle } from '@/components/Whiteboard/DrawContext';
 
-export type Tool = 'pencil' | 'eraser' | 'move';
-
-interface ToolEntry {
+interface ToolBoxButton {
     tool: Tool;
     icon: React.ReactNode;
 }
 
-const tools: ToolEntry[] = [
+const tools: ToolBoxButton[] = [
     {
         tool: 'pencil',
         icon: <RiPencilFill />
@@ -35,6 +34,10 @@ const tools: ToolEntry[] = [
 export default function Whiteboard() {
     const canvasContainerRef = useRef<HTMLDivElement>(null);
     const [tool, setTool] = useState<Tool>('pencil');
+    const [lineStyle, setLineStyle] = useState<PaintStyle>({
+        color: 'black',
+        thickness: 4
+    });
     const [canvasWidth, setCanvasWidth] = useState(0);
     const [canvasHeight, setCanvasHeight] = useState(0);
 
@@ -57,6 +60,8 @@ export default function Whiteboard() {
             <CanvasBoard
                 canvasWidth={canvasWidth}
                 canvasHeight={canvasHeight}
+                tool={tool}
+                lineStyle={lineStyle}
             />
             <IconContext.Provider
                 value={{ color: 'var(--primary)', size: '28px' }}
