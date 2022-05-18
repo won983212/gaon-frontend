@@ -86,7 +86,14 @@ export default class DrawContext {
             }
 
             context.translate(camPos.x, camPos.y);
-            drawCursor(context, this.lastMousePos);
+
+            let shouldRenderCursor = true;
+            if (this.currentTool.shouldRenderCursor) {
+                shouldRenderCursor = this.currentTool.shouldRenderCursor(this);
+            }
+            if (shouldRenderCursor) {
+                drawCursor(context, this.lastMousePos);
+            }
         }
     }
 
@@ -124,7 +131,7 @@ export default class DrawContext {
 
     public onMove(pos: Position, delta: Position) {
         if (this.lastMousePos !== pos) {
-            this.lastMousePos = pos;
+            this.lastMousePos = { x: pos.x, y: pos.y };
             this.repaint();
         }
 

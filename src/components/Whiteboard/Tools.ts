@@ -11,7 +11,7 @@ export interface ITool {
     createLineStyle?: () => PaintStyle;
 
     /** 마우스 포인터를 그림. undefined면 그리지 않음. */
-    renderMousePointer?: (context: DrawContext) => void;
+    shouldRenderCursor?: (context: DrawContext) => boolean;
 
     /** 마우스 버튼을 눌렀을 때 이벤트. */
     onPress?: (context: DrawContext, pos: Position) => void;
@@ -31,6 +31,10 @@ export interface ITool {
 }
 
 export class Move implements ITool {
+    public shouldRenderCursor(context: DrawContext) {
+        return false;
+    }
+
     public onDrag(context: DrawContext, pos: Position, delta: Position) {
         let camPos = context.getCameraPos();
         context.setCameraPos({ x: camPos.x - delta.x, y: camPos.y - delta.y });
