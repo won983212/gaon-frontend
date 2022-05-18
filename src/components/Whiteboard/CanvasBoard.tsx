@@ -66,7 +66,7 @@ export default function CanvasBoard({
                 case 'pencil':
                     return new Pencil(lineStyle);
                 case 'eraser':
-                    return new Eraser(1);
+                    return new Eraser(lineStyle.thickness);
                 case 'move':
                     return new Move();
                 default:

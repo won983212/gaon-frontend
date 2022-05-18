@@ -111,14 +111,23 @@ export default class DrawContext {
 
         if (this.currentPath) {
             const context = this.getContext();
-            let paths = this.currentPath.path;
-            paths.push(pos);
-
             if (this.currentTool.onDrag) {
                 this.currentTool.onDrag(this, pos, delta);
             }
 
-            if (context && this.currentPath.style && paths.length >= 2) {
+            let paths = this.currentPath.path;
+            if (paths.length > 0) {
+                let dx = paths[paths.length - 1].x - pos.x;
+                let dy = paths[paths.length - 1].y - pos.y;
+                if (dx * dx + dy * dy > 20) {
+                    // sqrt(20)보다 이동거리가 짧으면 drawing요청 무시
+                    paths.push(pos);
+                }
+            } else {
+                paths.push(pos);
+            }
+
+            if (context && this.currentPath.style) {
                 context.lineTo(
                     pos.x - this.cameraPos.x,
                     pos.y - this.cameraPos.y

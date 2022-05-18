@@ -5,4 +5,5 @@ export const ChatArea = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
+    user-select: text;
 `;

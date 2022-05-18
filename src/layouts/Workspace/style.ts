@@ -61,6 +61,7 @@ export const WorkspaceWrapper = styled.div`
     display: flex;
     flex: 1;
     height: 100vh;
+    user-select: none;
 `;
 
 export const Channels = styled.nav`
