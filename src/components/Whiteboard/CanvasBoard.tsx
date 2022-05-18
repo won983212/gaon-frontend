@@ -42,7 +42,10 @@ export default function CanvasBoard({
             if (isPressed) {
                 const pos = toCanvasCoord(e, canvasRef);
                 if (pos && drawCtxRef.current) {
-                    drawCtxRef.current.onDragMove(pos);
+                    drawCtxRef.current.onDragMove(pos, {
+                        x: e.movementX,
+                        y: e.movementY
+                    });
                 }
             }
         }
@@ -73,6 +76,7 @@ export default function CanvasBoard({
         []
     );
 
+    // initialize
     useEffect(() => {
         if (canvasRef.current) {
             autosize(canvasRef.current);
@@ -83,12 +87,14 @@ export default function CanvasBoard({
         );
     }, []);
 
+    // tool(or style) swap handling
     useEffect(() => {
         if (drawCtxRef.current) {
             drawCtxRef.current.setTool(createTool(tool, lineStyle));
         }
     }, [tool, lineStyle]);
 
+    // canvas resize handling
     useEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) {

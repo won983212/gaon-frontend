@@ -3,7 +3,6 @@ import { ITool } from '@/components/Whiteboard/Tools';
 import {
     applyStyle,
     clearBoard,
-    drawGrid,
     drawPath
 } from '@/components/Whiteboard/Renderers';
 
@@ -32,6 +31,7 @@ export default class DrawContext {
     private canvasRef: React.RefObject<HTMLCanvasElement>;
     private currentPath: StyleNullablePath | undefined;
     private currentTool: ITool;
+    private cameraPos: Position;
 
     constructor(
         canvasRef: React.RefObject<HTMLCanvasElement>,
@@ -40,6 +40,7 @@ export default class DrawContext {
         this.paints = [];
         this.canvasRef = canvasRef;
         this.currentTool = initialTool;
+        this.cameraPos = { x: 0, y: 0 };
     }
 
     private getContext() {
@@ -53,14 +54,26 @@ export default class DrawContext {
         this.currentTool = tool;
     }
 
+    public getCameraPos() {
+        return this.cameraPos;
+    }
+
+    public setCameraPos(pos: Position) {
+        this.cameraPos = pos;
+        this.repaint();
+    }
+
     public repaint() {
         let context = this.getContext();
         if (context) {
             clearBoard(this.canvasRef, context);
-            drawGrid(context);
+            let camPos = this.cameraPos;
+            context.translate(-camPos.x, -camPos.y);
+
             for (let paint of this.paints) {
                 drawPath(context, paint);
             }
+            context.translate(camPos.x, camPos.y);
         }
     }
 
@@ -76,6 +89,9 @@ export default class DrawContext {
 
     public onPress(pos: Position) {
         const context = this.getContext();
+        pos.x += this.cameraPos.x;
+        pos.y += this.cameraPos.y;
+
         if (this.currentTool.onPress) {
             this.currentTool.onPress(this, pos);
         }
@@ -85,22 +101,28 @@ export default class DrawContext {
         if (context && this.currentPath.style) {
             applyStyle(context, this.currentPath.style);
             context.beginPath();
-            context.moveTo(pos.x, pos.y);
+            context.moveTo(pos.x - this.cameraPos.x, pos.y - this.cameraPos.y);
         }
     }
 
-    public onDragMove(pos: Position) {
+    public onDragMove(pos: Position, delta: Position) {
+        pos.x += this.cameraPos.x;
+        pos.y += this.cameraPos.y;
+
         if (this.currentPath) {
             const context = this.getContext();
             let paths = this.currentPath.path;
             paths.push(pos);
 
             if (this.currentTool.onDrag) {
-                this.currentTool.onDrag(this, pos);
+                this.currentTool.onDrag(this, pos, delta);
             }
 
             if (context && this.currentPath.style && paths.length >= 2) {
-                context.lineTo(pos.x, pos.y);
+                context.lineTo(
+                    pos.x - this.cameraPos.x,
+                    pos.y - this.cameraPos.y
+                );
                 context.stroke();
             }
         }

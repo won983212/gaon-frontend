@@ -13,7 +13,7 @@ export interface ITool {
     onPress?: (context: DrawContext, pos: Position) => void;
 
     /** 마우스 버튼을 누르면서 움직였을 때 이벤트. */
-    onDrag?: (context: DrawContext, pos: Position) => void;
+    onDrag?: (context: DrawContext, pos: Position, delta: Position) => void;
 
     /** 마우스 버튼을 땠을 때 이벤트. Release후에 자동으로 repaint가 진행됨.
      * lineStyle이 undefined라면, dragPath은 style을 뺀 Position[]으로 설정됨. */
@@ -25,6 +25,11 @@ export interface ITool {
 
 export class Move implements ITool {
     public readonly lineStyle: PaintStyle | undefined = undefined;
+
+    public onDrag(context: DrawContext, pos: Position, delta: Position) {
+        let camPos = context.getCameraPos();
+        context.setCameraPos({ x: camPos.x - delta.x, y: camPos.y - delta.y });
+    }
 }
 
 export class Eraser implements ITool {
@@ -45,6 +50,7 @@ export class Eraser implements ITool {
                 mousePos.x - path.path[i].x,
                 mousePos.y - path.path[i].y
             );
+
             AB.scale(AB.dot(AP) / AP.distance());
             AB.subtractVec(AP);
 

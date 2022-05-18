@@ -40,7 +40,3 @@ export function drawPath(context: CanvasRenderingContext2D, path: PaintPath) {
         context.closePath();
     }
 }
-
-export function drawGrid(ctx: CanvasRenderingContext2D) {
-    ctx.moveTo(1, 1);
-}
