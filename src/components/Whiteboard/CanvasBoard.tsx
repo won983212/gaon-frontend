@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import DrawContext, { PaintStyle } from '@/components/Whiteboard/DrawContext';
 import autosize from 'autosize';
 import { toCanvasCoord } from '@/util/util';
@@ -21,16 +21,12 @@ export default function CanvasBoard({
 }: CanvasBoardProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const drawCtxRef = useRef<DrawContext | null>(null);
-    const [isPressed, setIsPressed] = useState(false);
 
     const startPaint = useCallback((e: React.MouseEvent) => {
         if (e.button === 0) {
             const pos = toCanvasCoord(e, canvasRef);
-            if (pos) {
-                setIsPressed(true);
-                if (drawCtxRef.current) {
-                    drawCtxRef.current.onPress(pos);
-                }
+            if (pos && drawCtxRef.current) {
+                drawCtxRef.current.onPress(pos);
             }
         }
     }, []);
@@ -39,24 +35,19 @@ export default function CanvasBoard({
         if (e.button === 0) {
             e.preventDefault();
             e.stopPropagation();
-            if (isPressed) {
-                const pos = toCanvasCoord(e, canvasRef);
-                if (pos && drawCtxRef.current) {
-                    drawCtxRef.current.onDragMove(pos, {
-                        x: e.movementX,
-                        y: e.movementY
-                    });
-                }
+            const pos = toCanvasCoord(e, canvasRef);
+            if (pos && drawCtxRef.current) {
+                drawCtxRef.current.onMove(pos, {
+                    x: e.movementX,
+                    y: e.movementY
+                });
             }
         }
     };
 
     const endPaint = useCallback((e: React.MouseEvent) => {
-        if (e.button === 0) {
-            setIsPressed(false);
-            if (drawCtxRef.current) {
-                drawCtxRef.current.onRelease();
-            }
+        if (e.button === 0 && drawCtxRef.current) {
+            drawCtxRef.current.onRelease();
         }
     }, []);
 
@@ -81,16 +72,17 @@ export default function CanvasBoard({
         if (canvasRef.current) {
             autosize(canvasRef.current);
         }
-        drawCtxRef.current = new DrawContext(
-            canvasRef,
-            createTool(tool, lineStyle)
-        );
     }, []);
 
     // tool(or style) swap handling
     useEffect(() => {
         if (drawCtxRef.current) {
             drawCtxRef.current.setTool(createTool(tool, lineStyle));
+        } else {
+            drawCtxRef.current = new DrawContext(
+                canvasRef,
+                createTool(tool, lineStyle)
+            );
         }
     }, [tool, lineStyle]);
 

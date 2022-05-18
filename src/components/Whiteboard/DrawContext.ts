@@ -3,12 +3,14 @@ import { ITool } from '@/components/Whiteboard/Tools';
 import {
     applyStyle,
     clearBoard,
+    drawCursor,
     drawPath
 } from '@/components/Whiteboard/Renderers';
 
 export interface PaintStyle {
     color: string;
     thickness: number;
+    highlight: boolean;
 }
 
 /** 드래그해서 그린 하나의 선을 PaintPath로 정의함.
@@ -32,6 +34,7 @@ export default class DrawContext {
     private currentPath: StyleNullablePath | undefined;
     private currentTool: ITool;
     private cameraPos: Position;
+    private lastMousePos: Position;
 
     constructor(
         canvasRef: React.RefObject<HTMLCanvasElement>,
@@ -41,6 +44,7 @@ export default class DrawContext {
         this.canvasRef = canvasRef;
         this.currentTool = initialTool;
         this.cameraPos = { x: 0, y: 0 };
+        this.lastMousePos = { x: 0, y: 0 };
     }
 
     private getContext() {
@@ -66,14 +70,23 @@ export default class DrawContext {
     public repaint() {
         let context = this.getContext();
         if (context) {
-            clearBoard(this.canvasRef, context);
             let camPos = this.cameraPos;
+            clearBoard(this.canvasRef, context);
             context.translate(-camPos.x, -camPos.y);
 
             for (let paint of this.paints) {
                 drawPath(context, paint);
             }
+
+            if (this.currentPath && this.currentPath.style) {
+                drawPath(context, {
+                    path: this.currentPath.path,
+                    style: this.currentPath.style
+                });
+            }
+
             context.translate(camPos.x, camPos.y);
+            drawCursor(context, this.lastMousePos);
         }
     }
 
@@ -96,7 +109,11 @@ export default class DrawContext {
             this.currentTool.onPress(this, pos);
         }
 
-        this.currentPath = { path: [], style: this.currentTool.lineStyle };
+        let style;
+        if (this.currentTool.createLineStyle) {
+            style = this.currentTool.createLineStyle();
+        }
+        this.currentPath = { path: [pos], style: style };
 
         if (context && this.currentPath.style) {
             applyStyle(context, this.currentPath.style);
@@ -105,7 +122,12 @@ export default class DrawContext {
         }
     }
 
-    public onDragMove(pos: Position, delta: Position) {
+    public onMove(pos: Position, delta: Position) {
+        if (this.lastMousePos !== pos) {
+            this.lastMousePos = pos;
+            this.repaint();
+        }
+
         pos.x += this.cameraPos.x;
         pos.y += this.cameraPos.y;
 
@@ -134,6 +156,8 @@ export default class DrawContext {
                 );
                 context.stroke();
             }
+        } else if (this.currentTool.onMove) {
+            this.currentTool.onMove(this, pos);
         }
     }
 

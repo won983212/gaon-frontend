@@ -36,7 +36,8 @@ export default function Whiteboard() {
     const [tool, setTool] = useState<Tool>('pencil');
     const [lineStyle, setLineStyle] = useState<PaintStyle>({
         color: 'black',
-        thickness: 4
+        thickness: 4,
+        highlight: false
     });
     const [canvasWidth, setCanvasWidth] = useState(0);
     const [canvasHeight, setCanvasHeight] = useState(0);
