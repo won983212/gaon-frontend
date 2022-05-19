@@ -1,43 +1,40 @@
-import React, { useCallback, useEffect, useRef } from 'react';
-import DrawContext, { PaintStyle } from '@/components/Whiteboard/DrawContext';
+import React, { useCallback, useEffect } from 'react';
 import autosize from 'autosize';
 import { toCanvasCoord } from '@/util/util';
-import { Eraser, ITool, Move, Pencil } from '@/components/Whiteboard/Tools';
-
-export type Tool = 'pencil' | 'eraser' | 'move';
+import { CanvasEvents } from '@/components/Whiteboard/useCanvasContext';
 
 interface CanvasBoardProps {
+    canvasRef: React.RefObject<HTMLCanvasElement>;
     canvasWidth: number;
     canvasHeight: number;
-    tool: Tool;
-    lineStyle: PaintStyle;
+    events: CanvasEvents;
 }
 
 export default function CanvasBoard({
+    canvasRef,
     canvasWidth,
     canvasHeight,
-    tool,
-    lineStyle
+    events
 }: CanvasBoardProps) {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
-    const drawCtxRef = useRef<DrawContext | null>(null);
-
-    const startPaint = useCallback((e: React.MouseEvent) => {
-        if (e.button === 0) {
-            const pos = toCanvasCoord(e, canvasRef);
-            if (pos && drawCtxRef.current) {
-                drawCtxRef.current.onPress(pos);
+    const startPaint = useCallback(
+        (e: React.MouseEvent) => {
+            if (e.button === 0) {
+                const pos = toCanvasCoord(e, canvasRef);
+                if (pos) {
+                    events.onPress(pos);
+                }
             }
-        }
-    }, []);
+        },
+        [canvasRef, events]
+    );
 
     const paint = (e: React.MouseEvent) => {
         if (e.button === 0) {
             e.preventDefault();
             e.stopPropagation();
             const pos = toCanvasCoord(e, canvasRef);
-            if (pos && drawCtxRef.current) {
-                drawCtxRef.current.onMove(pos, {
+            if (pos) {
+                events.onMove(pos, {
                     x: e.movementX,
                     y: e.movementY
                 });
@@ -45,26 +42,13 @@ export default function CanvasBoard({
         }
     };
 
-    const endPaint = useCallback((e: React.MouseEvent) => {
-        if (e.button === 0 && drawCtxRef.current) {
-            drawCtxRef.current.onRelease();
-        }
-    }, []);
-
-    const createTool = useCallback(
-        (tool: Tool, lineStyle: PaintStyle): ITool => {
-            switch (tool) {
-                case 'pencil':
-                    return new Pencil(lineStyle);
-                case 'eraser':
-                    return new Eraser(lineStyle.thickness);
-                case 'move':
-                    return new Move();
-                default:
-                    throw new Error('unknown tool: ' + tool);
+    const endPaint = useCallback(
+        (e: React.MouseEvent) => {
+            if (e.button === 0) {
+                events.onRelease();
             }
         },
-        []
+        [events]
     );
 
     // initialize
@@ -72,19 +56,7 @@ export default function CanvasBoard({
         if (canvasRef.current) {
             autosize(canvasRef.current);
         }
-    }, []);
-
-    // tool(or style) swap handling
-    useEffect(() => {
-        if (drawCtxRef.current) {
-            drawCtxRef.current.setTool(createTool(tool, lineStyle));
-        } else {
-            drawCtxRef.current = new DrawContext(
-                canvasRef,
-                createTool(tool, lineStyle)
-            );
-        }
-    }, [tool, lineStyle]);
+    }, [canvasRef]);
 
     // canvas resize handling
     useEffect(() => {
@@ -100,11 +72,8 @@ export default function CanvasBoard({
             canvas.style.width = canvasWidth + 'px';
             canvas.style.height = canvasHeight + 'px';
             context.scale(devicePixelRatio, devicePixelRatio);
-            if (drawCtxRef.current) {
-                drawCtxRef.current.repaint();
-            }
         }
-    }, [canvasWidth, canvasHeight]);
+    }, [canvasWidth, canvasHeight, canvasRef]);
 
     return (
         <canvas

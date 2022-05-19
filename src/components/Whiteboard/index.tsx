@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     MdRedo,
     MdUndo,
@@ -8,11 +8,12 @@ import {
 } from 'react-icons/all';
 import { IconContext } from 'react-icons';
 import { Toolbox, WhiteboardBlock } from '@/components/Whiteboard/style';
-import CanvasBoard, { Tool } from '@/components/Whiteboard/CanvasBoard';
-import { PaintStyle } from '@/components/Whiteboard/DrawContext';
+import CanvasBoard from '@/components/Whiteboard/CanvasBoard';
+import useCanvasContext from '@/components/Whiteboard/useCanvasContext';
+import { ToolType } from '@/components/Whiteboard/types';
 
 interface ToolBoxButton {
-    tool: Tool;
+    tool: ToolType;
     icon: React.ReactNode;
 }
 
@@ -33,14 +34,13 @@ const tools: ToolBoxButton[] = [
 
 export default function Whiteboard() {
     const canvasContainerRef = useRef<HTMLDivElement>(null);
-    const [tool, setTool] = useState<Tool>('pencil');
-    const [lineStyle, setLineStyle] = useState<PaintStyle>({
-        color: 'black',
-        thickness: 4,
-        highlight: false
-    });
+    const { canvasRef, events, canvasCtx, setCanvasCtx } = useCanvasContext();
     const [canvasWidth, setCanvasWidth] = useState(0);
     const [canvasHeight, setCanvasHeight] = useState(0);
+
+    const doUndo = useCallback(() => {}, []);
+
+    const doRedo = useCallback(() => {}, []);
 
     useEffect(() => {
         const calculateCanvasSize = () => {
@@ -59,10 +59,10 @@ export default function Whiteboard() {
     return (
         <WhiteboardBlock ref={canvasContainerRef}>
             <CanvasBoard
+                canvasRef={canvasRef}
                 canvasWidth={canvasWidth}
                 canvasHeight={canvasHeight}
-                tool={tool}
-                lineStyle={lineStyle}
+                events={events}
             />
             <IconContext.Provider
                 value={{ color: 'var(--primary)', size: '28px' }}
@@ -73,18 +73,25 @@ export default function Whiteboard() {
                             <li
                                 key={idx}
                                 className={
-                                    tool === toolEnt.tool ? 'selected' : ''
+                                    canvasCtx.tool === toolEnt.tool
+                                        ? 'selected'
+                                        : ''
                                 }
-                                onClick={() => setTool(toolEnt.tool)}
+                                onClick={() => {
+                                    setCanvasCtx((prev) => ({
+                                        ...prev,
+                                        tool: toolEnt.tool
+                                    }));
+                                }}
                             >
                                 {toolEnt.icon}
                             </li>
                         );
                     })}
-                    <li>
+                    <li onClick={() => doUndo()}>
                         <MdUndo />
                     </li>
-                    <li>
+                    <li onClick={() => doRedo()}>
                         <MdRedo />
                     </li>
                 </Toolbox>

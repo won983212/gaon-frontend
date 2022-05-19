@@ -1,112 +1,158 @@
 import { Position } from '@/types';
-import DrawContext, {
-    PaintPath,
-    PaintStyle
-} from '@/components/Whiteboard/DrawContext';
-import Vec from '@/util/vec';
+import { ToolType } from '@/components/Whiteboard/types';
+import { CanvasContext } from '@/components/Whiteboard/useCanvasContext';
+import React from 'react';
+import { IDrawElement, PathPaint } from '@/components/Whiteboard/DrawElements';
+
+export interface CanvasDrawingContext {
+    canvasContext: CanvasContext;
+    setCanvasContext: React.Dispatch<React.SetStateAction<CanvasContext>>;
+    drawingElement: IDrawElement | undefined;
+    setDrawingElement: React.Dispatch<
+        React.SetStateAction<IDrawElement | undefined>
+    >;
+    get2dContext: () => CanvasRenderingContext2D | undefined;
+}
 
 export interface ITool {
-    /** 새 스타일을 생성함. 생성된 스타일은 라인 스타일에 적용됨.
-     * line-drawing을 사용하지 않을 경우에는 undefined로 정의하면 됨.*/
-    createLineStyle?: () => PaintStyle;
-
     /** 마우스 포인터를 그림. undefined면 그리지 않음. */
-    shouldRenderCursor?: (context: DrawContext) => boolean;
+    shouldRenderCursor?: () => boolean;
+
+    /** 툴 타입을 리턴함 */
+    getToolType: () => ToolType;
 
     /** 마우스 버튼을 눌렀을 때 이벤트. */
-    onPress?: (context: DrawContext, pos: Position) => void;
+    onPress?: (event: CanvasDrawingContext, pos: Position) => void;
 
     /** 마우스 버튼을 누르면서 움직였을 때 이벤트. */
-    onDrag?: (context: DrawContext, pos: Position, delta: Position) => void;
+    onDrag?: (
+        event: CanvasDrawingContext,
+        pos: Position,
+        delta: Position
+    ) => void;
 
     /** 마우스 이동 이벤트. (drag할 경우에는 호출 안됨) */
-    onMove?: (context: DrawContext, pos: Position) => void;
+    onMove?: (event: CanvasDrawingContext, pos: Position) => void;
 
     /** 마우스 버튼을 땠을 때 이벤트. Release후에 자동으로 repaint가 진행됨.
      * lineStyle이 undefined라면, dragPath은 style을 뺀 Position[]으로 설정됨. */
     onRelease?: (
-        context: DrawContext,
-        dragPath: PaintPath | Position[]
+        event: CanvasDrawingContext,
+        element: IDrawElement | undefined
     ) => void;
 }
 
-export class Move implements ITool {
-    public shouldRenderCursor(context: DrawContext) {
-        return false;
-    }
+export const Move = (): ITool => ({
+    shouldRenderCursor: () => false,
 
-    public onDrag(context: DrawContext, pos: Position, delta: Position) {
-        let camPos = context.getCameraPos();
-        context.setCameraPos({ x: camPos.x - delta.x, y: camPos.y - delta.y });
-    }
-}
-
-export class Eraser implements ITool {
-    private readonly radius: number;
-
-    constructor(radius: number) {
-        this.radius = radius;
-    }
-
-    /**
-     * 마우스와 radius거리 안에 있는 path들을 highlight한다.
-     * highlight가 되었다면, true리턴.
-     */
-    private isNear(mousePos: Position, path: PaintPath) {
-        for (let i = 0; i < path.path.length - 1; i++) {
-            let AB = new Vec(
-                path.path[i + 1].x - path.path[i].x,
-                path.path[i + 1].y - path.path[i].y
-            );
-            let AP = new Vec(
-                mousePos.x - path.path[i].x,
-                mousePos.y - path.path[i].y
-            );
-
-            AB.scale(AB.dot(AP) / AP.distance());
-            AB.subtractVec(AP);
-
-            let minDist = this.radius + path.style.thickness / 2;
-            if (AB.sqDist() < minDist * minDist) {
-                return true;
+    onDrag: (event: CanvasDrawingContext, pos: Position, delta: Position) => {
+        event.setCanvasContext((prev) => ({
+            ...event.canvasContext,
+            camPos: {
+                x: prev.camPos.x - delta.x,
+                y: prev.camPos.y - delta.y
             }
-        }
-        return false;
-    }
+        }));
+    },
 
-    private eliminateNear(context: DrawContext, pos: Position) {
-        let prevLen = context.paints.length;
-        context.paints = context.paints.filter(
-            (path) => !this.isNear(pos, path)
+    getToolType: () => 'move'
+});
+
+export const Eraser = (): ITool => {
+    const eliminateNear = (event: CanvasDrawingContext, pos: Position) => {
+        const radius = event.canvasContext.brush.thickness;
+        event.setCanvasContext((prev) => ({
+            ...prev,
+            elements: prev.elements.filter(
+                (element) => !element.isHit(pos, radius)
+            )
+        }));
+    };
+
+    return {
+        onMove: (event: CanvasDrawingContext, pos: Position) => {
+            const radius = event.canvasContext.brush.thickness;
+            event.setCanvasContext((prev) => ({
+                ...prev,
+                elements: prev.elements.map((element) => {
+                    if (element.isHit(pos, radius)) {
+                        return element.setHighlight(true);
+                    }
+                    return element.setHighlight(false);
+                })
+            }));
+        },
+
+        getToolType: () => 'eraser',
+
+        onPress: eliminateNear,
+
+        onDrag: eliminateNear
+    };
+};
+
+export const Pencil = (): ITool => ({
+    onPress: (event: CanvasDrawingContext, pos: Position) => {
+        event.setDrawingElement(
+            new PathPaint([pos], event.canvasContext.brush)
         );
-        if (prevLen !== context.paints.length) {
-            context.repaint();
+    },
+
+    onDrag: (event: CanvasDrawingContext, pos: Position) => {
+        const paint = event.drawingElement as PathPaint;
+        if (!paint) {
+            return;
         }
-    }
 
-    public onMove(context: DrawContext, pos: Position) {
-        for (let path of context.paints) {
-            path.style.highlight = this.isNear(pos, path);
+        let newPosHolder: Position | undefined = undefined;
+        if (paint.path.length > 0) {
+            let dx = paint.path[paint.path.length - 1].x - pos.x;
+            let dy = paint.path[paint.path.length - 1].y - pos.y;
+            if (dx * dx + dy * dy > 20) {
+                // sqrt(20)보다 이동거리가 짧으면 drawing요청 무시
+                newPosHolder = pos;
+            }
+        } else {
+            newPosHolder = pos;
         }
+
+        if (newPosHolder) {
+            const newPos: Position = newPosHolder;
+            event.setDrawingElement((prev) => {
+                const elem: PathPaint = prev as PathPaint;
+                return new PathPaint(
+                    elem.path.concat(newPos),
+                    elem.style,
+                    elem.highlight
+                );
+            });
+        }
+    },
+
+    onRelease: (
+        event: CanvasDrawingContext,
+        element: IDrawElement | undefined
+    ) => {
+        if (element) {
+            event.setCanvasContext((prev) => ({
+                ...prev,
+                elements: prev.elements.concat(element)
+            }));
+        }
+    },
+
+    getToolType: () => 'pencil'
+});
+
+export const getToolFromType = (tool: ToolType) => {
+    switch (tool) {
+        case 'pencil':
+            return Pencil();
+        case 'eraser':
+            return Eraser();
+        case 'move':
+            return Move();
+        default:
+            throw new Error('unknown tool: ' + tool);
     }
-
-    public onPress = this.eliminateNear;
-
-    public onDrag = this.eliminateNear;
-}
-
-export class Pencil implements ITool {
-    private readonly lineStyle: PaintStyle;
-
-    constructor(initialStyle: PaintStyle) {
-        this.lineStyle = initialStyle;
-    }
-
-    public createLineStyle() {
-        return JSON.parse(JSON.stringify(this.lineStyle));
-    }
-
-    public onRelease(context: DrawContext, dragPath: PaintPath | Position[]) {
-        context.paints.push(dragPath as PaintPath);
-    }
-}
+};
