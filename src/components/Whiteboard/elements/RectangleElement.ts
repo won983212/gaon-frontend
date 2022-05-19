@@ -1,7 +1,7 @@
 import { Position, Size } from '@/types';
 import { BrushStyle } from '../types';
-import { applyStyle } from '../Renderers';
-import { slice } from '@/util/util';
+import { applyStyle } from '../RenderUtils';
+import { checkAABB } from '@/util/util';
 import { IDrawElement } from './IDrawElement';
 
 export class RectangleElement implements IDrawElement {
@@ -48,18 +48,12 @@ export class RectangleElement implements IDrawElement {
         context.lineTo(this.pos2.x, this.pos2.y);
         context.lineTo(this.pos1.x, this.pos2.y);
         context.closePath();
-        context.stroke();
         context.fill();
+        context.stroke();
     }
 
     public isHit(pos: Position, radius: number): boolean {
-        const position = this.getPosition();
-        const size = this.getSize();
-        const innerX = slice(position.x, position.x + size.width, pos.x);
-        const innerY = slice(position.y, position.y + size.height, pos.y);
-        const dx = pos.x - innerX;
-        const dy = pos.y - innerY;
-        return dx * dx + dy * dy < radius;
+        return checkAABB(radius, pos, this.getPosition(), this.getSize());
     }
 
     public setHighlight(highlight: boolean): IDrawElement {

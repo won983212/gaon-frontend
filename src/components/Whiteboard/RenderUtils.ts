@@ -30,14 +30,18 @@ export function clearBoard(
     }
 }
 
-export function drawCursor(context: CanvasRenderingContext2D, pos: Position) {
+export function drawCursor(
+    context: CanvasRenderingContext2D,
+    radius: number,
+    pos: Position
+) {
     context.globalCompositeOperation = 'xor';
     context.strokeStyle = 'black';
     context.lineWidth = 1;
     context.lineJoin = 'round';
 
     context.beginPath();
-    context.arc(pos.x, pos.y, 2, 0, 2 * Math.PI);
+    context.arc(pos.x, pos.y, radius / 2, 0, 2 * Math.PI);
     context.stroke();
     context.closePath();
 

@@ -3,8 +3,13 @@ import { IDrawElement } from './elements/IDrawElement';
 import { BrushStyle, ToolType } from './types';
 import { Position } from '@/types';
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
-import { clearBoard, drawCursor } from './Renderers';
+import { clearBoard, drawCursor } from './RenderUtils';
 import { CanvasDrawingContext, getToolFromType } from './tools/ITool';
+import {
+    fillColors,
+    strokeColors,
+    strokeThickness
+} from '@/components/Whiteboard/PaletteMenu';
 
 export interface CanvasContext {
     tool: ToolType;
@@ -36,9 +41,9 @@ export default function useCanvasContext(): {
     const [canvasCtx, setCanvasCtx] = useState<CanvasContext>({
         tool: 'pencil',
         brush: {
-            strokeStyle: 'rgba(0, 0, 0, 1)',
-            fillStyle: 'rgba(0, 0, 0, 0)',
-            thickness: 2
+            strokeStyle: strokeColors[strokeColors.length - 1],
+            fillStyle: fillColors[0],
+            thickness: strokeThickness[1]
         },
         zoom: 1,
         camPos: { x: 0, y: 0 },
@@ -110,7 +115,7 @@ export default function useCanvasContext(): {
             shouldRenderCursor = tool.shouldRenderCursor();
         }
         if (shouldRenderCursor) {
-            drawCursor(context, mousePos);
+            drawCursor(context, canvasCtx.brush.thickness, mousePos);
         }
     };
 

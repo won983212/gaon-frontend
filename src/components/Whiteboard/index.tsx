@@ -2,15 +2,13 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     BiCircle,
     BiEraser,
-    BiImage,
     BiMove,
     BiPalette,
     BiPencil,
     BiRectangle,
+    BiSearch,
     BiText,
-    BiTrash,
-    BiZoomIn,
-    BiZoomOut
+    BiTrash
 } from 'react-icons/all';
 import { IconContext } from 'react-icons';
 import {
@@ -22,6 +20,8 @@ import CanvasBoard from '@/components/Whiteboard/CanvasBoard';
 import useCanvasContext from '@/components/Whiteboard/useCanvasContext';
 import { ToolType } from '@/components/Whiteboard/types';
 import Modal, { Action } from '@/components/Modal';
+import ZoomMenu from '@/components/Whiteboard/ZoomMenu';
+import PaletteMenu from '@/components/Whiteboard/PaletteMenu';
 
 interface ToolBoxButton {
     tool: ToolType;
@@ -52,10 +52,6 @@ const tools: ToolBoxButton[] = [
     {
         tool: 'text',
         icon: <BiText />
-    },
-    {
-        tool: 'image',
-        icon: <BiImage />
     }
 ];
 
@@ -66,6 +62,8 @@ export default function Whiteboard() {
     const [canvasWidth, setCanvasWidth] = useState(0);
     const [canvasHeight, setCanvasHeight] = useState(0);
     const [clearModalOpen, setClearModalOpen] = useState(false);
+    const [zoomMenuOpen, setZoomMenuOpen] = useState(false);
+    const [paletteMenuOpen, setPaletteMenuOpen] = useState(false);
 
     const onCloseClearDialog = useCallback(
         (action: Action) => {
@@ -80,19 +78,8 @@ export default function Whiteboard() {
         [setCanvasCtx]
     );
 
-    const onZoomIn = useCallback(() => {
-        setCanvasCtx((prev) => ({
-            ...prev,
-            zoom: prev.zoom + 0.25
-        }));
-    }, [setCanvasCtx]);
-
-    const onZoomOut = useCallback(() => {
-        setCanvasCtx((prev) => ({
-            ...prev,
-            zoom: prev.zoom - 0.25
-        }));
-    }, [setCanvasCtx]);
+    const canvasLeft = canvasRef.current ? canvasRef.current.offsetLeft : 0;
+    const canvasTop = canvasRef.current ? canvasRef.current.offsetTop : 0;
 
     useEffect(() => {
         const calculateCanvasSize = () => {
@@ -110,6 +97,22 @@ export default function Whiteboard() {
 
     return (
         <WhiteboardBlock ref={canvasContainerRef}>
+            <ZoomMenu
+                open={zoomMenuOpen}
+                onClose={() => setZoomMenuOpen(false)}
+                left={canvasLeft + 12}
+                top={canvasTop + 64}
+                canvasCtx={canvasCtx}
+                setCanvasCtx={setCanvasCtx}
+            />
+            <PaletteMenu
+                open={paletteMenuOpen}
+                onClose={() => setPaletteMenuOpen(false)}
+                left={canvasLeft + 12}
+                top={canvasTop + 64}
+                canvasCtx={canvasCtx}
+                setCanvasCtx={setCanvasCtx}
+            />
             <Modal
                 isOpen={clearModalOpen}
                 onAction={onCloseClearDialog}
@@ -150,13 +153,10 @@ export default function Whiteboard() {
                     <li onClick={() => setClearModalOpen(true)}>
                         <BiTrash />
                     </li>
-                    <li>
-                        <BiZoomIn onClick={onZoomIn} />
+                    <li onClick={() => setZoomMenuOpen(true)}>
+                        <BiSearch />
                     </li>
-                    <li>
-                        <BiZoomOut onClick={onZoomOut} />
-                    </li>
-                    <li>
+                    <li onClick={() => setPaletteMenuOpen(true)}>
                         <BiPalette />
                     </li>
                 </Toolbox>

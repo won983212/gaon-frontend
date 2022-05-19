@@ -9,7 +9,6 @@ import Eraser from './Eraser';
 import Rectangle from './Rectangle';
 import Circle from './Circle';
 import Text from './Text';
-import Image from './Image';
 
 export interface CanvasDrawingContext {
     canvasContext: CanvasContext;
@@ -42,8 +41,10 @@ export interface ITool {
     /** 마우스 이동 이벤트. (drag할 경우에는 호출 안됨) */
     onMove?: (ctx: CanvasDrawingContext, pos: Position) => void;
 
-    /** 마우스 버튼을 땠을 때 이벤트. Release후에 자동으로 repaint가 진행됨.
-     * lineStyle이 undefined라면, dragPath은 style을 뺀 Position[]으로 설정됨. */
+    /**
+     * 마우스 버튼을 땠을 때 이벤트. Release후에 자동으로 repaint가 진행됨.
+     * lineStyle이 undefined라면, dragPath은 style을 뺀 Position[]으로 설정됨.
+     */
     onRelease?: (
         ctx: CanvasDrawingContext,
         element: IDrawElement | undefined
@@ -64,8 +65,6 @@ export const getToolFromType = (tool: ToolType) => {
             return Circle();
         case 'text':
             return Text();
-        case 'image':
-            return Image();
         default:
             throw new Error('unknown tool: ' + tool);
     }
