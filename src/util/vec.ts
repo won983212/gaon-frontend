@@ -1,3 +1,5 @@
+import { Position } from '@/types';
+
 export default class Vec {
     public x: number;
     public y: number;
@@ -7,17 +9,26 @@ export default class Vec {
         this.y = y;
     }
 
+    static FromPosition(pos: Position) {
+        return new Vec(pos.x, pos.y);
+    }
+
     public add(x: number, y: number) {
         this.x += x;
         this.y += y;
+        return this;
+    }
+
+    public subtract(x: number, y: number) {
+        return this.add(-x, -y);
     }
 
     public addVec(vec: Vec) {
-        this.add(vec.x, vec.y);
+        return this.add(vec.x, vec.y);
     }
 
     public subtractVec(vec: Vec) {
-        this.add(-vec.x, -vec.y);
+        return this.add(-vec.x, -vec.y);
     }
 
     public dot(vec: Vec) {
@@ -27,6 +38,7 @@ export default class Vec {
     public scale(scale: number) {
         this.x *= scale;
         this.y *= scale;
+        return this;
     }
 
     public sqDist() {

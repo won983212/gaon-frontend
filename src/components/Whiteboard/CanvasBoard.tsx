@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import autosize from 'autosize';
 import { toCanvasCoord } from '@/util/util';
 import { CanvasEvents } from '@/components/Whiteboard/useCanvasContext';
 
 interface CanvasBoardProps {
     canvasRef: React.RefObject<HTMLCanvasElement>;
+    repaint: () => void;
     canvasWidth: number;
     canvasHeight: number;
     events: CanvasEvents;
@@ -12,6 +13,7 @@ interface CanvasBoardProps {
 
 export default function CanvasBoard({
     canvasRef,
+    repaint,
     canvasWidth,
     canvasHeight,
     events
@@ -59,7 +61,7 @@ export default function CanvasBoard({
     }, [canvasRef]);
 
     // canvas resize handling
-    useEffect(() => {
+    useLayoutEffect(() => {
         const canvas = canvasRef.current;
         if (!canvas) {
             return;
@@ -72,8 +74,9 @@ export default function CanvasBoard({
             canvas.style.width = canvasWidth + 'px';
             canvas.style.height = canvasHeight + 'px';
             context.scale(devicePixelRatio, devicePixelRatio);
+            repaint();
         }
-    }, [canvasWidth, canvasHeight, canvasRef]);
+    }, [canvasWidth, canvasHeight, canvasRef, repaint]);
 
     return (
         <canvas

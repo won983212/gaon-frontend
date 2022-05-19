@@ -1,10 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-    MdRedo,
-    MdUndo,
-    RiDragMove2Fill,
-    RiEraserFill,
-    RiPencilFill
+    BiCircle,
+    BiEraser,
+    BiImage,
+    BiMove,
+    BiPencil,
+    BiRectangle,
+    BiText
 } from 'react-icons/all';
 import { IconContext } from 'react-icons';
 import { Toolbox, WhiteboardBlock } from '@/components/Whiteboard/style';
@@ -20,27 +22,40 @@ interface ToolBoxButton {
 const tools: ToolBoxButton[] = [
     {
         tool: 'pencil',
-        icon: <RiPencilFill />
+        icon: <BiPencil />
     },
     {
         tool: 'eraser',
-        icon: <RiEraserFill />
+        icon: <BiEraser />
     },
     {
         tool: 'move',
-        icon: <RiDragMove2Fill />
+        icon: <BiMove />
+    },
+    {
+        tool: 'rectangle',
+        icon: <BiRectangle />
+    },
+    {
+        tool: 'circle',
+        icon: <BiCircle />
+    },
+    {
+        tool: 'text',
+        icon: <BiText />
+    },
+    {
+        tool: 'image',
+        icon: <BiImage />
     }
 ];
 
 export default function Whiteboard() {
     const canvasContainerRef = useRef<HTMLDivElement>(null);
-    const { canvasRef, events, canvasCtx, setCanvasCtx } = useCanvasContext();
+    const { canvasRef, events, canvasCtx, setCanvasCtx, repaint } =
+        useCanvasContext();
     const [canvasWidth, setCanvasWidth] = useState(0);
     const [canvasHeight, setCanvasHeight] = useState(0);
-
-    const doUndo = useCallback(() => {}, []);
-
-    const doRedo = useCallback(() => {}, []);
 
     useEffect(() => {
         const calculateCanvasSize = () => {
@@ -63,6 +78,7 @@ export default function Whiteboard() {
                 canvasWidth={canvasWidth}
                 canvasHeight={canvasHeight}
                 events={events}
+                repaint={repaint}
             />
             <IconContext.Provider
                 value={{ color: 'var(--primary)', size: '28px' }}
@@ -88,12 +104,6 @@ export default function Whiteboard() {
                             </li>
                         );
                     })}
-                    <li onClick={() => doUndo()}>
-                        <MdUndo />
-                    </li>
-                    <li onClick={() => doRedo()}>
-                        <MdRedo />
-                    </li>
                 </Toolbox>
             </IconContext.Provider>
         </WhiteboardBlock>

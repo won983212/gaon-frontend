@@ -1,12 +1,10 @@
-import { IDrawElement } from '@/components/Whiteboard/DrawElements';
-import { BrushStyle, ToolType } from '@/components/Whiteboard/types';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { IDrawElement } from './elements/IDrawElement';
+import { BrushStyle, ToolType } from './types';
 import { Position } from '@/types';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { clearBoard, drawCursor } from '@/components/Whiteboard/Renderers';
-import {
-    CanvasDrawingContext,
-    getToolFromType
-} from '@/components/Whiteboard/Tools';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { clearBoard, drawCursor } from './Renderers';
+import { CanvasDrawingContext, getToolFromType } from './tools/ITool';
 
 export interface CanvasContext {
     tool: ToolType;
@@ -25,6 +23,7 @@ export default function useCanvasContext(): {
     canvasRef: React.RefObject<HTMLCanvasElement>;
     canvasCtx: CanvasContext;
     setCanvasCtx: React.Dispatch<React.SetStateAction<CanvasContext>>;
+    repaint: () => void;
     events: CanvasEvents;
 } {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -35,7 +34,11 @@ export default function useCanvasContext(): {
     >(undefined);
     const [canvasCtx, setCanvasCtx] = useState<CanvasContext>({
         tool: 'pencil',
-        brush: { color: 'black', thickness: 2 },
+        brush: {
+            strokeStyle: 'rgba(0, 0, 0, 1)',
+            fillStyle: 'rgba(0, 0, 0, 0)',
+            thickness: 2
+        },
         camPos: { x: 0, y: 0 },
         elements: []
     });
@@ -47,8 +50,18 @@ export default function useCanvasContext(): {
         setCanvasContext: setCanvasCtx,
         drawingElement,
         setDrawingElement,
-        get2dContext
+        get2dContext,
+        appendDrawingElement
     });
+
+    const appendDrawingElement = () => {
+        if (drawingElement) {
+            setCanvasCtx((prev) => ({
+                ...prev,
+                elements: prev.elements.concat(drawingElement)
+            }));
+        }
+    };
 
     const get2dContext = useCallback(() => {
         if (!canvasRef.current) {
@@ -122,7 +135,7 @@ export default function useCanvasContext(): {
         }
     };
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         repaint();
     }, [mousePos, canvasCtx.camPos, canvasCtx.elements]);
 
@@ -130,6 +143,7 @@ export default function useCanvasContext(): {
         canvasRef,
         canvasCtx,
         setCanvasCtx,
+        repaint,
         events: { onPress, onMove, onRelease }
     };
 }

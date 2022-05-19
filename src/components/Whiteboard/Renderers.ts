@@ -9,7 +9,8 @@ export function applyStyle(
     context: CanvasRenderingContext2D,
     style: BrushStyle
 ) {
-    context.strokeStyle = style.color;
+    context.strokeStyle = style.strokeStyle;
+    context.fillStyle = style.fillStyle;
     context.lineWidth = style.thickness;
     context.lineJoin = 'round';
     context.lineCap = 'round';

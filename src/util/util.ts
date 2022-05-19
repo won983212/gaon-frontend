@@ -12,3 +12,7 @@ export function toCanvasCoord(
         y: event.pageY - canvasRef.current.offsetTop
     };
 }
+
+export function slice(min: number, max: number, value: number) {
+    return value < min ? min : value > max ? max : value;
+}
