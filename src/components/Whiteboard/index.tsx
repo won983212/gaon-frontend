@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
     BiCircle,
     BiEraser,
@@ -6,13 +6,21 @@ import {
     BiMove,
     BiPencil,
     BiRectangle,
-    BiText
+    BiRedo,
+    BiText,
+    BiTrash,
+    BiUndo
 } from 'react-icons/all';
 import { IconContext } from 'react-icons';
-import { Toolbox, WhiteboardBlock } from '@/components/Whiteboard/style';
+import {
+    Seperator,
+    Toolbox,
+    WhiteboardBlock
+} from '@/components/Whiteboard/style';
 import CanvasBoard from '@/components/Whiteboard/CanvasBoard';
 import useCanvasContext from '@/components/Whiteboard/useCanvasContext';
 import { ToolType } from '@/components/Whiteboard/types';
+import Modal, { Action } from '@/components/Modal';
 
 interface ToolBoxButton {
     tool: ToolType;
@@ -56,6 +64,20 @@ export default function Whiteboard() {
         useCanvasContext();
     const [canvasWidth, setCanvasWidth] = useState(0);
     const [canvasHeight, setCanvasHeight] = useState(0);
+    const [clearModalOpen, setClearModalOpen] = useState(false);
+
+    const onCloseClearDialog = useCallback(
+        (action: Action) => {
+            if (action === 'yes') {
+                setCanvasCtx((prev) => ({
+                    ...prev,
+                    elements: []
+                }));
+            }
+            setClearModalOpen(false);
+        },
+        [setCanvasCtx]
+    );
 
     useEffect(() => {
         const calculateCanvasSize = () => {
@@ -73,6 +95,13 @@ export default function Whiteboard() {
 
     return (
         <WhiteboardBlock ref={canvasContainerRef}>
+            <Modal
+                isOpen={clearModalOpen}
+                onAction={onCloseClearDialog}
+                buttons="yesno"
+            >
+                보드를 모두 지웁니다.
+            </Modal>
             <CanvasBoard
                 canvasRef={canvasRef}
                 canvasWidth={canvasWidth}
@@ -80,9 +109,7 @@ export default function Whiteboard() {
                 events={events}
                 repaint={repaint}
             />
-            <IconContext.Provider
-                value={{ color: 'var(--primary)', size: '28px' }}
-            >
+            <IconContext.Provider value={{ size: '28px' }}>
                 <Toolbox>
                     {tools.map((toolEnt, idx) => {
                         return (
@@ -104,6 +131,16 @@ export default function Whiteboard() {
                             </li>
                         );
                     })}
+                    <Seperator />
+                    <li onClick={() => setClearModalOpen(true)}>
+                        <BiTrash />
+                    </li>
+                    <li>
+                        <BiUndo />
+                    </li>
+                    <li>
+                        <BiRedo />
+                    </li>
                 </Toolbox>
             </IconContext.Provider>
         </WhiteboardBlock>
