@@ -9,8 +9,8 @@ export default function Move(): ITool {
             ctx.setCanvasContext((prev) => ({
                 ...ctx.canvasContext,
                 camPos: {
-                    x: prev.camPos.x - delta.x,
-                    y: prev.camPos.y - delta.y
+                    x: prev.camPos.x - delta.x / prev.zoom,
+                    y: prev.camPos.y - delta.y / prev.zoom
                 }
             }));
         },

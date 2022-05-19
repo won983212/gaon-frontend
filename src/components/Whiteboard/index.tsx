@@ -4,12 +4,13 @@ import {
     BiEraser,
     BiImage,
     BiMove,
+    BiPalette,
     BiPencil,
     BiRectangle,
-    BiRedo,
     BiText,
     BiTrash,
-    BiUndo
+    BiZoomIn,
+    BiZoomOut
 } from 'react-icons/all';
 import { IconContext } from 'react-icons';
 import {
@@ -79,6 +80,20 @@ export default function Whiteboard() {
         [setCanvasCtx]
     );
 
+    const onZoomIn = useCallback(() => {
+        setCanvasCtx((prev) => ({
+            ...prev,
+            zoom: prev.zoom + 0.25
+        }));
+    }, [setCanvasCtx]);
+
+    const onZoomOut = useCallback(() => {
+        setCanvasCtx((prev) => ({
+            ...prev,
+            zoom: prev.zoom - 0.25
+        }));
+    }, [setCanvasCtx]);
+
     useEffect(() => {
         const calculateCanvasSize = () => {
             if (canvasContainerRef.current) {
@@ -136,10 +151,13 @@ export default function Whiteboard() {
                         <BiTrash />
                     </li>
                     <li>
-                        <BiUndo />
+                        <BiZoomIn onClick={onZoomIn} />
                     </li>
                     <li>
-                        <BiRedo />
+                        <BiZoomOut onClick={onZoomOut} />
+                    </li>
+                    <li>
+                        <BiPalette />
                     </li>
                 </Toolbox>
             </IconContext.Provider>

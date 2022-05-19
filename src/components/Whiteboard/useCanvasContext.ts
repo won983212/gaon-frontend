@@ -10,6 +10,7 @@ export interface CanvasContext {
     tool: ToolType;
     brush: BrushStyle;
     camPos: Position;
+    zoom: number;
     elements: IDrawElement[];
 }
 
@@ -39,6 +40,7 @@ export default function useCanvasContext(): {
             fillStyle: 'rgba(0, 0, 0, 0)',
             thickness: 2
         },
+        zoom: 1,
         camPos: { x: 0, y: 0 },
         elements: []
     });
@@ -73,6 +75,16 @@ export default function useCanvasContext(): {
         }
     }, []);
 
+    const camTransform = useCallback(
+        (pos: Position) => {
+            return {
+                x: pos.x / canvasCtx.zoom + canvasCtx.camPos.x,
+                y: pos.y / canvasCtx.zoom + canvasCtx.camPos.y
+            };
+        },
+        [canvasCtx.zoom, canvasCtx.camPos]
+    );
+
     const repaint = () => {
         let context = get2dContext();
         if (!context) {
@@ -81,13 +93,17 @@ export default function useCanvasContext(): {
 
         let camPos = canvasCtx.camPos;
         clearBoard(canvasRef, context);
+
+        context.save();
+        context.scale(canvasCtx.zoom, canvasCtx.zoom);
         context.translate(-camPos.x, -camPos.y);
 
         for (let element of canvasCtx.elements) {
             element.draw(context);
         }
+
         drawingElement?.draw(context);
-        context.translate(camPos.x, camPos.y);
+        context.restore();
 
         let shouldRenderCursor = true;
         if (tool.shouldRenderCursor) {
@@ -99,8 +115,7 @@ export default function useCanvasContext(): {
     };
 
     const onPress = (pos: Position) => {
-        pos.x += canvasCtx.camPos.x;
-        pos.y += canvasCtx.camPos.y;
+        pos = camTransform(pos);
 
         if (tool.onPress) {
             tool.onPress(createEventObject(), pos);
@@ -112,9 +127,7 @@ export default function useCanvasContext(): {
         if (mousePos !== pos) {
             setMousePos({ x: pos.x, y: pos.y });
         }
-
-        pos.x += canvasCtx.camPos.x;
-        pos.y += canvasCtx.camPos.y;
+        pos = camTransform(pos);
 
         if (isPressed) {
             if (tool.onDrag) {
