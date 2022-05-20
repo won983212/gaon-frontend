@@ -1,4 +1,4 @@
-import { CanvasDrawingContext, ITool } from './ITool';
+import { CanvasDrawingContext, ITool, setDrawingElement } from './ITool';
 import { Position } from '@/types';
 import { drawTextCursor } from '@/components/Whiteboard/RenderUtils';
 import { TextElement } from '@/components/Whiteboard/elements/TextElement';
@@ -13,14 +13,10 @@ export default function Text(): ITool {
         },
 
         onPress: (ctx: CanvasDrawingContext, pos: Position) => {
-            ctx.setCanvasContext((prev) => ({
-                ...prev,
-                drawingElement: new TextElement(
-                    pos,
-                    '',
-                    ctx.canvasContext.brush
-                )
-            }));
+            setDrawingElement(
+                ctx,
+                new TextElement(pos, '', ctx.canvasContext.brush)
+            );
         },
 
         getToolType: () => 'text'

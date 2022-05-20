@@ -53,7 +53,7 @@ export class RectangleElement implements IDrawElement {
     }
 
     public isHit(pos: Position, radius: number): boolean {
-        return checkHitAABB(radius, pos, this.getPosition(), this.getSize());
+        return checkHitAABB(pos, radius, this.getPosition(), this.getSize());
     }
 
     public setHighlight(highlight: boolean): IDrawElement {

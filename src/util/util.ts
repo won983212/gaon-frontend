@@ -38,7 +38,6 @@ export function checkHitLine(
         const t2 = (-b + discriminant) / (2 * a);
         return (t1 >= 0 && t1 <= 1) || (t2 >= 0 && t2 <= 1);
     }
-
     return false;
 }
 

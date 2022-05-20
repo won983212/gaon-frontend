@@ -1,14 +1,14 @@
 import { Position } from '@/types';
 import { PathElement } from '../elements/PathElement';
-import { CanvasDrawingContext, ITool } from './ITool';
+import { CanvasDrawingContext, ITool, setDrawingElement } from './ITool';
 
 export default function Pencil(): ITool {
     return {
         onPress: (ctx: CanvasDrawingContext, pos: Position) => {
-            ctx.setCanvasContext((prev) => ({
-                ...prev,
-                drawingElement: new PathElement([pos], ctx.canvasContext.brush)
-            }));
+            setDrawingElement(
+                ctx,
+                new PathElement([pos], ctx.canvasContext.brush)
+            );
         },
 
         onDrag: (ctx: CanvasDrawingContext, pos: Position) => {
@@ -31,18 +31,15 @@ export default function Pencil(): ITool {
 
             if (newPosHolder) {
                 const newPos: Position = newPosHolder;
-                ctx.setCanvasContext((prev) => {
-                    const pathElement: PathElement =
-                        prev.drawingElement as PathElement;
-                    return {
-                        ...prev,
-                        drawingElement: new PathElement(
-                            pathElement.path.concat(newPos),
-                            pathElement.style,
-                            pathElement.highlight
+                setDrawingElement<PathElement>(
+                    ctx,
+                    (prev) =>
+                        new PathElement(
+                            prev.path.concat(newPos),
+                            prev.style,
+                            prev.highlight
                         )
-                    };
-                });
+                );
             }
         },
 
