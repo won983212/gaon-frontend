@@ -8,7 +8,8 @@ import {
     BiRectangle,
     BiSearch,
     BiText,
-    BiTrash
+    BiTrash,
+    MdHorizontalRule
 } from 'react-icons/all';
 import { IconContext } from 'react-icons';
 import {
@@ -43,6 +44,10 @@ const tools: ToolBoxButton[] = [
     {
         tool: 'move',
         icon: <BiMove />
+    },
+    {
+        tool: 'line',
+        icon: <MdHorizontalRule />
     },
     {
         tool: 'rectangle',

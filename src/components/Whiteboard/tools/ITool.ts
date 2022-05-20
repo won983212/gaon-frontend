@@ -3,12 +3,6 @@ import { ToolType } from '../types';
 import { CanvasContext } from '../useCanvasContext';
 import React from 'react';
 import { IDrawElement } from '../elements/IDrawElement';
-import Move from './Move';
-import Pencil from './Pencil';
-import Eraser from './Eraser';
-import Rectangle from './Rectangle';
-import Circle from './Circle';
-import Text from './Text';
 
 export interface CanvasDrawingContext {
     canvasContext: CanvasContext;
@@ -47,21 +41,20 @@ export interface ITool {
     ) => void;
 }
 
-export const getToolFromType = (tool: ToolType) => {
-    switch (tool) {
-        case 'pencil':
-            return Pencil();
-        case 'eraser':
-            return Eraser();
-        case 'move':
-            return Move();
-        case 'rectangle':
-            return Rectangle();
-        case 'circle':
-            return Circle();
-        case 'text':
-            return Text();
-        default:
-            throw new Error('unknown tool: ' + tool);
-    }
-};
+/**
+ * 좀 더 편리하게 CanvasDrawingContext의 DrawingElement를 수정하는 유틸 메서드.
+ * 편의를 위해 setter의 매개변수인 prev에 undefined를 포함시키지 않았다.
+ * 따라서 prev가 반드시 undefined가 아닌 경우에만 setter function을 사용할 것.
+ */
+export function setDrawingElement<T extends IDrawElement>(
+    ctx: CanvasDrawingContext,
+    setter: ((prev: T) => T) | T
+): void {
+    ctx.setCanvasContext((prev) => ({
+        ...prev,
+        drawingElement:
+            typeof setter === 'function'
+                ? setter(prev.drawingElement as T)
+                : setter
+    }));
+}

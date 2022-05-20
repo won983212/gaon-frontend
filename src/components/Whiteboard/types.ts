@@ -10,6 +10,7 @@ export type ToolType =
     | 'pencil'
     | 'eraser'
     | 'move'
+    | 'line'
     | 'rectangle'
     | 'circle'
     | 'text'

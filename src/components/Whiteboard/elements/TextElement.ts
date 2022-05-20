@@ -2,7 +2,7 @@ import { Position, Size } from '@/types';
 import { BrushStyle } from '../types';
 import { applyStyle } from '../RenderUtils';
 import { IDrawElement } from './IDrawElement';
-import { checkAABB } from '@/util/util';
+import { checkHitAABB } from '@/util/util';
 
 export class TextElement implements IDrawElement {
     public readonly pos: Position; // top-left point
@@ -64,7 +64,7 @@ export class TextElement implements IDrawElement {
                 y: position.y - this.textMetrics.fontBoundingBoxAscent
             };
         }
-        return checkAABB(radius, pos, position, this.getRenderSize());
+        return checkHitAABB(radius, pos, position, this.getRenderSize());
     }
 
     public setHighlight(highlight: boolean): IDrawElement {

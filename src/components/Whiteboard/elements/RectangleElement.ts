@@ -1,7 +1,7 @@
 import { Position, Size } from '@/types';
 import { BrushStyle } from '../types';
 import { applyStyle } from '../RenderUtils';
-import { checkAABB } from '@/util/util';
+import { checkHitAABB } from '@/util/util';
 import { IDrawElement } from './IDrawElement';
 
 export class RectangleElement implements IDrawElement {
@@ -53,7 +53,7 @@ export class RectangleElement implements IDrawElement {
     }
 
     public isHit(pos: Position, radius: number): boolean {
-        return checkAABB(radius, pos, this.getPosition(), this.getSize());
+        return checkHitAABB(radius, pos, this.getPosition(), this.getSize());
     }
 
     public setHighlight(highlight: boolean): IDrawElement {

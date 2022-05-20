@@ -2,22 +2,22 @@ import { Position } from '@/types';
 import { BrushStyle } from '../types';
 import { applyStyle } from '../RenderUtils';
 import { IDrawElement } from './IDrawElement';
-import { checkHitCircle } from '@/util/util';
+import { checkHitLine } from '@/util/util';
 
-export class CircleElement implements IDrawElement {
-    public readonly pos: Position; // center point
-    public readonly radius: number;
+export class LineElement implements IDrawElement {
+    public readonly pos1: Position;
+    public readonly pos2: Position;
     public readonly style: BrushStyle;
     public readonly highlight: boolean;
 
     public constructor(
-        pos: Position,
-        radius: number,
+        pos1: Position,
+        pos2: Position,
         style: BrushStyle,
         highlight: boolean = false
     ) {
-        this.pos = pos;
-        this.radius = radius;
+        this.pos1 = pos1;
+        this.pos2 = pos2;
         this.style = style;
         this.highlight = highlight;
     }
@@ -29,20 +29,20 @@ export class CircleElement implements IDrawElement {
         }
 
         context.beginPath();
-        context.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
+        context.moveTo(this.pos1.x, this.pos1.y);
+        context.lineTo(this.pos2.x, this.pos2.y);
         context.closePath();
-        context.fill();
         context.stroke();
     }
 
     public isHit(pos: Position, radius: number): boolean {
-        return checkHitCircle(pos, this.pos, radius + this.radius);
+        return checkHitLine(pos, radius, this.pos1, this.pos2);
     }
 
     public setHighlight(highlight: boolean): IDrawElement {
         if (this.highlight === highlight) {
             return this;
         }
-        return new CircleElement(this.pos, this.radius, this.style, highlight);
+        return new LineElement(this.pos1, this.pos2, this.style, highlight);
     }
 }

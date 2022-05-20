@@ -4,13 +4,20 @@ import { BrushStyle, ToolType } from './types';
 import { Position } from '@/types';
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { clearBoard, drawCursor } from './RenderUtils';
-import { CanvasDrawingContext, getToolFromType } from './tools/ITool';
+import { CanvasDrawingContext } from './tools/ITool';
 import {
     fillColors,
     strokeColors,
     strokeThickness
 } from '@/components/Whiteboard/PaletteMenu';
 import { TextElement } from '@/components/Whiteboard/elements/TextElement';
+import Pencil from '@/components/Whiteboard/tools/Pencil';
+import Eraser from '@/components/Whiteboard/tools/Eraser';
+import Move from '@/components/Whiteboard/tools/Move';
+import Rectangle from '@/components/Whiteboard/tools/Rectangle';
+import Line from '@/components/Whiteboard/tools/Line';
+import Circle from '@/components/Whiteboard/tools/Circle';
+import Text from '@/components/Whiteboard/tools/Text';
 
 export interface CanvasContext {
     tool: ToolType;
@@ -26,6 +33,27 @@ export interface CanvasEvents {
     onMove: (pos: Position, delta: Position) => void;
     onRelease: () => void;
 }
+
+export const getToolFromType = (tool: ToolType) => {
+    switch (tool) {
+        case 'pencil':
+            return Pencil();
+        case 'eraser':
+            return Eraser();
+        case 'move':
+            return Move();
+        case 'line':
+            return Line();
+        case 'rectangle':
+            return Rectangle();
+        case 'circle':
+            return Circle();
+        case 'text':
+            return Text();
+        default:
+            throw new Error('unknown tool: ' + tool);
+    }
+};
 
 export default function useCanvasContext() {
     const canvasRef = useRef<HTMLCanvasElement>(null);

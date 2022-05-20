@@ -48,4 +48,8 @@ export default class Vec {
     public distance() {
         return Math.sqrt(this.sqDist());
     }
+
+    public position(): Position {
+        return { x: this.x, y: this.y };
+    }
 }
