@@ -6,22 +6,31 @@ import { CanvasDrawingContext, ITool } from '../tools/ITool';
 export default function Circle(): ITool {
     return {
         onPress: (ctx: CanvasDrawingContext, pos: Position) => {
-            ctx.setDrawingElement(
-                new CircleElement(pos, 0, ctx.canvasContext.brush)
-            );
+            ctx.setCanvasContext((prev) => ({
+                ...prev,
+                drawingElement: new CircleElement(
+                    pos,
+                    0,
+                    ctx.canvasContext.brush
+                )
+            }));
         },
 
         onDrag: (ctx: CanvasDrawingContext, pos: Position) => {
-            ctx.setDrawingElement((prev) => {
-                const elem: CircleElement = prev as CircleElement;
-                return new CircleElement(
-                    elem.pos,
-                    Vec.FromPosition(elem.pos)
-                        .subtract(pos.x, pos.y)
-                        .distance(),
-                    elem.style,
-                    elem.highlight
-                );
+            ctx.setCanvasContext((prev) => {
+                const elem: CircleElement =
+                    prev.drawingElement as CircleElement;
+                return {
+                    ...prev,
+                    drawingElement: new CircleElement(
+                        elem.pos,
+                        Vec.FromPosition(elem.pos)
+                            .subtract(pos.x, pos.y)
+                            .distance(),
+                        elem.style,
+                        elem.highlight
+                    )
+                };
             });
         },
 

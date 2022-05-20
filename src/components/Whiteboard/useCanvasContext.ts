@@ -10,6 +10,7 @@ import {
     strokeColors,
     strokeThickness
 } from '@/components/Whiteboard/PaletteMenu';
+import { TextElement } from '@/components/Whiteboard/elements/TextElement';
 
 export interface CanvasContext {
     tool: ToolType;
@@ -17,6 +18,7 @@ export interface CanvasContext {
     camPos: Position;
     zoom: number;
     elements: IDrawElement[];
+    drawingElement: IDrawElement | undefined;
 }
 
 export interface CanvasEvents {
@@ -25,47 +27,40 @@ export interface CanvasEvents {
     onRelease: () => void;
 }
 
-export default function useCanvasContext(): {
-    canvasRef: React.RefObject<HTMLCanvasElement>;
-    canvasCtx: CanvasContext;
-    setCanvasCtx: React.Dispatch<React.SetStateAction<CanvasContext>>;
-    repaint: () => void;
-    events: CanvasEvents;
-} {
+export default function useCanvasContext() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [mousePos, setMousePos] = useState<Position>({ x: 0, y: 0 });
-    const [isPressed, setIsPressed] = useState<boolean>(false);
-    const [drawingElement, setDrawingElement] = useState<
-        IDrawElement | undefined
-    >(undefined);
+    const [isPressed, setIsPressed] = useState(false);
     const [canvasCtx, setCanvasCtx] = useState<CanvasContext>({
         tool: 'pencil',
         brush: {
             strokeStyle: strokeColors[strokeColors.length - 1],
-            fillStyle: fillColors[0],
+            fillStyle: fillColors[fillColors.length - 1],
             thickness: strokeThickness[1]
         },
         zoom: 1,
         camPos: { x: 0, y: 0 },
-        elements: []
+        elements: [],
+        drawingElement: undefined
     });
 
     const tool = getToolFromType(canvasCtx.tool);
 
+    const isDoTextInput = () => canvasCtx.drawingElement instanceof TextElement;
+
     const createEventObject = (): CanvasDrawingContext => ({
         canvasContext: canvasCtx,
         setCanvasContext: setCanvasCtx,
-        drawingElement,
-        setDrawingElement,
         get2dContext,
         appendDrawingElement
     });
 
     const appendDrawingElement = () => {
-        if (drawingElement) {
+        if (canvasCtx.drawingElement) {
+            const element: IDrawElement = canvasCtx.drawingElement;
             setCanvasCtx((prev) => ({
                 ...prev,
-                elements: prev.elements.concat(drawingElement)
+                elements: prev.elements.concat(element)
             }));
         }
     };
@@ -107,19 +102,20 @@ export default function useCanvasContext(): {
             element.draw(context);
         }
 
-        drawingElement?.draw(context);
+        canvasCtx.drawingElement?.draw(context);
         context.restore();
 
-        let shouldRenderCursor = true;
-        if (tool.shouldRenderCursor) {
-            shouldRenderCursor = tool.shouldRenderCursor();
-        }
-        if (shouldRenderCursor) {
+        if (tool.renderCursor) {
+            tool.renderCursor(createEventObject(), mousePos);
+        } else {
             drawCursor(context, canvasCtx.brush.thickness, mousePos);
         }
     };
 
     const onPress = (pos: Position) => {
+        if (isDoTextInput()) {
+            return;
+        }
         pos = camTransform(pos);
 
         if (tool.onPress) {
@@ -131,6 +127,9 @@ export default function useCanvasContext(): {
     const onMove = (pos: Position, delta: Position) => {
         if (mousePos !== pos) {
             setMousePos({ x: pos.x, y: pos.y });
+        }
+        if (isDoTextInput()) {
+            return;
         }
         pos = camTransform(pos);
 
@@ -145,10 +144,18 @@ export default function useCanvasContext(): {
 
     const onRelease = () => {
         if (isPressed) {
-            if (tool.onRelease) {
-                tool.onRelease(createEventObject(), drawingElement);
+            if (!isDoTextInput()) {
+                if (tool.onRelease) {
+                    tool.onRelease(
+                        createEventObject(),
+                        canvasCtx.drawingElement
+                    );
+                }
+                setCanvasCtx((prev) => ({
+                    ...prev,
+                    drawingElement: undefined
+                }));
             }
-            setDrawingElement(undefined);
             setIsPressed(false);
         }
     };
@@ -162,6 +169,7 @@ export default function useCanvasContext(): {
         canvasCtx,
         setCanvasCtx,
         repaint,
+        mousePos,
         events: { onPress, onMove, onRelease }
     };
 }

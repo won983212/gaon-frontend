@@ -5,13 +5,14 @@ import { CanvasDrawingContext, ITool } from './ITool';
 export default function Pencil(): ITool {
     return {
         onPress: (ctx: CanvasDrawingContext, pos: Position) => {
-            ctx.setDrawingElement(
-                new PathElement([pos], ctx.canvasContext.brush)
-            );
+            ctx.setCanvasContext((prev) => ({
+                ...prev,
+                drawingElement: new PathElement([pos], ctx.canvasContext.brush)
+            }));
         },
 
         onDrag: (ctx: CanvasDrawingContext, pos: Position) => {
-            const element = ctx.drawingElement as PathElement;
+            const element = ctx.canvasContext.drawingElement as PathElement;
             if (!element) {
                 return;
             }
@@ -30,13 +31,17 @@ export default function Pencil(): ITool {
 
             if (newPosHolder) {
                 const newPos: Position = newPosHolder;
-                ctx.setDrawingElement((prev) => {
-                    const pathElement: PathElement = prev as PathElement;
-                    return new PathElement(
-                        pathElement.path.concat(newPos),
-                        pathElement.style,
-                        pathElement.highlight
-                    );
+                ctx.setCanvasContext((prev) => {
+                    const pathElement: PathElement =
+                        prev.drawingElement as PathElement;
+                    return {
+                        ...prev,
+                        drawingElement: new PathElement(
+                            pathElement.path.concat(newPos),
+                            pathElement.style,
+                            pathElement.highlight
+                        )
+                    };
                 });
             }
         },

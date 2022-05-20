@@ -9,7 +9,9 @@ export class TextElement implements IDrawElement {
     public readonly text: string;
     public readonly style: BrushStyle;
     public readonly highlight: boolean;
-    private renderSize: Size; // 내부적으로만 사용됨. 불변성 유지할 필요 x
+
+    // 내부적으로만 사용됨. 불변성 유지할 필요 x
+    private textMetrics: TextMetrics | undefined;
 
     public constructor(
         pos: Position,
@@ -21,25 +23,32 @@ export class TextElement implements IDrawElement {
         this.text = text;
         this.style = style;
         this.highlight = highlight;
-        this.renderSize = { width: 0, height: 0 };
+        this.textMetrics = undefined;
+    }
+
+    private getRenderSize(): Size {
+        if (!this.textMetrics) {
+            return { width: 0, height: 0 };
+        }
+        return {
+            width: this.textMetrics.width,
+            height:
+                this.textMetrics.fontBoundingBoxAscent +
+                this.textMetrics.fontBoundingBoxDescent
+        };
     }
 
     public draw(context: CanvasRenderingContext2D): void {
-        const textMetrics = context.measureText(this.text);
-        this.renderSize = {
-            width: textMetrics.width,
-            height:
-                textMetrics.fontBoundingBoxAscent +
-                textMetrics.fontBoundingBoxDescent
-        };
+        this.textMetrics = context.measureText(this.text);
+        const renderSize = this.getRenderSize();
 
         if (this.highlight) {
             context.strokeStyle = '#cccccc';
             context.strokeRect(
                 this.pos.x,
-                this.pos.y,
-                this.renderSize.width,
-                this.renderSize.height
+                this.pos.y - this.textMetrics.fontBoundingBoxAscent,
+                renderSize.width,
+                renderSize.height
             );
         }
 
@@ -48,7 +57,14 @@ export class TextElement implements IDrawElement {
     }
 
     public isHit(pos: Position, radius: number): boolean {
-        return checkAABB(radius, pos, this.pos, this.renderSize);
+        let position = this.pos;
+        if (this.textMetrics) {
+            position = {
+                ...position,
+                y: position.y - this.textMetrics.fontBoundingBoxAscent
+            };
+        }
+        return checkAABB(radius, pos, position, this.getRenderSize());
     }
 
     public setHighlight(highlight: boolean): IDrawElement {

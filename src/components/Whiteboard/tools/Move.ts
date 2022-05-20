@@ -3,7 +3,7 @@ import { CanvasDrawingContext, ITool } from './ITool';
 
 export default function Move(): ITool {
     return {
-        shouldRenderCursor: () => false,
+        renderCursor: () => {},
 
         onDrag: (ctx: CanvasDrawingContext, pos: Position, delta: Position) => {
             ctx.setCanvasContext((prev) => ({

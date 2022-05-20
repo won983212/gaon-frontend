@@ -30,8 +30,8 @@ export class CircleElement implements IDrawElement {
         context.beginPath();
         context.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
         context.closePath();
-        context.stroke();
         context.fill();
+        context.stroke();
     }
 
     public isHit(pos: Position, radius: number): boolean {

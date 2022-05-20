@@ -17,8 +17,8 @@ export const WhiteboardBlock = styled.div`
 `;
 
 export const Seperator = styled.div`
-    border-left: 1px solid #dddddd;
-    margin: 0 4px;
+    border-top: 1px solid #dddddd;
+    margin: 4px 0;
 `;
 
 export const Toolbox = styled.ul`
@@ -26,13 +26,14 @@ export const Toolbox = styled.ul`
     padding: 4px;
     margin: 12px;
     display: flex;
+    flex-direction: column;
     list-style: none;
     border-radius: 8px;
     background-color: #efefef;
 
     & li {
         padding: 4px 4px 0 4px;
-        margin-right: 4px;
+        margin-bottom: 4px;
         border-radius: 8px;
         color: var(--primary-light);
 

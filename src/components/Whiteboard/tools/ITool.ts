@@ -13,17 +13,13 @@ import Text from './Text';
 export interface CanvasDrawingContext {
     canvasContext: CanvasContext;
     setCanvasContext: React.Dispatch<React.SetStateAction<CanvasContext>>;
-    drawingElement: IDrawElement | undefined;
-    setDrawingElement: React.Dispatch<
-        React.SetStateAction<IDrawElement | undefined>
-    >;
     get2dContext: () => CanvasRenderingContext2D | undefined;
     appendDrawingElement: () => void;
 }
 
 export interface ITool {
-    /** 마우스 포인터를 그림. undefined | true이면 포인터 render, false이면 render안함. */
-    shouldRenderCursor?: () => boolean;
+    /** 마우스 포인터를 그림. undefined이면 기본 포인터(원형) render */
+    renderCursor?: (ctx: CanvasDrawingContext, mousePos: Position) => void;
 
     /** 툴 타입을 리턴함 */
     getToolType: () => ToolType;

@@ -47,3 +47,25 @@ export function drawCursor(
 
     context.globalCompositeOperation = 'source-over';
 }
+
+export function drawTextCursor(
+    context: CanvasRenderingContext2D,
+    pos: Position
+) {
+    context.globalCompositeOperation = 'xor';
+    context.strokeStyle = 'black';
+    context.lineWidth = 1;
+    context.lineJoin = 'round';
+
+    context.beginPath();
+    context.moveTo(pos.x - 4, pos.y - 8);
+    context.lineTo(pos.x + 4, pos.y - 8);
+    context.moveTo(pos.x, pos.y - 8);
+    context.lineTo(pos.x, pos.y + 8);
+    context.moveTo(pos.x - 4, pos.y + 8);
+    context.lineTo(pos.x + 4, pos.y + 8);
+    context.stroke();
+    context.closePath();
+
+    context.globalCompositeOperation = 'source-over';
+}
