@@ -1,8 +1,8 @@
 import { Position } from '@/types';
 import { BrushStyle } from '../types';
-import { applyStyle } from '../RenderUtils';
+import { applyStyle } from '../utils/RenderUtils';
 import { IDrawElement } from './IDrawElement';
-import { checkHitLine } from '@/util/util';
+import { checkHitLine } from '@/components/Whiteboard/utils/CollisionDetectors';
 
 export class LineElement implements IDrawElement {
     public readonly pos1: Position;

@@ -1,6 +1,6 @@
 import { Position } from '@/types';
 import { BrushStyle } from '../types';
-import { applyStyle } from '../RenderUtils';
+import { applyStyle } from '../utils/RenderUtils';
 import Vec from '@/util/vec';
 import { IDrawElement } from './IDrawElement';
 

@@ -3,13 +3,13 @@ import { IDrawElement } from './elements/IDrawElement';
 import { BrushStyle, ToolType } from './types';
 import { Position } from '@/types';
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
-import { clearBoard, drawCursor } from './RenderUtils';
+import { clearBoard, drawCursor } from './utils/RenderUtils';
 import { CanvasDrawingContext } from './tools/ITool';
 import {
     fillColors,
     strokeColors,
     strokeThickness
-} from '@/components/Whiteboard/PaletteMenu';
+} from '@/components/Whiteboard/components/PaletteMenu';
 import { TextElement } from '@/components/Whiteboard/elements/TextElement';
 import Pencil from '@/components/Whiteboard/tools/Pencil';
 import Eraser from '@/components/Whiteboard/tools/Eraser';

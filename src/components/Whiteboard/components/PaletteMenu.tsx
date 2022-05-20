@@ -7,7 +7,7 @@ import {
     PaletteMenuFlexBox,
     SelectContainer,
     ThicknessButton
-} from './style';
+} from '../style';
 import { CanvasContext } from '@/components/Whiteboard/useCanvasContext';
 
 interface PaletteMenuProps {

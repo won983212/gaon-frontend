@@ -1,6 +1,6 @@
 import { CanvasDrawingContext, ITool, setDrawingElement } from './ITool';
 import { Position } from '@/types';
-import { drawTextCursor } from '@/components/Whiteboard/RenderUtils';
+import { drawTextCursor } from '@/components/Whiteboard/utils/RenderUtils';
 import { TextElement } from '@/components/Whiteboard/elements/TextElement';
 
 export default function Text(): ITool {

@@ -1,8 +1,8 @@
 import { Position, Size } from '@/types';
 import { BrushStyle } from '../types';
-import { applyStyle } from '../RenderUtils';
-import { checkHitAABB } from '@/util/util';
+import { applyStyle } from '../utils/RenderUtils';
 import { IDrawElement } from './IDrawElement';
+import { checkHitAABB } from '@/components/Whiteboard/utils/CollisionDetectors';
 
 export class RectangleElement implements IDrawElement {
     public readonly pos1: Position; // top-left point

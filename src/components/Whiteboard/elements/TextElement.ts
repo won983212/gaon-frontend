@@ -1,8 +1,8 @@
 import { Position, Size } from '@/types';
 import { BrushStyle } from '../types';
-import { applyStyle } from '../RenderUtils';
+import { applyStyle } from '../utils/RenderUtils';
 import { IDrawElement } from './IDrawElement';
-import { checkHitAABB } from '@/util/util';
+import { checkHitAABB } from '@/components/Whiteboard/utils/CollisionDetectors';
 
 export class TextElement implements IDrawElement {
     public readonly pos: Position; // top-left point

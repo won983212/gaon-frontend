@@ -17,13 +17,13 @@ import {
     Toolbox,
     WhiteboardBlock
 } from '@/components/Whiteboard/style';
-import CanvasBoard from '@/components/Whiteboard/CanvasBoard';
+import CanvasBoard from '@/components/Whiteboard/components/CanvasBoard';
 import useCanvasContext from '@/components/Whiteboard/useCanvasContext';
 import { ToolType } from '@/components/Whiteboard/types';
 import Modal, { Action } from '@/components/Modal';
-import ZoomMenu from '@/components/Whiteboard/ZoomMenu';
-import PaletteMenu from '@/components/Whiteboard/PaletteMenu';
-import TextInputMenu from '@/components/Whiteboard/TextInputMenu';
+import ZoomMenu from '@/components/Whiteboard/components/ZoomMenu';
+import PaletteMenu from '@/components/Whiteboard/components/PaletteMenu';
+import TextInputMenu from '@/components/Whiteboard/components/TextInputMenu';
 import { TextElement } from '@/components/Whiteboard/elements/TextElement';
 import { Position } from '@/types';
 

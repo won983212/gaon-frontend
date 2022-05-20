@@ -1,8 +1,8 @@
 import { Position } from '@/types';
 import { BrushStyle } from '../types';
-import { applyStyle } from '../RenderUtils';
+import { applyStyle } from '../utils/RenderUtils';
 import { IDrawElement } from './IDrawElement';
-import { checkHitCircle } from '@/util/util';
+import { checkHitCircle } from '@/components/Whiteboard/utils/CollisionDetectors';
 
 export class CircleElement implements IDrawElement {
     public readonly pos: Position; // center point
