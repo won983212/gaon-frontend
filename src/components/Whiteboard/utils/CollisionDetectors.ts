@@ -14,12 +14,18 @@ export function checkHitLine(
     const b = 2 * f.dot(d);
     const c = f.dot(f) - radius * radius;
 
-    let discriminant = b * b - 4 * a * c;
-    if (discriminant >= 0) {
-        discriminant = Math.sqrt(discriminant);
-        const t1 = (-b - discriminant) / (2 * a);
-        const t2 = (-b + discriminant) / (2 * a);
-        return (t1 >= 0 && t1 <= 1) || (t2 >= 0 && t2 <= 1);
+    // Line을 직선이라 가정했을 때
+    // D<0인 경우는 아얘 line이 circle과 닿지 않는 경우.
+    // D>=0이면 닿긴 닿음. t1, t2지점에서. 물론 0과 1사이여야
+    // 실제 line범위내에서 닿았다고 할 수 있음.
+    let D = b * b - 4 * a * c;
+    if (D >= 0) {
+        D = Math.sqrt(D);
+        const t1 = (-b - D) / (2 * a);
+        const t2 = (-b + D) / (2 * a);
+        return (
+            (t1 >= 0 && t1 <= 1) || (t2 >= 0 && t2 <= 1) || (t1 <= 0 && t2 >= 1)
+        );
     }
     return false;
 }
@@ -44,5 +50,5 @@ export function checkHitAABB(
     const innerY = slice(rectPos.y, rectPos.y + rectSize.height, pos.y);
     const dx = pos.x - innerX;
     const dy = pos.y - innerY;
-    return dx * dx + dy * dy < radius;
+    return dx * dx + dy * dy < radius * radius;
 }

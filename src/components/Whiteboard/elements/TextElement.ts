@@ -64,7 +64,7 @@ export class TextElement implements IDrawElement {
                 y: position.y - this.textMetrics.fontBoundingBoxAscent
             };
         }
-        return checkHitAABB(radius, pos, position, this.getRenderSize());
+        return checkHitAABB(pos, radius, position, this.getRenderSize());
     }
 
     public setHighlight(highlight: boolean): IDrawElement {

@@ -19,7 +19,13 @@ export default function Line(): ITool {
             );
         },
 
-        onRelease: (ctx: CanvasDrawingContext) => ctx.appendDrawingElement(),
+        onRelease: (ctx: CanvasDrawingContext) => {
+            const line: LineElement = ctx.canvasContext
+                .drawingElement as LineElement;
+            if (line && line.pos1 !== line.pos2) {
+                ctx.appendDrawingElement();
+            }
+        },
 
         getToolType: () => 'line'
     };

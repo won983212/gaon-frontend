@@ -1,8 +1,8 @@
 import { Position } from '@/types';
 import { BrushStyle } from '../types';
 import { applyStyle } from '../utils/RenderUtils';
-import Vec from '@/util/vec';
 import { IDrawElement } from './IDrawElement';
+import { checkHitLine } from '@/components/Whiteboard/utils/CollisionDetectors';
 
 /** 드래그해서 그린 하나의 선. */
 export class PathElement implements IDrawElement {
@@ -37,20 +37,9 @@ export class PathElement implements IDrawElement {
         }
     }
 
-    // TODO 알고리즘이 좀 이상하네?
     public isHit(pos: Position, radius: number): boolean {
         for (let i = 0; i < this.path.length - 1; i++) {
-            let AB = new Vec(
-                this.path[i + 1].x - this.path[i].x,
-                this.path[i + 1].y - this.path[i].y
-            );
-            let AP = new Vec(pos.x - this.path[i].x, pos.y - this.path[i].y);
-
-            AB.scale(AB.dot(AP) / AP.distance());
-            AB.subtractVec(AP);
-
-            let minDist = radius + this.style.thickness / 2;
-            if (AB.sqDist() < minDist * minDist) {
+            if (checkHitLine(pos, radius, this.path[i], this.path[i + 1])) {
                 return true;
             }
         }
