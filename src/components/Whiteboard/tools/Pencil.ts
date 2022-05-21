@@ -7,7 +7,7 @@ export default function Pencil(): ITool {
         onPress: (ctx: CanvasDrawingContext, pos: Position) => {
             setDrawingElement(
                 ctx,
-                new PathElement([pos], ctx.canvasContext.brush)
+                new PathElement([pos, pos], ctx.canvasContext.brush)
             );
         },
 
