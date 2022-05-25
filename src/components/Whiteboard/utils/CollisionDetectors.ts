@@ -9,6 +9,10 @@ export function checkHitLine(
     lineEnd: Position
 ) {
     const d = new Vec(lineEnd.x - lineStart.x, lineEnd.y - lineStart.y);
+    if (d.sqDist() === 0) {
+        return checkHitCircle(pos, lineStart, radius);
+    }
+
     const f = new Vec(lineStart.x - pos.x, lineStart.y - pos.y);
     const a = d.dot(d);
     const b = 2 * f.dot(d);

@@ -87,7 +87,7 @@ export const ThicknessButton = styled.div<{
     align-items: center;
     justify-content: center;
     background-color: #efefef;
-    border-radius: 4px;
+    border-radius: 50%;
     margin-right: 12px;
     border: ${(props) => (props.selected ? '2px' : '0px')} solid
         rgba(100, 100, 100, 0.7);

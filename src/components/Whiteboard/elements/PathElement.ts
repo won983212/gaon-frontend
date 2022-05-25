@@ -49,6 +49,9 @@ export class PathElement implements IDrawElement {
                 this.path[i + 1].x,
                 this.path[i + 1].y
             );
+            /*for (let i = 1; i < this.path.length; i++) {
+                context.lineTo(this.path[i].x, this.path[i].y);
+            }*/
             context.stroke();
             context.closePath();
         }
