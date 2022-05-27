@@ -1,7 +1,6 @@
 import io, { Socket } from 'socket.io-client';
 import { useCallback } from 'react';
 
-const webSocketUrl = 'http://localhost:3095';
 const connectedSockets: { [key: string]: Socket } = {};
 
 /**
@@ -10,21 +9,25 @@ const connectedSockets: { [key: string]: Socket } = {};
  * @param path Websocket endpoint
  * @return [socket, disconnectFunc]
  */
-const useSocket = (path: string): [Socket | undefined, () => void] => {
+const useSocket = (path: string): [Socket, () => void] => {
     const disconnect = useCallback(() => {
         if (path) {
             connectedSockets[path].disconnect();
         }
         delete connectedSockets[path];
     }, [path]);
+
     if (!path) {
-        return [undefined, disconnect];
+        throw new Error('Invaild path');
     }
+
     if (!connectedSockets[path]) {
-        connectedSockets[path] = io(`${webSocketUrl}/${path}`, {
+        connectedSockets[path] = io(path, {
+            path: '/ws/socket.io',
             transports: ['websocket']
         });
     }
+
     return [connectedSockets[path], disconnect];
 };
 

@@ -40,7 +40,7 @@ function Login() {
     );
 
     if (user) {
-        return <Navigate replace to="/workspace/channel" />;
+        return <Navigate replace to="/workspace/0/channel" />;
     }
 
     if (isLoading) {

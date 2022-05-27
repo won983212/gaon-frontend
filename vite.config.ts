@@ -15,6 +15,12 @@ export default defineConfig(({ mode }) => ({
                           target: 'http://localhost:4000',
                           changeOrigin: true,
                           rewrite: (path) => path.replace(/^\/api/, '')
+                      },
+                      '/ws': {
+                          target: 'ws://localhost:5000',
+                          changeOrigin: true,
+                          ws: true,
+                          rewrite: (path) => path.replace(/^\/ws/, '')
                       }
                   }
               }

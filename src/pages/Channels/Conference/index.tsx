@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import Modal, { Action } from '@/components/Modal';
 import useChannel from '@/hooks/useChannel';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import loadable from '@loadable/component';
 import useConferenceTabIndex from '@/hooks/useConferenceTabIndex';
 
@@ -10,6 +10,7 @@ const TabBoardShare = loadable(() => import('./TabBoardShare'));
 
 function Conference() {
     const navigate = useNavigate();
+    const { workspaceId } = useParams();
     const { data: channelInfo } = useChannel();
     const [showEnterDialog, setShowEnterDialog] = useState(true);
     const { data: conferenceTabIndex } = useConferenceTabIndex();
@@ -19,10 +20,10 @@ function Conference() {
             if (action === 'yes') {
                 setShowEnterDialog(false);
             } else {
-                navigate('/workspace/channel');
+                navigate(`/workspace/${workspaceId}/channel`);
             }
         },
-        [navigate]
+        [navigate, workspaceId]
     );
 
     if (showEnterDialog) {

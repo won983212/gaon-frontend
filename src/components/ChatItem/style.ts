@@ -8,11 +8,9 @@ export const ChatAvatarImg = styled.img`
     overflow: hidden;
     flex: 0 0 auto;
     border-radius: 100%;
-    translate: translate(50, 50);
     left: -3em;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
-    -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
@@ -25,7 +23,6 @@ export const ChatBorderDiv = styled.div`
     flex-direction: row;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
-    -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
@@ -54,7 +51,6 @@ export const ChatImageThumbnail = styled.img`
     width: 300px;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
-    -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
@@ -64,12 +60,10 @@ export const ChatImageThumbnail = styled.img`
 export const ChatFileBox = styled.div`
     display: flex;
     flex-direction: row;
-    border: 2px solid #000;
-    border-style: dotted;
+    border: 2px dotted #000;
     width: fit-content;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
-    -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
@@ -116,7 +110,6 @@ export const NewChatBorder = styled.div`
     flex-direction: row;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
-    -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;

@@ -18,6 +18,12 @@ export interface IFileNode {
     files?: IFileNode[];
 }
 
+export interface IMessage {
+    sender: string;
+    message: string;
+    date: number;
+}
+
 export type IStatus = 'online' | 'offline' | 'missed';
 
 export interface IUser {

@@ -1,14 +1,21 @@
 import ChatInput from '@/components/ChatInput';
 import { ChatArea } from './style';
-import { ChatAvatar, ChatBorder, ChatPlainText } from '@/components/ChatItem';
+import { ChatAvatar, ChatPlainText } from '@/components/ChatItem';
 import { ChatList } from '@/components/ChatItem/style';
 import gravatar from 'gravatar';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ChannelHeader } from '@/layouts/Workspace/style';
 import useChannel from '@/hooks/useChannel';
+import useSocket from '@/hooks/useSocket';
+import { IMessage } from '@/types';
+import { useParams } from 'react-router';
+import { unixToDate } from '@/util/date';
 
 function Chatting() {
+    const { workspaceId } = useParams();
+    const [socket] = useSocket(`/workspace-${workspaceId}`);
     const { data: channelInfo } = useChannel();
+    const [chatMessages, setChatMessages] = useState<IMessage[]>([]);
     const [chatInput, setChatInput] = useState('');
     const avatar = gravatar.url('Jo', {
         s: '36px',
@@ -23,24 +30,39 @@ function Chatting() {
     );
 
     const onChatSubmit = useCallback(() => {
+        socket.emit('message', chatInput);
         setChatInput('');
-    }, []);
+    }, [chatInput, socket]);
+
+    const onMessage = useCallback(
+        (message: IMessage) => {
+            setChatMessages(chatMessages.concat(message));
+        },
+        [chatMessages]
+    );
+
+    useEffect(() => {
+        socket.on('message', onMessage);
+        return () => {
+            socket.off('message', onMessage);
+        };
+    }, [socket, onMessage]);
 
     return (
         <>
             <ChannelHeader>{channelInfo?.name}</ChannelHeader>
             <ChatArea>
                 <ChatList>
-                    <ChatAvatar src={avatar} userName="Jo" date="2022-04-25" />
-                    <ChatPlainText>안녕하세요.</ChatPlainText>
-                    <ChatPlainText>채팅 테스트입니다.</ChatPlainText>
-                    <ChatPlainText>
-                        간격이 잘 유지되는 모습이 보입니다.
-                    </ChatPlainText>
-                    <ChatPlainText>다음은 날짜 구분선입니다.</ChatPlainText>
-                    <ChatBorder>2022-04-25</ChatBorder>
-                    <ChatAvatar src={avatar} userName="Jo" date="2022-04-25" />
-                    <ChatPlainText>안녕히 계세요~</ChatPlainText>
+                    {chatMessages.map((message, idx) => (
+                        <div key={idx}>
+                            <ChatAvatar
+                                src={avatar}
+                                userName={message.sender}
+                                date={unixToDate(message.date)}
+                            />
+                            <ChatPlainText>{message.message}</ChatPlainText>
+                        </div>
+                    ))}
                 </ChatList>
                 <ChatInput
                     text={chatInput}

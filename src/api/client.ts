@@ -1,13 +1,13 @@
-import axios, { AxiosRequestHeaders } from 'axios';
+import axios, { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import useSWR from 'swr';
-import apiconfig from '@/apiconfig.json';
+import apiconfig from '@/config.json';
 
 export function useHTTPGetSWR<T = any>(
     url?: string,
     headers?: AxiosRequestHeaders
 ) {
     return useSWR(
-        url,
+        url && apiUrl(url),
         (url) =>
             axios
                 .get<T>(url, { headers: headers, withCredentials: true })
@@ -25,7 +25,10 @@ export function post<T = void>(
     data?: any,
     headers?: AxiosRequestHeaders
 ) {
-    return axios.post<T>(url, data, {
+    if (!url) {
+        return new Promise<AxiosResponse<T>>(() => {});
+    }
+    return axios.post<T>(apiUrl(url), data, {
         headers: headers,
         withCredentials: true
     });
