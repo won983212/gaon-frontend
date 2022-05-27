@@ -25,9 +25,14 @@ export interface IUser {
     username: string;
     name: string;
     email: string;
-    avatarUrl: string;
     status: IStatus;
     job: string;
+}
+
+export interface IUserIdentifier {
+    id: number;
+    userId: string;
+    token: string;
 }
 
 export interface Position {

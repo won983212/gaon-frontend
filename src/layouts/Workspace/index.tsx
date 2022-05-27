@@ -1,4 +1,4 @@
-import { doLogout, useUsersSWR } from '@/api/auth';
+import { doLogout } from '@/api/auth';
 import { useChannelsSWR } from '@/api/workspace';
 import ChannelList from '@/components/ChannelList';
 import Menu from '@/components/Menu';
@@ -23,6 +23,7 @@ import { MdMenu } from 'react-icons/all';
 import Button from '@/components/Button';
 import useChannel from '@/hooks/useChannel';
 import useConferenceTabIndex from '@/hooks/useConferenceTabIndex';
+import useUser from '@/hooks/useUser';
 
 interface WorkspaceProps {
     children: React.ReactNode;
@@ -31,15 +32,15 @@ interface WorkspaceProps {
 function Workspace({ children }: WorkspaceProps) {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const { data: channelInfo } = useChannel();
-    const { data: userData, mutate } = useUsersSWR();
+    const { user: userData, identifier, setCookie } = useUser();
     const { data: channelCategories } = useChannelsSWR(0);
     const { mutate: setConferenceTabIndex } = useConferenceTabIndex();
 
     const onLogout = useCallback(() => {
-        doLogout().then(() => {
-            mutate(false, false);
+        doLogout(identifier?.token).then(() => {
+            setCookie(undefined);
         });
-    }, [mutate]);
+    }, [identifier?.token, setCookie]);
 
     const onCloseProfileMenu = useCallback(() => {
         setShowProfileMenu(false);

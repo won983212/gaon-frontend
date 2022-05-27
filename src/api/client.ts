@@ -1,19 +1,32 @@
-import axios from 'axios';
+import axios, { AxiosRequestHeaders } from 'axios';
 import useSWR from 'swr';
+import apiconfig from '@/apiconfig.json';
 
-export function useCommonSWR<T = any>(url: string) {
+export function useHTTPGetSWR<T = any>(
+    url?: string,
+    headers?: AxiosRequestHeaders
+) {
     return useSWR(
         url,
         (url) =>
             axios
-                .get<T>(url, { withCredentials: true })
+                .get<T>(url, { headers: headers, withCredentials: true })
                 .then((response) => response.data),
         { dedupingInterval: 30000 }
     );
 }
 
-export function post<T = void>(url: string, data?: any) {
+export function apiUrl(path: string) {
+    return apiconfig.host + path;
+}
+
+export function post<T = void>(
+    url: string,
+    data?: any,
+    headers?: AxiosRequestHeaders
+) {
     return axios.post<T>(url, data, {
+        headers: headers,
         withCredentials: true
     });
 }

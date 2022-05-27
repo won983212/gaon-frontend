@@ -1,4 +1,4 @@
-import { IChannel, IChannelGroup, IFileNode, IUser } from '@/types';
+import { IChannel, IChannelGroup, IFileNode } from '@/types';
 import { rest } from 'msw';
 
 const dummyChannels: IChannelGroup[] = [
@@ -70,7 +70,7 @@ const dummyFiles: IFileNode[] = [
     { name: 'README.md' }
 ];
 
-const authHandlers = [
+/*const authHandlers = [
     rest.get<IUser>('/api/user/me', async (req, res, ctx) => {
         return res(
             ctx.json<IUser>({
@@ -108,17 +108,16 @@ const authHandlers = [
             })
         );
     })
-];
+];*/
 
 const workspaceHandlers = [
     rest.get('/api/workspace/:workspaceId/channels', async (req, res, ctx) => {
-        const { workspaceId } = req.params;
         return res(ctx.json<IChannelGroup[]>(dummyChannels));
     }),
     rest.get(
         '/api/workspace/:workspaceId/channels/:channelId',
         async (req, res, ctx) => {
-            const { workspaceId, channelId } = req.params;
+            const { channelId } = req.params;
             let channel;
             for (let group of dummyChannels) {
                 channel = group.channels.find(
@@ -132,9 +131,9 @@ const workspaceHandlers = [
         }
     ),
     rest.get('/api/workspace/:workspaceId/files', async (req, res, ctx) => {
-        const { workspaceId } = req.params;
         return res(ctx.json<IFileNode[]>(dummyFiles));
     })
 ];
 
-export const handlers = authHandlers.concat(workspaceHandlers);
+//export const handlers = authHandlers.concat(workspaceHandlers);
+export const handlers = workspaceHandlers;

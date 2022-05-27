@@ -1,18 +1,40 @@
-import { IUser } from '@/types';
-import { post, useCommonSWR } from './client';
+import { IUser, IUserIdentifier } from '@/types';
+import { apiUrl, post, useHTTPGetSWR } from './client';
 
-// useCommonSWR 사용시, use로 시작하는 네이밍
+export const useUsersSWR = (userId: string, token: string) =>
+    useHTTPGetSWR<IUser | undefined>(
+        userId && token ? apiUrl('/user/' + userId) : undefined,
+        {
+            token: token
+        }
+    );
 
-export const useUsersSWR = () => useCommonSWR<IUser | false>('/api/user/me');
+export const doLogout = (token: string) =>
+    post<'ok'>(
+        token && apiUrl('/auth/logout'),
+        {},
+        { 'x-access-token': token }
+    );
 
-export const doLogout = () => post<'ok'>('/api/auth/logout');
-
-export const doLogin = (email: string, password: string) =>
-    post<IUser>('/api/auth/login', { email, password });
-
-export const doSignUp = (email: string, nickname: string, password: string) =>
-    post<'ok'>('/api/user', {
-        email,
-        nickname,
+export const doLogin = (username: string, password: string) =>
+    post<IUserIdentifier>(apiUrl('/auth/login'), {
+        userId: username,
         password
+    });
+
+export const doSignUp = (
+    id: string,
+    password: string,
+    nickname: string,
+    email: string,
+    name?: string,
+    birth?: number
+) =>
+    post<'ok'>(apiUrl('/user'), {
+        userId: id,
+        username: nickname,
+        password,
+        email,
+        name,
+        birth
     });

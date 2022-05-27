@@ -1,5 +1,5 @@
 import { IFileNode } from '@/types';
-import { useCommonSWR } from './client';
+import { apiUrl, useHTTPGetSWR } from './client';
 
 export const useFilesSWR = (workspaceId: number) =>
-    useCommonSWR<IFileNode[]>(`/api/workspace/${workspaceId}/files`);
+    useHTTPGetSWR<IFileNode[]>(apiUrl(`/workspace/${workspaceId}/files`));

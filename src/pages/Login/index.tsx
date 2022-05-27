@@ -1,4 +1,4 @@
-import { doLogin, useUsersSWR } from '@/api/auth';
+import { doLogin } from '@/api/auth';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import useInput from '@/hooks/useInput';
@@ -13,33 +13,38 @@ import {
     Label,
     LinkContainer
 } from './style';
+import useUser from '@/hooks/useUser';
 
 function Login() {
-    const { data, mutate } = useUsersSWR();
-    const [logInError, setLogInError] = useState(false);
-    const [email, onChangeEmail] = useInput('');
+    const { user, isLoading, setCookie } = useUser();
+    const [logInError, setLogInError] = useState<string | undefined>(undefined);
+    const [id, onChangeID] = useInput('');
     const [password, onChangePassword] = useInput('');
+
     const onSubmit = useCallback(
         (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-            setLogInError(false);
-            doLogin(email, password)
+            setLogInError(undefined);
+            doLogin(id, password)
                 .then((response) => {
-                    mutate(response.data, false);
+                    setCookie({
+                        userId: response.data.userId,
+                        token: response.data.token
+                    });
                 })
                 .catch((error) => {
-                    setLogInError(error.response.status === 401);
+                    setLogInError(error.response.data.message);
                 });
         },
-        [email, password, mutate]
+        [id, password, setCookie]
     );
 
-    if (data === undefined) {
-        return <div>Loading...</div>;
+    if (user) {
+        return <Navigate replace to="/workspace/channel" />;
     }
 
-    if (data) {
-        return <Navigate replace to="/workspace/channel" />;
+    if (isLoading) {
+        return <p>Loading...</p>;
     }
 
     return (
@@ -47,15 +52,15 @@ function Login() {
             <FormWrapper>
                 <Header>Gaon</Header>
                 <Form onSubmit={onSubmit}>
-                    <Label id="email-label">
-                        <span>이메일 주소</span>
+                    <Label id="id-label">
+                        <span>아이디</span>
                         <div>
                             <Input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={email}
-                                onChange={onChangeEmail}
+                                type="text"
+                                id="id"
+                                name="id"
+                                value={id}
+                                onChange={onChangeID}
                             />
                         </div>
                     </Label>
@@ -70,11 +75,7 @@ function Login() {
                                 onChange={onChangePassword}
                             />
                         </div>
-                        {logInError && (
-                            <Error>
-                                이메일과 비밀번호 조합이 일치하지 않습니다.
-                            </Error>
-                        )}
+                        {logInError && <Error>{logInError}</Error>}
                     </Label>
 
                     <LinkContainer>
