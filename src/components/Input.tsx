@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export default styled.input`
+    font-family: Helvetica Neue, Helvetica, Segoe UI, Tahoma, Arial, sans-serif;
     border-radius: 4px;
     --saf-0: rgba(var(--sk_foreground_high_solid, 134, 134, 134), 1);
     border: 1px solid var(--saf-0);
