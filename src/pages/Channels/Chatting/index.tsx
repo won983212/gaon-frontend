@@ -11,8 +11,9 @@ import { IMessage } from '@/types';
 import { useParams } from 'react-router';
 import { unixToDate } from '@/util/date';
 
+// TODO Login session cookie is not handled.
 function Chatting() {
-    const { workspaceId } = useParams();
+    const { workspaceId, channelId } = useParams();
     const [socket] = useSocket(`/workspace-${workspaceId}`);
     const { data: channelInfo } = useChannel();
     const [chatMessages, setChatMessages] = useState<IMessage[]>([]);
@@ -30,8 +31,10 @@ function Chatting() {
     );
 
     const onChatSubmit = useCallback(() => {
-        socket.emit('message', chatInput);
-        setChatInput('');
+        if (chatInput) {
+            socket.emit('message', chatInput);
+            setChatInput('');
+        }
     }, [chatInput, socket]);
 
     const onMessage = useCallback(
@@ -47,6 +50,13 @@ function Chatting() {
             socket.off('message', onMessage);
         };
     }, [socket, onMessage]);
+
+    useEffect(() => {
+        socket.emit('select-messages', channelId, (messages: IMessage[]) => {
+            setChatMessages(messages);
+        });
+        setChatMessages([]);
+    }, [channelId, socket]);
 
     return (
         <>
