@@ -1,6 +1,6 @@
 import React from 'react';
 import { useFilesSWR } from '@/api/conference';
-import useChannel from '@/hooks/useChannel';
+import useRoom from '@/hooks/useRoom';
 import {
     BottomMenuBar,
     ContentArea,
@@ -17,7 +17,7 @@ import Terminal from '@/components/Terminal';
 
 export default function TabCodeShare() {
     const { data: files } = useFilesSWR(0);
-    const { data: channelInfo } = useChannel();
+    const { channelInfo } = useRoom();
 
     if (!files) {
         return null;

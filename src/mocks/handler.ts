@@ -114,22 +114,19 @@ const workspaceHandlers = [
     rest.get('/api/workspace/:workspaceId/channels', async (req, res, ctx) => {
         return res(ctx.json<IChannelGroup[]>(dummyChannels));
     }),
-    rest.get(
-        '/api/workspace/:workspaceId/channels/:channelId',
-        async (req, res, ctx) => {
-            const { channelId } = req.params;
-            let channel;
-            for (let group of dummyChannels) {
-                channel = group.channels.find(
-                    (channel) => channel.id === +channelId
-                );
-                if (channel !== undefined) {
-                    break;
-                }
+    rest.get('/api/channels/:channelId', async (req, res, ctx) => {
+        const { channelId } = req.params;
+        let channel;
+        for (let group of dummyChannels) {
+            channel = group.channels.find(
+                (channel) => channel.id === +channelId
+            );
+            if (channel !== undefined) {
+                break;
             }
-            return res(ctx.json<IChannel | undefined>(channel));
         }
-    ),
+        return res(ctx.json<IChannel | undefined>(channel));
+    }),
     rest.get('/api/workspace/:workspaceId/files', async (req, res, ctx) => {
         return res(ctx.json<IFileNode[]>(dummyFiles));
     })

@@ -6,13 +6,13 @@ import {
     InnerContent,
     SideMenuBar
 } from '@/pages/Channels/Conference/style';
-import useChannel from '@/hooks/useChannel';
+import useRoom from '@/hooks/useRoom';
 import TabContainer from '@/components/TabContainer';
 import UserList from '@/components/UserList';
 import Whiteboard from '@/components/Whiteboard';
 
 export default function TabCodeShare() {
-    const { data: channelInfo } = useChannel();
+    const { channelInfo } = useRoom();
     return (
         <FlexLayout>
             <ChannelHeader>{channelInfo?.name}</ChannelHeader>

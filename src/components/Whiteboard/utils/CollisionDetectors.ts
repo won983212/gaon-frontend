@@ -1,6 +1,6 @@
 import { Position, Size } from '@/types';
 import Vec from '@/util/vec';
-import { slice } from '@/util/util';
+import { slice } from '@/util/math';
 
 export function checkHitLine(
     pos: Position,

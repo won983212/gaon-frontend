@@ -5,7 +5,7 @@ import { ChatList } from '@/components/ChatItem/style';
 import gravatar from 'gravatar';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ChannelHeader } from '@/layouts/Workspace/style';
-import useChannel from '@/hooks/useChannel';
+import useRoom from '@/hooks/useRoom';
 import useSocket from '@/hooks/useSocket';
 import { IMessage } from '@/types';
 import { useParams } from 'react-router';
@@ -13,15 +13,11 @@ import { unixToDate } from '@/util/date';
 
 // TODO Login session cookie is not handled.
 function Chatting() {
-    const { workspaceId, channelId } = useParams();
-    const [socket] = useSocket(`/workspace-${workspaceId}`);
-    const { data: channelInfo } = useChannel();
+    const { channelId } = useParams();
+    const { channelInfo, workspaceId } = useRoom();
+    const [socket] = useSocket(workspaceId);
     const [chatMessages, setChatMessages] = useState<IMessage[]>([]);
     const [chatInput, setChatInput] = useState('');
-    const avatar = gravatar.url('Jo', {
-        s: '36px',
-        d: 'retro'
-    });
 
     const onChangeText = useCallback(
         (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -66,7 +62,10 @@ function Chatting() {
                     {chatMessages.map((message, idx) => (
                         <div key={idx}>
                             <ChatAvatar
-                                src={avatar}
+                                src={gravatar.url(message.sender, {
+                                    s: '36px',
+                                    d: 'retro'
+                                })}
                                 userName={message.sender}
                                 date={unixToDate(message.date)}
                             />

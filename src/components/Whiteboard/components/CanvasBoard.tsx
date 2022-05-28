@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import autosize from 'autosize';
-import { toCanvasCoord } from '@/util/util';
+import { toCanvasCoord } from '@/util/math';
 import { CanvasEvents } from '@/components/Whiteboard/useCanvasContext';
 
 interface CanvasBoardProps {

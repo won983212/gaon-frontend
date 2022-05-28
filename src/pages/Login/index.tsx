@@ -14,9 +14,11 @@ import {
     LinkContainer
 } from './style';
 import useUser from '@/hooks/useUser';
+import useRoom from '@/hooks/useRoom';
 
 function Login() {
     const { user, isLoading, setCookie } = useUser();
+    const { setWorkspaceId } = useRoom();
     const [logInError, setLogInError] = useState<string | undefined>(undefined);
     const [id, onChangeID] = useInput('');
     const [password, onChangePassword] = useInput('');
@@ -40,7 +42,8 @@ function Login() {
     );
 
     if (user) {
-        return <Navigate replace to="/workspace/0/channel" />;
+        setWorkspaceId(0); // TODO set as default workspace
+        return <Navigate replace to="/workspace/channel" />;
     }
 
     if (isLoading) {

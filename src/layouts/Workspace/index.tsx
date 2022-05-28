@@ -21,7 +21,7 @@ import {
 } from './style';
 import { MdMenu } from 'react-icons/all';
 import Button from '@/components/Button';
-import useChannel from '@/hooks/useChannel';
+import useRoom from '@/hooks/useRoom';
 import useConferenceTabIndex from '@/hooks/useConferenceTabIndex';
 import useUser from '@/hooks/useUser';
 
@@ -31,7 +31,7 @@ interface WorkspaceProps {
 
 function Workspace({ children }: WorkspaceProps) {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
-    const { data: channelInfo } = useChannel();
+    const { channelInfo } = useRoom();
     const { user: userData, identifier, setCookie } = useUser();
     const { data: channelCategories } = useChannelsSWR(0);
     const { mutate: setConferenceTabIndex } = useConferenceTabIndex();
