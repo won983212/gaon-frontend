@@ -8,7 +8,7 @@ import {
     SelectContainer,
     ThicknessButton
 } from '../style';
-import { CanvasContext } from '@/components/Whiteboard/useCanvasContext';
+import { CanvasContext } from '@/components/Whiteboard/types';
 
 interface PaletteMenuProps {
     open: boolean;

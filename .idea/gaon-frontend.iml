@@ -11,5 +11,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="@types/react" level="application" />
     <orderEntry type="library" name="@types/react-dom" level="application" />
+    <orderEntry type="module" module-name="gaon-interaction" />
+    <orderEntry type="module" module-name="gaon-backend" />
   </component>
 </module>

@@ -1,25 +1,23 @@
 import { Position } from '@/types';
 import { BrushStyle } from '../types';
 import { applyStyle } from '../utils/RenderUtils';
-import { IDrawElement } from './IDrawElement';
+import { AbstractDrawElement } from './AbstractDrawElement';
 import { checkHitCircle } from '@/components/Whiteboard/utils/CollisionDetectors';
 
-export class CircleElement implements IDrawElement {
+export class CircleElement extends AbstractDrawElement {
     public readonly pos: Position; // center point
     public readonly radius: number;
-    public readonly style: BrushStyle;
-    public readonly highlight: boolean;
 
     public constructor(
+        id: string,
         pos: Position,
         radius: number,
         style: BrushStyle,
         highlight: boolean = false
     ) {
+        super(id, style, highlight);
         this.pos = pos;
         this.radius = radius;
-        this.style = style;
-        this.highlight = highlight;
     }
 
     public draw(context: CanvasRenderingContext2D): void {
@@ -39,10 +37,16 @@ export class CircleElement implements IDrawElement {
         return checkHitCircle(pos, this.pos, radius + this.radius);
     }
 
-    public setHighlight(highlight: boolean): IDrawElement {
+    public newHighlight(highlight: boolean): AbstractDrawElement {
         if (this.highlight === highlight) {
             return this;
         }
-        return new CircleElement(this.pos, this.radius, this.style, highlight);
+        return new CircleElement(
+            this.id,
+            this.pos,
+            this.radius,
+            this.style,
+            highlight
+        );
     }
 }

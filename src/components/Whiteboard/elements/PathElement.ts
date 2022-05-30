@@ -1,23 +1,21 @@
 import { Position } from '@/types';
 import { BrushStyle } from '../types';
 import { applyStyle } from '../utils/RenderUtils';
-import { IDrawElement } from './IDrawElement';
+import { AbstractDrawElement, ElementIdentifier } from './AbstractDrawElement';
 import { checkHitLine } from '@/components/Whiteboard/utils/CollisionDetectors';
 
 /** 드래그해서 그린 하나의 선. */
-export class PathElement implements IDrawElement {
+export class PathElement extends AbstractDrawElement {
     public readonly path: Position[];
-    public readonly style: BrushStyle;
-    public readonly highlight: boolean;
 
     public constructor(
+        id: ElementIdentifier,
         path: Position[],
         style: BrushStyle,
         highlight: boolean = false
     ) {
+        super(id, style, highlight);
         this.path = path;
-        this.style = style;
-        this.highlight = highlight;
     }
 
     public draw(context: CanvasRenderingContext2D): void {
@@ -66,10 +64,10 @@ export class PathElement implements IDrawElement {
         return false;
     }
 
-    public setHighlight(highlight: boolean): IDrawElement {
+    public newHighlight(highlight: boolean): AbstractDrawElement {
         if (this.highlight === highlight) {
             return this;
         }
-        return new PathElement(this.path, this.style, highlight);
+        return new PathElement(this.id, this.path, this.style, highlight);
     }
 }

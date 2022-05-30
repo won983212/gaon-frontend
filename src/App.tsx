@@ -14,8 +14,10 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="workspace" element={<Channels />}>
-                    <Route path="channel" element={<Channels />}>
-                        <Route path=":channelId" element={<Channels />} />
+                    <Route path=":workspaceId" element={<Channels />}>
+                        <Route path="channel" element={<Channels />}>
+                            <Route path=":channelId" element={<Channels />} />
+                        </Route>
                     </Route>
                 </Route>
             </Routes>

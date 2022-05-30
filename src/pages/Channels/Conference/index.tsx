@@ -10,7 +10,7 @@ const TabBoardShare = loadable(() => import('./TabBoardShare'));
 
 function Conference() {
     const navigate = useNavigate();
-    const { channelInfo } = useRoom();
+    const { channelInfo, workspaceId } = useRoom();
     const [showEnterDialog, setShowEnterDialog] = useState(true);
     const { data: conferenceTabIndex } = useConferenceTabIndex();
 
@@ -19,10 +19,10 @@ function Conference() {
             if (action === 'yes') {
                 setShowEnterDialog(false);
             } else {
-                navigate(`/workspace/channel`);
+                navigate(`/workspace/${workspaceId}/channel`);
             }
         },
-        [navigate]
+        [navigate, workspaceId]
     );
 
     if (showEnterDialog) {

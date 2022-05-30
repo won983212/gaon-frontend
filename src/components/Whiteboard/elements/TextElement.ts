@@ -1,28 +1,26 @@
 import { Position, Size } from '@/types';
 import { BrushStyle } from '../types';
 import { applyStyle } from '../utils/RenderUtils';
-import { IDrawElement } from './IDrawElement';
+import { AbstractDrawElement, ElementIdentifier } from './AbstractDrawElement';
 import { checkHitAABB } from '@/components/Whiteboard/utils/CollisionDetectors';
 
-export class TextElement implements IDrawElement {
+export class TextElement extends AbstractDrawElement {
     public readonly pos: Position; // top-left point
     public readonly text: string;
-    public readonly style: BrushStyle;
-    public readonly highlight: boolean;
 
     // 내부적으로만 사용됨. 불변성 유지할 필요 x
     private textMetrics: TextMetrics | undefined;
 
     public constructor(
+        id: ElementIdentifier,
         pos: Position,
         text: string,
         style: BrushStyle,
         highlight: boolean = false
     ) {
+        super(id, style, highlight);
         this.pos = pos;
         this.text = text;
-        this.style = style;
-        this.highlight = highlight;
         this.textMetrics = undefined;
     }
 
@@ -67,10 +65,16 @@ export class TextElement implements IDrawElement {
         return checkHitAABB(pos, radius, position, this.getRenderSize());
     }
 
-    public setHighlight(highlight: boolean): IDrawElement {
+    public newHighlight(highlight: boolean): AbstractDrawElement {
         if (this.highlight === highlight) {
             return this;
         }
-        return new TextElement(this.pos, this.text, this.style, highlight);
+        return new TextElement(
+            this.id,
+            this.pos,
+            this.text,
+            this.style,
+            highlight
+        );
     }
 }

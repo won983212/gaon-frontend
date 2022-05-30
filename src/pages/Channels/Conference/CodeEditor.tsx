@@ -3,10 +3,11 @@ import Editor, { Monaco, OnChange } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 
 interface CodeEditorProps {
-    onChange?: OnChange;
+    value: string;
+    onChange: OnChange;
 }
 
-export default function CodeEditor({ onChange }: CodeEditorProps) {
+export default function CodeEditor({ value, onChange }: CodeEditorProps) {
     const onMountEditor = useCallback(
         (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) => {
             monaco.editor.defineTheme('app-theme', {
@@ -44,7 +45,7 @@ export default function CodeEditor({ onChange }: CodeEditorProps) {
         <Editor
             height="100%"
             defaultLanguage="javascript"
-            value="console.log('hello, world!')"
+            value={value}
             onChange={onChange}
             options={{
                 minimap: { enabled: false },

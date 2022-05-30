@@ -7,7 +7,11 @@ export default function Pencil(): ITool {
         onPress: (ctx: CanvasDrawingContext, pos: Position) => {
             setDrawingElement(
                 ctx,
-                new PathElement([pos, pos], ctx.canvasContext.brush)
+                new PathElement(
+                    ctx.generateNewId(),
+                    [pos, pos],
+                    ctx.canvasContext.brush
+                )
             );
         },
 
@@ -35,6 +39,7 @@ export default function Pencil(): ITool {
                     ctx,
                     (prev) =>
                         new PathElement(
+                            prev.id,
                             prev.path.concat(newPos),
                             prev.style,
                             prev.highlight

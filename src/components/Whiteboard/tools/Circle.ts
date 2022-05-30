@@ -8,7 +8,12 @@ export default function Circle(): ITool {
         onPress: (ctx: CanvasDrawingContext, pos: Position) => {
             setDrawingElement(
                 ctx,
-                new CircleElement(pos, 0, ctx.canvasContext.brush)
+                new CircleElement(
+                    ctx.generateNewId(),
+                    pos,
+                    0,
+                    ctx.canvasContext.brush
+                )
             );
         },
 
@@ -17,6 +22,7 @@ export default function Circle(): ITool {
                 ctx,
                 (prev) =>
                     new CircleElement(
+                        prev.id,
                         prev.pos,
                         Vec.FromPosition(prev.pos)
                             .subtract(pos.x, pos.y)

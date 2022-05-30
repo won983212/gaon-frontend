@@ -1,6 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { IDrawElement } from './elements/IDrawElement';
-import { BrushStyle, ToolType } from './types';
+import {
+    AbstractDrawElement,
+    ElementIdentifier
+} from './elements/AbstractDrawElement';
+import { CanvasContext, ToolType } from './types';
 import { Position } from '@/types';
 import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { clearBoard, drawCursor } from './utils/RenderUtils';
@@ -18,15 +20,7 @@ import Rectangle from '@/components/Whiteboard/tools/Rectangle';
 import Line from '@/components/Whiteboard/tools/Line';
 import Circle from '@/components/Whiteboard/tools/Circle';
 import Text from '@/components/Whiteboard/tools/Text';
-
-export interface CanvasContext {
-    tool: ToolType;
-    brush: BrushStyle;
-    camPos: Position;
-    zoom: number;
-    elements: IDrawElement[];
-    drawingElement: IDrawElement | undefined;
-}
+import { v4 } from 'uuid';
 
 export interface CanvasEvents {
     onPress: (pos: Position) => void;
@@ -80,18 +74,46 @@ export default function useCanvasContext() {
         canvasContext: canvasCtx,
         setCanvasContext: setCanvasCtx,
         get2dContext,
-        appendDrawingElement
+        cancelDrawingElement,
+        appendDrawingElement,
+        removeDrawElement,
+        generateNewId
     });
 
-    const appendDrawingElement = () => {
-        if (canvasCtx.drawingElement) {
-            const element: IDrawElement = canvasCtx.drawingElement;
-            setCanvasCtx((prev) => ({
-                ...prev,
-                elements: prev.elements.concat(element)
-            }));
-        }
-    };
+    const cancelDrawingElement = useCallback(() => {
+        setCanvasCtx((prev) => ({
+            ...prev,
+            drawingElement: undefined
+        }));
+    }, []);
+
+    const removeDrawElement = useCallback((id: ElementIdentifier) => {
+        setCanvasCtx((prev) => ({
+            ...prev,
+            elements: prev.elements.filter((element) => element.id !== id)
+        }));
+    }, []);
+
+    const appendDrawingElement = useCallback(
+        (element?: AbstractDrawElement) => {
+            if (!element) {
+                element = canvasCtx.drawingElement;
+            }
+            if (element) {
+                setCanvasCtx((prev) => ({
+                    ...prev,
+                    elements: prev.elements.concat(
+                        element as AbstractDrawElement
+                    )
+                }));
+            }
+        },
+        [canvasCtx.drawingElement]
+    );
+
+    const generateNewId = useCallback(() => {
+        return v4();
+    }, []);
 
     const get2dContext = useCallback(() => {
         if (!canvasRef.current) {
@@ -179,10 +201,7 @@ export default function useCanvasContext() {
                         canvasCtx.drawingElement
                     );
                 }
-                setCanvasCtx((prev) => ({
-                    ...prev,
-                    drawingElement: undefined
-                }));
+                cancelDrawingElement();
             }
             setIsPressed(false);
         }
@@ -190,14 +209,19 @@ export default function useCanvasContext() {
 
     useLayoutEffect(() => {
         repaint();
-    }, [mousePos, canvasCtx.camPos, canvasCtx.elements]);
+    }, [mousePos, canvasCtx.camPos, canvasCtx.elements, repaint]);
 
     return {
         canvasRef,
         canvasCtx,
         setCanvasCtx,
-        repaint,
         mousePos,
+        actions: {
+            repaint,
+            appendDrawingElement,
+            unboundDrawingElement: cancelDrawingElement,
+            removeDrawElement
+        },
         events: { onPress, onMove, onRelease }
     };
 }

@@ -4,16 +4,18 @@ import { MdQuestionAnswer } from 'react-icons/md';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { HiOutlinePresentationChartLine } from 'react-icons/all';
+import useRoom from '@/hooks/useRoom';
 
 interface ChannelItemProps {
     channel: IChannel;
 }
 
 function ChannelItem({ channel }: ChannelItemProps) {
+    const { workspaceId } = useRoom();
     return (
         <NavLink
             key={channel.id}
-            to={`/workspace/channel/${channel.id}`}
+            to={`/workspace/${workspaceId}/channel/${channel.id}`}
             className={(navData) =>
                 navData.isActive ? 'menuitem selected' : 'menuitem'
             }

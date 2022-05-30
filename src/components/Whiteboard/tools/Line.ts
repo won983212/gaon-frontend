@@ -7,7 +7,12 @@ export default function Line(): ITool {
         onPress: (ctx: CanvasDrawingContext, pos: Position) => {
             setDrawingElement(
                 ctx,
-                new LineElement(pos, pos, ctx.canvasContext.brush)
+                new LineElement(
+                    ctx.generateNewId(),
+                    pos,
+                    pos,
+                    ctx.canvasContext.brush
+                )
             );
         },
 
@@ -15,7 +20,13 @@ export default function Line(): ITool {
             setDrawingElement<LineElement>(
                 ctx,
                 (prev) =>
-                    new LineElement(prev.pos1, pos, prev.style, prev.highlight)
+                    new LineElement(
+                        prev.id,
+                        prev.pos1,
+                        pos,
+                        prev.style,
+                        prev.highlight
+                    )
             );
         },
 

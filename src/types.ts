@@ -41,6 +41,12 @@ export interface IUserIdentifier {
     token: string;
 }
 
+export interface CodeChange {
+    rangeOffset: number;
+    rangeLength: number;
+    text: string;
+}
+
 export interface Position {
     x: number;
     y: number;

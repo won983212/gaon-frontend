@@ -66,7 +66,7 @@ const tools: ToolBoxButton[] = [
 export default function Whiteboard() {
     // canvas state
     const canvasContainerRef = useRef<HTMLDivElement>(null);
-    const { canvasRef, events, canvasCtx, setCanvasCtx, repaint, mousePos } =
+    const { canvasRef, events, canvasCtx, setCanvasCtx, actions, mousePos } =
         useCanvasContext();
     const [canvasWidth, setCanvasWidth] = useState(0);
     const [canvasHeight, setCanvasHeight] = useState(0);
@@ -99,6 +99,7 @@ export default function Whiteboard() {
             const element: TextElement =
                 canvasCtx.drawingElement as TextElement;
             const newElement = new TextElement(
+                element.id,
                 element.pos,
                 text,
                 element.style,
@@ -106,13 +107,10 @@ export default function Whiteboard() {
             );
 
             setTextInputMenuOpen(false);
-            setCanvasCtx((prev) => ({
-                ...prev,
-                elements: prev.elements.concat(newElement),
-                drawingElement: undefined
-            }));
+            actions.appendDrawingElement(newElement);
+            actions.unboundDrawingElement();
         },
-        [canvasCtx.drawingElement, setCanvasCtx]
+        [actions, canvasCtx.drawingElement]
     );
 
     const canvasLeft = canvasRef.current ? canvasRef.current.offsetLeft : 0;
@@ -180,7 +178,7 @@ export default function Whiteboard() {
                 canvasWidth={canvasWidth}
                 canvasHeight={canvasHeight}
                 events={events}
-                repaint={repaint}
+                repaint={actions.repaint}
             />
             <IconContext.Provider value={{ size: '28px' }}>
                 <Toolbox>
