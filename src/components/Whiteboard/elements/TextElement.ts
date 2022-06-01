@@ -1,8 +1,9 @@
 import { Position, Size } from '@/types';
-import { BrushStyle } from '../types';
+import { BrushStyle, SerializedDrawElement } from '../types';
 import { applyStyle } from '../utils/RenderUtils';
 import { AbstractDrawElement, ElementIdentifier } from './AbstractDrawElement';
 import { checkHitAABB } from '@/components/Whiteboard/utils/CollisionDetectors';
+import { DrawElementType } from '@/components/Whiteboard/registry';
 
 export class TextElement extends AbstractDrawElement {
     public readonly pos: Position; // top-left point
@@ -65,15 +66,28 @@ export class TextElement extends AbstractDrawElement {
         return checkHitAABB(pos, radius, position, this.getRenderSize());
     }
 
-    public newHighlight(highlight: boolean): AbstractDrawElement {
-        if (this.highlight === highlight) {
-            return this;
-        }
+    public getType(): DrawElementType {
+        return 'text';
+    }
+
+    public serialize(): SerializedDrawElement {
+        return {
+            id: this.id,
+            type: 'text',
+            style: this.style,
+            data: {
+                pos: this.pos,
+                text: this.text
+            }
+        };
+    }
+
+    public static deserialize(element: SerializedDrawElement, highlight: boolean): AbstractDrawElement {
         return new TextElement(
-            this.id,
-            this.pos,
-            this.text,
-            this.style,
+            element.id,
+            element.data.pos,
+            element.data.text,
+            element.style,
             highlight
         );
     }

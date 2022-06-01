@@ -5,24 +5,13 @@ import {
     AbstractDrawElement,
     ElementIdentifier
 } from '@/components/Whiteboard/elements/AbstractDrawElement';
+import { DrawElementType, ToolType } from '@/components/Whiteboard/registry';
 
 export interface BrushStyle {
     strokeStyle: string;
     fillStyle: string;
     thickness: number;
 }
-
-export type ToolType =
-    | 'pencil'
-    | 'eraser'
-    | 'move'
-    | 'line'
-    | 'rectangle'
-    | 'circle'
-    | 'text'
-    | 'image';
-
-export type DrawElementType = 'path' | 'line' | 'circle' | 'rectangle' | 'text';
 
 export interface CanvasContext {
     tool: ToolType;
@@ -37,4 +26,5 @@ export interface SerializedDrawElement {
     id: ElementIdentifier;
     type: DrawElementType;
     style: BrushStyle;
+    data: any;
 }

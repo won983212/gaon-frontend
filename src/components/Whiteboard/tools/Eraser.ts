@@ -1,6 +1,9 @@
 import { Position } from '@/types';
 import { CanvasDrawingContext, ITool } from './ITool';
-import { AbstractDrawElement } from '@/components/Whiteboard/elements/AbstractDrawElement';
+import {
+    AbstractDrawElement
+} from '@/components/Whiteboard/elements/AbstractDrawElement';
+import { getDeserializer } from '@/components/Whiteboard/registry';
 
 export default function Eraser(): ITool {
     const findHitElement = (
@@ -37,7 +40,11 @@ export default function Eraser(): ITool {
             ctx.setCanvasContext((prev) => ({
                 ...prev,
                 elements: prev.elements.map((element) => {
-                    return element.newHighlight(element.id === hitElement?.id);
+                    const highlight = element.id === hitElement?.id;
+                    if (element.highlight === highlight) {
+                        return element;
+                    }
+                    return getDeserializer(element.getType())(element.serialize(), highlight);
                 })
             }));
         },

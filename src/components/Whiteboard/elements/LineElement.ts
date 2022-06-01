@@ -1,8 +1,9 @@
 import { Position } from '@/types';
-import { BrushStyle } from '../types';
+import { BrushStyle, SerializedDrawElement } from '../types';
 import { applyStyle } from '../utils/RenderUtils';
 import { AbstractDrawElement, ElementIdentifier } from './AbstractDrawElement';
 import { checkHitLine } from '@/components/Whiteboard/utils/CollisionDetectors';
+import { DrawElementType } from '@/components/Whiteboard/registry';
 
 export class LineElement extends AbstractDrawElement {
     public readonly pos1: Position;
@@ -37,15 +38,28 @@ export class LineElement extends AbstractDrawElement {
         return checkHitLine(pos, radius, this.pos1, this.pos2);
     }
 
-    public newHighlight(highlight: boolean): AbstractDrawElement {
-        if (this.highlight === highlight) {
-            return this;
-        }
+    public getType(): DrawElementType {
+        return 'line';
+    }
+
+    public serialize(): SerializedDrawElement {
+        return {
+            id: this.id,
+            type: 'line',
+            style: this.style,
+            data: {
+                pos1: this.pos1,
+                pos2: this.pos2
+            }
+        };
+    }
+
+    public static deserialize(element: SerializedDrawElement, highlight: boolean): AbstractDrawElement {
         return new LineElement(
-            this.id,
-            this.pos1,
-            this.pos2,
-            this.style,
+            element.id,
+            element.data.pos1,
+            element.data.pos2,
+            element.style,
             highlight
         );
     }

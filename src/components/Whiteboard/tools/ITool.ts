@@ -1,10 +1,11 @@
 import { Position } from '@/types';
-import { CanvasContext, ToolType } from '../types';
+import { CanvasContext } from '../types';
 import React from 'react';
 import {
     AbstractDrawElement,
     ElementIdentifier
 } from '../elements/AbstractDrawElement';
+import { ToolType } from '@/components/Whiteboard/registry';
 
 export interface CanvasDrawingContext {
     canvasContext: CanvasContext;

@@ -1,5 +1,6 @@
 import { Position } from '@/types';
-import { BrushStyle } from '../types';
+import { BrushStyle, SerializedDrawElement } from '../types';
+import { DrawElementType } from '@/components/Whiteboard/registry';
 
 export type ElementIdentifier = string;
 
@@ -9,14 +10,14 @@ export class AbstractDrawElement {
     public readonly style: BrushStyle;
     public readonly highlight: boolean;
 
-    constructor(id: string, style: BrushStyle, highlight: boolean) {
+    public constructor(id: string, style: BrushStyle, highlight: boolean) {
         this.id = id;
         this.style = style;
         this.highlight = highlight;
     }
 
     /** 이 요소를 실제로 render한다. canvas context에 render */
-    draw(context: CanvasRenderingContext2D) {
+    public draw(context: CanvasRenderingContext2D) {
         throw new Error('draw is not implemented.');
     }
 
@@ -24,15 +25,25 @@ export class AbstractDrawElement {
      * <code>pos</code>를 중심으로 반지름이 <code>radius</code>인
      * 원과 닿아있으면 <code>true</code>리턴, 아니면 <code>false</code>리턴.
      */
-    isHit(pos: Position, radius: number): boolean {
+    public isHit(pos: Position, radius: number): boolean {
         throw new Error('isHit is not implemented.');
     }
 
+    public getType(): DrawElementType {
+        throw new Error('getType is not implemented.');
+    }
+
     /**
-     * highlight를 설정한 새로운 object를 반환한다.
-     * highlight가 바뀌지 않았을 경우에는 this를 반환한다.
+     * serialized object로 serialize
      */
-    newHighlight(highlight: boolean): AbstractDrawElement {
-        throw new Error('setHighlight is not implemented.');
+    public serialize(): SerializedDrawElement {
+        throw new Error('serialize is not implemented.');
+    }
+
+    /**
+     * DrawElement로 deserialize하고, 새로운 element반환
+     */
+    public static deserialize(element: SerializedDrawElement, highlight: boolean): AbstractDrawElement {
+        throw new Error('deserialize is not implemented.');
     }
 }

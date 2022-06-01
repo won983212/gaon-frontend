@@ -1,8 +1,9 @@
 import { Position, Size } from '@/types';
-import { BrushStyle } from '../types';
+import { BrushStyle, SerializedDrawElement } from '../types';
 import { applyStyle } from '../utils/RenderUtils';
 import { AbstractDrawElement, ElementIdentifier } from './AbstractDrawElement';
 import { checkHitAABB } from '@/components/Whiteboard/utils/CollisionDetectors';
+import { DrawElementType } from '@/components/Whiteboard/registry';
 
 export class RectangleElement extends AbstractDrawElement {
     public readonly pos1: Position; // top-left point
@@ -54,15 +55,28 @@ export class RectangleElement extends AbstractDrawElement {
         return checkHitAABB(pos, radius, this.getPosition(), this.getSize());
     }
 
-    public newHighlight(highlight: boolean): AbstractDrawElement {
-        if (this.highlight === highlight) {
-            return this;
-        }
+    public getType(): DrawElementType {
+        return 'rectangle';
+    }
+
+    public serialize(): SerializedDrawElement {
+        return {
+            id: this.id,
+            type: 'rectangle',
+            style: this.style,
+            data: {
+                pos1: this.pos1,
+                pos2: this.pos2
+            }
+        };
+    }
+
+    public static deserialize(element: SerializedDrawElement, highlight: boolean): AbstractDrawElement {
         return new RectangleElement(
-            this.id,
-            this.pos1,
-            this.pos2,
-            this.style,
+            element.id,
+            element.data.pos1,
+            element.data.pos2,
+            element.style,
             highlight
         );
     }

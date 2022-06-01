@@ -1,8 +1,11 @@
 import { Position } from '@/types';
-import { BrushStyle } from '../types';
+import { BrushStyle, SerializedDrawElement } from '../types';
 import { applyStyle } from '../utils/RenderUtils';
 import { AbstractDrawElement } from './AbstractDrawElement';
-import { checkHitCircle } from '@/components/Whiteboard/utils/CollisionDetectors';
+import {
+    checkHitCircle
+} from '@/components/Whiteboard/utils/CollisionDetectors';
+import { DrawElementType } from '@/components/Whiteboard/registry';
 
 export class CircleElement extends AbstractDrawElement {
     public readonly pos: Position; // center point
@@ -37,15 +40,28 @@ export class CircleElement extends AbstractDrawElement {
         return checkHitCircle(pos, this.pos, radius + this.radius);
     }
 
-    public newHighlight(highlight: boolean): AbstractDrawElement {
-        if (this.highlight === highlight) {
-            return this;
-        }
+    public getType(): DrawElementType {
+        return 'circle';
+    }
+
+    public serialize(): SerializedDrawElement {
+        return {
+            type: 'circle',
+            id: this.id,
+            style: this.style,
+            data: {
+                pos: this.pos,
+                radius: this.radius
+            }
+        };
+    }
+
+    static deserialize(element: SerializedDrawElement, highlight: boolean): AbstractDrawElement {
         return new CircleElement(
-            this.id,
-            this.pos,
-            this.radius,
-            this.style,
+            element.id,
+            element.data.pos,
+            element.data.radius,
+            element.style,
             highlight
         );
     }
