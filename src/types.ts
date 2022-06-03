@@ -41,6 +41,12 @@ export interface IUserIdentifier {
     token: string;
 }
 
+export interface IConnectedUser {
+    socketId: string;
+    username: string;
+    mute: boolean;
+}
+
 export interface CodeChange {
     rangeOffset: number;
     rangeLength: number;

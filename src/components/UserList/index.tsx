@@ -7,30 +7,25 @@ import {
     UserListBlock,
     UsernameBlock
 } from '@/components/UserList/style';
+import { IConnectedUser } from '@/types';
 
-const dummyUserList = [
-    { name: '이현', mute: false },
-    { name: '이용욱', mute: true },
-    { name: '조정민', mute: false },
-    { name: 'abc', mute: true },
-    { name: 'abkxdrbhgbhkxdgrbkxdgrbhjkxdgrbhjkc', mute: true },
-    { name: '가나다라마바사', mute: false },
-    { name: '1234_abc_쉙', mute: false }
-];
+export interface UserListProps {
+    users: IConnectedUser[];
+}
 
-export default function UserList() {
+export default function UserList({ users }: UserListProps) {
     return (
         <UserListBlock>
-            {dummyUserList.map((user, idx) => (
+            {users.map((user, idx) => (
                 <UserItem key={idx}>
                     <ProfileImage
-                        src={gravatar.url(user.name, {
+                        src={gravatar.url(user.username, {
                             s: '24px',
                             d: 'retro'
                         })}
                         size={24}
                     />
-                    <UsernameBlock>{user.name}</UsernameBlock>
+                    <UsernameBlock>{user.username}</UsernameBlock>
                     {user.mute ? (
                         <MdMicOff color="var(--primary-light)" size={20} />
                     ) : (

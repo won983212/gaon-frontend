@@ -15,13 +15,12 @@ import FileTree from '@/components/FileTree';
 import UserList from '@/components/UserList';
 import Terminal from '@/components/Terminal';
 import * as monaco from 'monaco-editor';
-import useSocket from '@/hooks/useSocket';
 import { CodeChange } from '@/types';
+import { ConferenceTabProps } from '@/pages/Channels/Conference/index';
 
-export default function TabCodeShare() {
+export default function TabCodeShare({ socket, users }: ConferenceTabProps) {
     const { data: files } = useFilesSWR(0);
-    const { channelInfo, workspaceId } = useRoom();
-    const [socket] = useSocket(workspaceId);
+    const { channelId, channelInfo } = useRoom();
     const [code, setCode] = useState('');
 
     const onChangeCode = useCallback(
@@ -50,6 +49,12 @@ export default function TabCodeShare() {
         };
     }, [socket, onUpdateCode]);
 
+    useEffect(() => {
+        socket.emit('select-code', channelId, (code: string) => {
+            setCode(code);
+        });
+    }, [channelId, socket]);
+
     if (!files) {
         return null;
     }
@@ -66,7 +71,7 @@ export default function TabCodeShare() {
                 <SideMenuBar>
                     <TabContainer tabNames={['탐색기', '참가자']}>
                         <FileTree files={files} />
-                        <UserList />
+                        <UserList users={users} />
                     </TabContainer>
                 </SideMenuBar>
             </InnerContent>
