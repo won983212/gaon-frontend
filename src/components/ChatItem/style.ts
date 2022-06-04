@@ -16,7 +16,6 @@ export const ChatAvatarImg = styled.img`
     user-select: none;
 `;
 
-// TODO: 아래 border-color를 테마에 맞추어 수정한다.
 // 날짜구분선
 export const ChatBorderDiv = styled.div`
     display: flex;
@@ -26,6 +25,7 @@ export const ChatBorderDiv = styled.div`
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
     &:before,
     &:after {
         content: '';
@@ -44,7 +44,6 @@ export const ChatBorderDiv = styled.div`
     }
 `;
 
-// TODO: 아래 border 색상 부분을 테마에 맞추어 수정한다.
 // 이미지 썸네일
 export const ChatImageThumbnail = styled.img`
     border: 1px solid #ddd;
@@ -96,7 +95,6 @@ export const ChatList = styled.ol`
     padding-left: 3em;
 `;
 
-// TODO: color를 테마에 맞추도록 수정한다.
 // 채팅 옆에 붙을 날짜
 export const ChatDateSpan = styled.span`
     display: none;
@@ -113,6 +111,7 @@ export const NewChatBorder = styled.div`
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+
     &:before,
     &:after {
         content: '';

@@ -55,6 +55,7 @@ function Conference() {
     }, [socket, onJoinUser, onLeaveUser]);
 
     useEffect(() => {
+        setShowEnterDialog(true);
         socket.emit('select-users', channelId, (users: IConnectedUser[]) => {
             setUsers(users);
         });
