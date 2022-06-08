@@ -7,7 +7,12 @@ export default function Rectangle(): ITool {
         onPress: (ctx: CanvasDrawingContext, pos: Position) => {
             setDrawingElement(
                 ctx,
-                new RectangleElement(pos, pos, ctx.canvasContext.brush)
+                new RectangleElement(
+                    ctx.generateNewId(),
+                    pos,
+                    pos,
+                    ctx.canvasContext.brush
+                )
             );
         },
 
@@ -16,6 +21,7 @@ export default function Rectangle(): ITool {
                 ctx,
                 (prev) =>
                     new RectangleElement(
+                        prev.id,
                         prev.pos1,
                         pos,
                         prev.style,

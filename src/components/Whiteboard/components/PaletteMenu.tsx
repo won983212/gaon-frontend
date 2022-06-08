@@ -8,7 +8,12 @@ import {
     SelectContainer,
     ThicknessButton
 } from '../style';
-import { CanvasContext } from '@/components/Whiteboard/useCanvasContext';
+import { CanvasContext } from '@/components/Whiteboard/types';
+import {
+    fillColors,
+    strokeColors,
+    strokeThickness
+} from '@/components/Whiteboard/registry';
 
 interface PaletteMenuProps {
     open: boolean;
@@ -19,42 +24,14 @@ interface PaletteMenuProps {
     setCanvasCtx: React.Dispatch<React.SetStateAction<CanvasContext>>;
 }
 
-export const fillColors = [
-    'transparent',
-    '#feee9e',
-    '#ccecf7',
-    '#e4d1ee',
-    '#fed6d6',
-    '#fde0cf',
-    '#e5f3cc',
-    '#ebebeb',
-    '#cccccc',
-    '#1f1f1f'
-];
-
-export const strokeColors = [
-    'transparent',
-    '#feee9e',
-    '#ccecf7',
-    '#e4d1ee',
-    '#fed6d6',
-    '#fde0cf',
-    '#e5f3cc',
-    '#ebebeb',
-    '#cccccc',
-    '#1f1f1f'
-];
-
-export const strokeThickness = [1, 2, 3, 4, 6, 8, 10];
-
 export default function PaletteMenu({
-    open,
-    onClose,
-    left,
-    top,
-    canvasCtx,
-    setCanvasCtx
-}: PaletteMenuProps) {
+                                        open,
+                                        onClose,
+                                        left,
+                                        top,
+                                        canvasCtx,
+                                        setCanvasCtx
+                                    }: PaletteMenuProps) {
     const setStyle = useCallback(
         (fillStyle: string, strokeStyle: string, thickness: number) => {
             setCanvasCtx((prev) => ({

@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import Chatting from '@/pages/Channels/Chatting';
 import Conference from '@/pages/Channels/Conference';
 import Workspace from '@/layouts/Workspace';
 import { IconContainer, NoChannelMessageWrapper } from '@/pages/Channels/style';
 import { MdOutlineInsertEmoticon } from 'react-icons/all';
 import useRoom from '@/hooks/useRoom';
-import { useParams } from 'react-router';
 import useSocket from '@/hooks/useSocket';
+import { useNavigate } from 'react-router';
 
 function Channels() {
-    const { channelId } = useParams();
-    const { channelInfo, workspaceId } = useRoom();
+    const navigate = useNavigate();
+    const { channelId, channelInfo, workspaceId } = useRoom();
     const [socket] = useSocket(workspaceId);
 
     let pageElement: JSX.Element = (
@@ -30,9 +30,20 @@ function Channels() {
         }
     }
 
+    const onDisconnected = useCallback(() => {
+        navigate(`/workspace/${workspaceId}/channel/`);
+    }, [navigate, workspaceId]);
+
     useEffect(() => {
         socket.emit('channel', channelId);
     }, [channelId, socket]);
+
+    useEffect(() => {
+        socket.on('disconnect', onDisconnected);
+        return () => {
+            socket.off('disconnect', onDisconnected);
+        };
+    }, [onDisconnected, socket]);
 
     return <Workspace>{pageElement}</Workspace>;
 }

@@ -8,13 +8,11 @@ import { ChannelHeader } from '@/layouts/Workspace/style';
 import useRoom from '@/hooks/useRoom';
 import useSocket from '@/hooks/useSocket';
 import { IMessage } from '@/types';
-import { useParams } from 'react-router';
 import { unixToDate } from '@/util/date';
 
 // TODO Login session cookie is not handled.
 function Chatting() {
-    const { channelId } = useParams();
-    const { channelInfo, workspaceId } = useRoom();
+    const { channelId, channelInfo, workspaceId } = useRoom();
     const [socket] = useSocket(workspaceId);
     const [chatMessages, setChatMessages] = useState<IMessage[]>([]);
     const [chatInput, setChatInput] = useState('');

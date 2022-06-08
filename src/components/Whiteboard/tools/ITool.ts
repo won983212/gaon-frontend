@@ -1,14 +1,20 @@
 import { Position } from '@/types';
-import { ToolType } from '../types';
-import { CanvasContext } from '../useCanvasContext';
+import { CanvasContext } from '../types';
 import React from 'react';
-import { IDrawElement } from '../elements/IDrawElement';
+import {
+    AbstractDrawElement,
+    ElementIdentifier
+} from '../elements/AbstractDrawElement';
+import { ToolType } from '@/components/Whiteboard/registry';
 
 export interface CanvasDrawingContext {
     canvasContext: CanvasContext;
     setCanvasContext: React.Dispatch<React.SetStateAction<CanvasContext>>;
     get2dContext: () => CanvasRenderingContext2D | undefined;
     appendDrawingElement: () => void;
+    cancelDrawingElement: () => void;
+    removeDrawElement: (id: ElementIdentifier) => void;
+    generateNewId: () => ElementIdentifier;
 }
 
 export interface ITool {
@@ -37,7 +43,7 @@ export interface ITool {
      */
     onRelease?: (
         ctx: CanvasDrawingContext,
-        element: IDrawElement | undefined
+        element: AbstractDrawElement | undefined
     ) => void;
 }
 
@@ -46,7 +52,7 @@ export interface ITool {
  * 편의를 위해 setter의 매개변수인 prev에 undefined를 포함시키지 않았다.
  * 따라서 prev가 반드시 undefined가 아닌 경우에만 setter function을 사용할 것.
  */
-export function setDrawingElement<T extends IDrawElement>(
+export function setDrawingElement<T extends AbstractDrawElement>(
     ctx: CanvasDrawingContext,
     setter: ((prev: T) => T) | T
 ): void {

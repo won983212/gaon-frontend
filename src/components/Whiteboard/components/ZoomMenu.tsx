@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 import Menu from '@/components/Menu';
 import { CommonMenuStyle } from '../style';
 import Button from '@/components/Button';
-import { CanvasContext } from '../useCanvasContext';
 import styled from 'styled-components';
+import { CanvasContext } from '@/components/Whiteboard/types';
 
 interface ZoomMenuProps {
     open: boolean;

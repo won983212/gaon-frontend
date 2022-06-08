@@ -15,7 +15,12 @@ export default function Text(): ITool {
         onPress: (ctx: CanvasDrawingContext, pos: Position) => {
             setDrawingElement(
                 ctx,
-                new TextElement(pos, '', ctx.canvasContext.brush)
+                new TextElement(
+                    ctx.generateNewId(),
+                    pos,
+                    '',
+                    ctx.canvasContext.brush
+                )
             );
         },
 

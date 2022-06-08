@@ -1,25 +1,24 @@
 import { Position, Size } from '@/types';
-import { BrushStyle } from '../types';
+import { BrushStyle, SerializedDrawElement } from '../types';
 import { applyStyle } from '../utils/RenderUtils';
-import { IDrawElement } from './IDrawElement';
+import { AbstractDrawElement, ElementIdentifier } from './AbstractDrawElement';
 import { checkHitAABB } from '@/components/Whiteboard/utils/CollisionDetectors';
+import { DrawElementType } from '@/components/Whiteboard/registry';
 
-export class RectangleElement implements IDrawElement {
+export class RectangleElement extends AbstractDrawElement {
     public readonly pos1: Position; // top-left point
     public readonly pos2: Position; // bottom-right point
-    public readonly style: BrushStyle;
-    public readonly highlight: boolean;
 
     public constructor(
+        id: ElementIdentifier,
         pos1: Position,
         pos2: Position,
         style: BrushStyle,
         highlight: boolean = false
     ) {
+        super(id, style, highlight);
         this.pos1 = pos1;
         this.pos2 = pos2;
-        this.style = style;
-        this.highlight = highlight;
     }
 
     public getPosition(): Position {
@@ -56,14 +55,28 @@ export class RectangleElement implements IDrawElement {
         return checkHitAABB(pos, radius, this.getPosition(), this.getSize());
     }
 
-    public setHighlight(highlight: boolean): IDrawElement {
-        if (this.highlight === highlight) {
-            return this;
-        }
+    public getType(): DrawElementType {
+        return 'rectangle';
+    }
+
+    public serialize(): SerializedDrawElement {
+        return {
+            id: this.id,
+            type: 'rectangle',
+            style: this.style,
+            data: {
+                pos1: this.pos1,
+                pos2: this.pos2
+            }
+        };
+    }
+
+    public static deserialize(element: SerializedDrawElement, highlight: boolean): AbstractDrawElement {
         return new RectangleElement(
-            this.pos1,
-            this.pos2,
-            this.style,
+            element.id,
+            element.data.pos1,
+            element.data.pos2,
+            element.style,
             highlight
         );
     }

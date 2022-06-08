@@ -1,25 +1,24 @@
 import { Position } from '@/types';
-import { BrushStyle } from '../types';
+import { BrushStyle, SerializedDrawElement } from '../types';
 import { applyStyle } from '../utils/RenderUtils';
-import { IDrawElement } from './IDrawElement';
+import { AbstractDrawElement, ElementIdentifier } from './AbstractDrawElement';
 import { checkHitLine } from '@/components/Whiteboard/utils/CollisionDetectors';
+import { DrawElementType } from '@/components/Whiteboard/registry';
 
-export class LineElement implements IDrawElement {
+export class LineElement extends AbstractDrawElement {
     public readonly pos1: Position;
     public readonly pos2: Position;
-    public readonly style: BrushStyle;
-    public readonly highlight: boolean;
 
     public constructor(
+        id: ElementIdentifier,
         pos1: Position,
         pos2: Position,
         style: BrushStyle,
         highlight: boolean = false
     ) {
+        super(id, style, highlight);
         this.pos1 = pos1;
         this.pos2 = pos2;
-        this.style = style;
-        this.highlight = highlight;
     }
 
     public draw(context: CanvasRenderingContext2D): void {
@@ -39,10 +38,29 @@ export class LineElement implements IDrawElement {
         return checkHitLine(pos, radius, this.pos1, this.pos2);
     }
 
-    public setHighlight(highlight: boolean): IDrawElement {
-        if (this.highlight === highlight) {
-            return this;
-        }
-        return new LineElement(this.pos1, this.pos2, this.style, highlight);
+    public getType(): DrawElementType {
+        return 'line';
+    }
+
+    public serialize(): SerializedDrawElement {
+        return {
+            id: this.id,
+            type: 'line',
+            style: this.style,
+            data: {
+                pos1: this.pos1,
+                pos2: this.pos2
+            }
+        };
+    }
+
+    public static deserialize(element: SerializedDrawElement, highlight: boolean): AbstractDrawElement {
+        return new LineElement(
+            element.id,
+            element.data.pos1,
+            element.data.pos2,
+            element.style,
+            highlight
+        );
     }
 }

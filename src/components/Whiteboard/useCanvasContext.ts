@@ -1,32 +1,20 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { IDrawElement } from './elements/IDrawElement';
-import { BrushStyle, ToolType } from './types';
+import {
+    AbstractDrawElement,
+    ElementIdentifier
+} from './elements/AbstractDrawElement';
+import { CanvasContext } from './types';
 import { Position } from '@/types';
-import { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { clearBoard, drawCursor } from './utils/RenderUtils';
 import { CanvasDrawingContext } from './tools/ITool';
+import { TextElement } from '@/components/Whiteboard/elements/TextElement';
+import { v4 } from 'uuid';
 import {
     fillColors,
+    getToolFromType,
     strokeColors,
     strokeThickness
-} from '@/components/Whiteboard/components/PaletteMenu';
-import { TextElement } from '@/components/Whiteboard/elements/TextElement';
-import Pencil from '@/components/Whiteboard/tools/Pencil';
-import Eraser from '@/components/Whiteboard/tools/Eraser';
-import Move from '@/components/Whiteboard/tools/Move';
-import Rectangle from '@/components/Whiteboard/tools/Rectangle';
-import Line from '@/components/Whiteboard/tools/Line';
-import Circle from '@/components/Whiteboard/tools/Circle';
-import Text from '@/components/Whiteboard/tools/Text';
-
-export interface CanvasContext {
-    tool: ToolType;
-    brush: BrushStyle;
-    camPos: Position;
-    zoom: number;
-    elements: IDrawElement[];
-    drawingElement: IDrawElement | undefined;
-}
+} from '@/components/Whiteboard/registry';
 
 export interface CanvasEvents {
     onPress: (pos: Position) => void;
@@ -34,28 +22,15 @@ export interface CanvasEvents {
     onRelease: () => void;
 }
 
-export const getToolFromType = (tool: ToolType) => {
-    switch (tool) {
-        case 'pencil':
-            return Pencil();
-        case 'eraser':
-            return Eraser();
-        case 'move':
-            return Move();
-        case 'line':
-            return Line();
-        case 'rectangle':
-            return Rectangle();
-        case 'circle':
-            return Circle();
-        case 'text':
-            return Text();
-        default:
-            throw new Error('unknown tool: ' + tool);
-    }
-};
+export interface CanvasContextProps {
+    onAppendElement: (element: AbstractDrawElement) => void;
+    onRemoveElement: (id: ElementIdentifier) => void;
+}
 
-export default function useCanvasContext() {
+export default function useCanvasContext({
+                                             onRemoveElement,
+                                             onAppendElement
+                                         }: CanvasContextProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [mousePos, setMousePos] = useState<Position>({ x: 0, y: 0 });
     const [isPressed, setIsPressed] = useState(false);
@@ -80,18 +55,48 @@ export default function useCanvasContext() {
         canvasContext: canvasCtx,
         setCanvasContext: setCanvasCtx,
         get2dContext,
-        appendDrawingElement
+        cancelDrawingElement,
+        appendDrawingElement,
+        removeDrawElement,
+        generateNewId
     });
 
-    const appendDrawingElement = () => {
-        if (canvasCtx.drawingElement) {
-            const element: IDrawElement = canvasCtx.drawingElement;
-            setCanvasCtx((prev) => ({
-                ...prev,
-                elements: prev.elements.concat(element)
-            }));
-        }
-    };
+    const cancelDrawingElement = useCallback(() => {
+        setCanvasCtx((prev) => ({
+            ...prev,
+            drawingElement: undefined
+        }));
+    }, []);
+
+    const removeDrawElement = useCallback((id: ElementIdentifier) => {
+        setCanvasCtx((prev) => ({
+            ...prev,
+            elements: prev.elements.filter((element) => element.id !== id)
+        }));
+        onRemoveElement(id);
+    }, [onRemoveElement]);
+
+    const appendDrawingElement = useCallback(
+        (element?: AbstractDrawElement) => {
+            if (!element) {
+                element = canvasCtx.drawingElement;
+            }
+            if (element) {
+                setCanvasCtx((prev) => ({
+                    ...prev,
+                    elements: prev.elements.concat(
+                        element as AbstractDrawElement
+                    )
+                }));
+                onAppendElement(element);
+            }
+        },
+        [canvasCtx.drawingElement, onAppendElement]
+    );
+
+    const generateNewId = useCallback(() => {
+        return v4();
+    }, []);
 
     const get2dContext = useCallback(() => {
         if (!canvasRef.current) {
@@ -179,25 +184,25 @@ export default function useCanvasContext() {
                         canvasCtx.drawingElement
                     );
                 }
-                setCanvasCtx((prev) => ({
-                    ...prev,
-                    drawingElement: undefined
-                }));
+                cancelDrawingElement();
             }
             setIsPressed(false);
         }
     };
 
-    useLayoutEffect(() => {
-        repaint();
-    }, [mousePos, canvasCtx.camPos, canvasCtx.elements]);
+    repaint();
 
     return {
         canvasRef,
         canvasCtx,
         setCanvasCtx,
-        repaint,
         mousePos,
+        actions: {
+            repaint,
+            appendDrawingElement,
+            unboundDrawingElement: cancelDrawingElement,
+            removeDrawElement
+        },
         events: { onPress, onMove, onRelease }
     };
 }

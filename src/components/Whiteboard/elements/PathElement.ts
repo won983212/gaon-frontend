@@ -1,23 +1,22 @@
 import { Position } from '@/types';
-import { BrushStyle } from '../types';
+import { BrushStyle, SerializedDrawElement } from '../types';
 import { applyStyle } from '../utils/RenderUtils';
-import { IDrawElement } from './IDrawElement';
+import { AbstractDrawElement, ElementIdentifier } from './AbstractDrawElement';
 import { checkHitLine } from '@/components/Whiteboard/utils/CollisionDetectors';
+import { DrawElementType } from '@/components/Whiteboard/registry';
 
 /** 드래그해서 그린 하나의 선. */
-export class PathElement implements IDrawElement {
+export class PathElement extends AbstractDrawElement {
     public readonly path: Position[];
-    public readonly style: BrushStyle;
-    public readonly highlight: boolean;
 
     public constructor(
+        id: ElementIdentifier,
         path: Position[],
         style: BrushStyle,
         highlight: boolean = false
     ) {
+        super(id, style, highlight);
         this.path = path;
-        this.style = style;
-        this.highlight = highlight;
     }
 
     public draw(context: CanvasRenderingContext2D): void {
@@ -66,10 +65,22 @@ export class PathElement implements IDrawElement {
         return false;
     }
 
-    public setHighlight(highlight: boolean): IDrawElement {
-        if (this.highlight === highlight) {
-            return this;
-        }
-        return new PathElement(this.path, this.style, highlight);
+    public getType(): DrawElementType {
+        return 'path';
+    }
+
+    public serialize(): SerializedDrawElement {
+        return {
+            id: this.id,
+            type: 'path',
+            style: this.style,
+            data: {
+                path: this.path
+            }
+        };
+    }
+
+    public static deserialize(element: SerializedDrawElement, highlight: boolean): AbstractDrawElement {
+        return new PathElement(element.id, element.data.path, element.style, highlight);
     }
 }
