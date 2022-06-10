@@ -17,6 +17,9 @@ import Terminal from '@/components/Terminal';
 import * as monaco from 'monaco-editor';
 import { CodeChange } from '@/types';
 import { ConferenceTabProps } from '@/pages/Channels/Conference/index';
+import { MonacoBinding } from './y-monaco';
+import { WebsocketProvider } from 'y-websocket';
+import * as yjs from 'yjs';
 
 export default function TabCodeShare({ socket, users }: ConferenceTabProps) {
     const { data: files } = useFilesSWR(0);
@@ -38,6 +41,28 @@ export default function TabCodeShare({ socket, users }: ConferenceTabProps) {
             socket.emit('update-code', changes);
         },
         [socket]
+    );
+
+    const onMount = useCallback(
+        (editor: monaco.editor.IStandaloneCodeEditor) => {
+            const ydocument = new yjs.Doc();
+            const provider = new WebsocketProvider(
+                `ws://localhost:6000`,
+                'monaco',
+                ydocument
+            );
+            const type = ydocument.getText('monaco');
+            const model = editor.getModel();
+            if (model) {
+                new MonacoBinding(
+                    type,
+                    model,
+                    new Set([editor]),
+                    provider.awareness
+                );
+            }
+        },
+        []
     );
 
     const onUpdateCode = useCallback(() => {}, []);
@@ -66,7 +91,11 @@ export default function TabCodeShare({ socket, users }: ConferenceTabProps) {
             </ChannelHeader>
             <InnerContent>
                 <ContentArea>
-                    <CodeEditor value={code} onChange={onChangeCode} />
+                    <CodeEditor
+                        value={code}
+                        onChange={onChangeCode}
+                        onMount={onMount}
+                    />
                 </ContentArea>
                 <SideMenuBar>
                     <TabContainer tabNames={['탐색기', '참가자']}>

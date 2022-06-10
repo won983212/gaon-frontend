@@ -5,9 +5,14 @@ import * as monaco from 'monaco-editor';
 interface CodeEditorProps {
     value: string;
     onChange: OnChange;
+    onMount?: (editor: monaco.editor.IStandaloneCodeEditor) => void;
 }
 
-export default function CodeEditor({ value, onChange }: CodeEditorProps) {
+export default function CodeEditor({
+    value,
+    onChange,
+    onMount
+}: CodeEditorProps) {
     const onMountEditor = useCallback(
         (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) => {
             monaco.editor.defineTheme('app-theme', {
@@ -21,6 +26,9 @@ export default function CodeEditor({ value, onChange }: CodeEditorProps) {
             monaco.editor.setTheme('app-theme');
 
             // initial layout
+            if (onMount) {
+                onMount(editor);
+            }
             editor.layout();
 
             // monaco editor autosize
@@ -38,7 +46,7 @@ export default function CodeEditor({ value, onChange }: CodeEditorProps) {
                 });
             });
         },
-        []
+        [onMount]
     );
 
     return (
