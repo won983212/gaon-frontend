@@ -1,11 +1,13 @@
 import { doLogout } from '@/api/auth';
-import { useChannelsSWR } from '@/api/workspace';
+import { useChannelsSWR, useWorkspacesSWR } from '@/api/workspace';
 import ChannelList from '@/components/ChannelList';
 import Menu from '@/components/Menu';
 import Profile from '@/components/Profile';
 import gravatar from 'gravatar';
 import React, { useCallback, useState } from 'react';
 import { Navigate } from 'react-router';
+import * as ContextMenu from 'react-contexify';
+import "react-contexify/dist/ReactContexify.css";
 import {
     Channels,
     ConferenceMenu,
@@ -24,6 +26,7 @@ import Button from '@/components/Button';
 import useRoom from '@/hooks/useRoom';
 import useConferenceTabIndex from '@/hooks/useConferenceTabIndex';
 import useUser from '@/hooks/useUser';
+import { DropdownContent, DropdownItem, DropdownList } from '@/components/Dropdown';
 
 interface WorkspaceProps {
     children: React.ReactNode;
@@ -31,11 +34,23 @@ interface WorkspaceProps {
 
 function Workspace({ children }: WorkspaceProps) {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
+    const [showWorkspaceMenu, setShowWorkspaceMenu] = useState(false);
     const { channelInfo } = useRoom();
     const { user: userData, identifier, setCookie } = useUser();
     const { data: channelCategories } = useChannelsSWR(0);
     const { mutate: setConferenceTabIndex } = useConferenceTabIndex();
-
+    const workspaceList = [
+        {
+            id: 0,
+            name: "hi",
+            createdBy: 0
+        },
+        {
+            id: 1,
+            name: "hello, there",
+            createdBy: 0
+        }
+    ]
     const onLogout = useCallback(() => {
         doLogout(identifier?.token).then(() => {
             setCookie(undefined);
@@ -50,6 +65,41 @@ function Workspace({ children }: WorkspaceProps) {
         setShowProfileMenu((prev) => !prev);
     }, []);
 
+    const onCloseWorkspaceMenu = useCallback(() => {
+        setShowWorkspaceMenu(false);
+    }, []);
+
+    const onToggleWorkspaceMenu = useCallback(() => {
+        setShowWorkspaceMenu((prev) => !prev);
+    }, []); 
+
+    const changeWorkspace = function(workspaceId: number) {
+        alert("workspace changed.");
+    }
+
+    const onShowWorkspaceContextMenu = (e: React.MouseEvent) => {
+        e.preventDefault();
+        ContextMenu.contextMenu.show({id: "workspace-context-menu", event: e})
+    }
+
+    const onShowGroupContextMenu = (e: React.MouseEvent, groupId: number) => {
+        e.preventDefault();
+        ContextMenu.contextMenu.show({id: "group-context-menu", event: e, props: {
+            groupId: groupId
+        } })
+    }
+
+    const onShowChannelContextMenu = (e: React.MouseEvent) => {
+        e.preventDefault();
+        ContextMenu.contextMenu.show({id: "channel-context-menu", event: e })
+    }
+
+    const onShowUserContextMenu = (e: React.MouseEvent) => {
+        e.preventDefault();
+        ContextMenu.contextMenu.show({id: "user-context-menu", event: e })
+    }
+
+
     if (!userData) {
         return <Navigate replace to="/login" />;
     }
@@ -58,7 +108,7 @@ function Workspace({ children }: WorkspaceProps) {
         <div>
             <WorkspaceWrapper>
                 <Channels>
-                    <WorkspaceName>
+                    <WorkspaceName onContextMenu={onShowWorkspaceContextMenu}>
                         <WorkspaceProfileWrapper>
                             <Profile
                                 username="cc"
@@ -69,10 +119,19 @@ function Workspace({ children }: WorkspaceProps) {
                                 rectAvatar
                             />
                         </WorkspaceProfileWrapper>
-                        <MenuIconWrapper>
+                        <MenuIconWrapper onClick={onToggleWorkspaceMenu}>
                             <MdMenu size={16} />
                         </MenuIconWrapper>
                     </WorkspaceName>
+                    {showWorkspaceMenu && (
+                            <DropdownContent>
+                                <DropdownList>
+                                    {workspaceList?.map((ws)=> {
+                                        return <DropdownItem onClick={()=>{onCloseWorkspaceMenu(); changeWorkspace(ws.id)}}>{ws.name}</DropdownItem>
+                                    })}
+                                </DropdownList>
+                            </DropdownContent>
+                        )}
                     <MenuScroll>
                         {channelCategories?.map((category) => {
                             return (
@@ -80,6 +139,13 @@ function Workspace({ children }: WorkspaceProps) {
                                     key={category.id}
                                     name={category.name}
                                     channels={category.channels}
+                                    groupId={0} 
+                                    onShowGroupContextMenu={function (e: React.MouseEvent, groupId: number) {
+                                        throw new Error('Function not implemented.');
+                                    }} 
+                                    onShowChannelContextMenu={function (e: React.MouseEvent, channelId: number) {
+                                        throw new Error('Function not implemented.');
+                                    }}                                    
                                 />
                             );
                         })}
@@ -142,6 +208,27 @@ function Workspace({ children }: WorkspaceProps) {
                 </Channels>
                 <ContentContainer>{children}</ContentContainer>
             </WorkspaceWrapper>
+            <div>
+                <ContextMenu.Menu id="workspace-context-menu">
+                    <ContextMenu.Item>New workspace</ContextMenu.Item>
+                    <ContextMenu.Item>Update</ContextMenu.Item>
+                    <ContextMenu.Item>Delete</ContextMenu.Item>
+                </ContextMenu.Menu>
+                <ContextMenu.Menu id="channel-context-menu">
+                <ContextMenu.Item>New channel</ContextMenu.Item>
+                <ContextMenu.Item>Update</ContextMenu.Item>
+                <ContextMenu.Item>Delete</ContextMenu.Item>
+                </ContextMenu.Menu>
+                <ContextMenu.Menu id="group-context-menu">
+                    <ContextMenu.Item>New group</ContextMenu.Item>
+                    <ContextMenu.Item>Update</ContextMenu.Item>
+                    <ContextMenu.Item>Delete</ContextMenu.Item>
+                </ContextMenu.Menu>
+                <ContextMenu.Menu id="user-context-menu">
+                    <ContextMenu.Item>Kick</ContextMenu.Item>
+                    <ContextMenu.Item>Ban</ContextMenu.Item>
+                </ContextMenu.Menu>                
+            </div>
         </div>
     );
 }
