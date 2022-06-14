@@ -7,9 +7,12 @@ import { MdExpandMore } from 'react-icons/md';
 interface ChannelListProps {
     channels: IChannel[];
     name: string;
+    groupId: number;
+    onShowGroupContextMenu: (e: React.MouseEvent) => void;
+    onShowChannelContextMenu: (e: React.MouseEvent, channelId: number) => void;
 }
 
-function ChannelList({ channels, name }: ChannelListProps) {
+function ChannelList({ channels, name, groupId, onShowGroupContextMenu, onShowChannelContextMenu }: ChannelListProps) {
     const [collapsed, setCollapsed] = useState(false);
     const onToggleCollapse = useCallback(() => {
         setCollapsed((prev) => !prev);
@@ -21,13 +24,13 @@ function ChannelList({ channels, name }: ChannelListProps) {
                 <CollapseButton collapse={collapsed} onClick={onToggleCollapse}>
                     <MdExpandMore />
                 </CollapseButton>
-                <span>{name}</span>
+                <span onContextMenu={onShowGroupContextMenu}>{name}</span>
             </h2>
             <div>
                 {!collapsed &&
                     channels.map((channel) => {
                         return (
-                            <ChannelItem key={channel.id} channel={channel} />
+                            <ChannelItem key={channel.id} channel={channel} groupId={groupId} onContextMenu={(e: React.MouseEvent)=>onShowChannelContextMenu(e, channel.id)}/>
                         );
                     })}
             </div>

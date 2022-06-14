@@ -47,3 +47,26 @@ export function get<T = void>(url: string, body?: any, headers?: AxiosRequestHea
             withCredentials: true
         });
 }
+
+export function put<T = void>(
+    url: string,
+    data?: any,
+    headers?: AxiosRequestHeaders
+) {
+    if (!url) return new Promise<AxiosResponse<T>>(() => {
+    });
+    return axios.put<T>(apiUrl(url), data, {
+        headers: headers
+    });
+}
+
+export function del<T = void>(
+    url: string,
+    headers?: AxiosRequestHeaders
+) {
+    if (!url) return new Promise<AxiosResponse<T>>(() => {
+    });
+    return axios.delete<T>(apiUrl(url), {
+        headers: headers
+    });
+}

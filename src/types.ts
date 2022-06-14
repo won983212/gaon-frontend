@@ -34,6 +34,7 @@ export interface IMessage {
 export type IStatus = 'online' | 'offline' | 'missed';
 
 export interface IUser {
+    id: number;
     userId: string;
     username: string;
     name: string;
@@ -68,4 +69,11 @@ export interface Position {
 export interface Size {
     width: number;
     height: number;
+}
+
+export interface IWorkspace {
+    id: number;
+    name: string;
+    createdBy: number;
+    groups: Array<IChannelGroup>;
 }
