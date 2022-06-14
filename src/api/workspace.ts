@@ -1,6 +1,6 @@
 import { IChannel, IChannelGroup, IWorkspace } from '@/types';
 import axios from 'axios';
-import { post, useHTTPGetSWR } from './client';
+import { del, post, put, useHTTPGetSWR } from './client';
 
 export const useChannelsSWR = (workspaceId: number) =>
     useHTTPGetSWR<IChannelGroup[]>(`/workspace/${workspaceId}/channels`);
@@ -10,6 +10,9 @@ export const useChannelInfoSWR = (channelId: number) =>
 
 export const useWorkspacesSWR = (userId?: number) =>
     useHTTPGetSWR<IWorkspace[]>(`/project/list/${userId}`);
+
+export const useWorkspaceSWR = (workspaceId: number) =>
+    useHTTPGetSWR<IWorkspace>(`/project/${workspaceId}`);
 
 export const createChannel = (
         groupId: number,
@@ -64,7 +67,7 @@ export const createGroup = (
 }
 
 export const deleteGroup = (groupId: number, userId: number, token: string) => {
-    axios.delete(`/group/${groupId}?&userId=${userId}`, {
+    axios.delete(`/api/group/${groupId}?&userId=${userId}`, {
         headers: {
             'x-access-token': token
         }
@@ -73,27 +76,34 @@ export const deleteGroup = (groupId: number, userId: number, token: string) => {
 
 export const updateGroup = (groupId:number, userId: number, token: string, new_name?: string) => {
     if (!new_name) return;
-    axios.put(`/group/${groupId}`, {
+    axios.put(`/api/group/${groupId}`, {
         userId: userId,
         name: new_name
     }, {headers: {'x-access-token': token}})
 }
 
-export const createWorkspace = (userId: number, name: number, token: string) =>
+export const createWorkspace = function (userId: number, name: string, token: string) {
+    console.log("userId", userId, "name",name);
     post(`/project/`, {
         userId: userId,
         name: name
     }, {'x-access-token': token});
+}
+
 
 export const deleteWorkspace = (userId: number, projectId: number, token: string) =>
-    axios.delete(`/project/${projectId}?userId=${userId}`, {headers: {
+    del(`/project/${projectId}?userId=${userId}`, {
         'x-access-token': token
-    }});
+    })
 
 export const updateWorkspace = (userId: number, projectId: number, token:string, new_name?: string) => {
     if (!new_name) return;
-    axios.put(`/project/${projectId}`, {
+    put(`/project/${projectId}`, {
         userId: userId,
         name: new_name,
-    }, {headers: {'x-access-token': token}});
+    }, {'x-access-token': token});
+}
+
+export const getChannelList = (groupId: number) => {
+    useHTTPGetSWR<IChannel[]>(`/channel/list/${groupId}`);
 }
