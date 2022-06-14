@@ -1,5 +1,12 @@
 export type ChannelType = 'chatting' | 'conference';
 
+
+export interface IProject {
+    id: number;
+    createdBy: number;
+    name: string;
+}
+
 export interface IChannel {
     id: number;
     type: ChannelType;

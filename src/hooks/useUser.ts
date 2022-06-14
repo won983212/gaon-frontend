@@ -34,8 +34,9 @@ export default function useUser() {
 
     return {
         user,
+        error,
         identifier: userCookie as IUserIdentifier,
-        isLoading: !user && !error,
+        isLoadingUser: !user && !error,
         setCookie
     };
 }

@@ -26,10 +26,24 @@ export function post<T = void>(
     headers?: AxiosRequestHeaders
 ) {
     if (!url) {
-        return new Promise<AxiosResponse<T>>(() => {});
+        return new Promise<AxiosResponse<T>>(() => {
+        });
     }
     return axios.post<T>(apiUrl(url), data, {
         headers: headers,
         withCredentials: true
     });
+}
+
+export function get<T = void>(url: string, body?: any, headers?: AxiosRequestHeaders) {
+    if (!url) {
+        return new Promise<AxiosResponse<T>>(() => {
+        });
+    }
+    return axios
+        .get<T>(apiUrl(url), {
+            data: body,
+            headers: headers,
+            withCredentials: true
+        });
 }

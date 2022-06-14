@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { cssVar, lighten } from 'polished';
 
 type Size = 'large' | 'medium' | 'small';
 type Variant = 'normal' | 'text';
@@ -8,6 +9,7 @@ interface ButtonProps {
     variant?: Variant;
     fullWidth?: boolean;
     noPadding?: boolean;
+    color?: string;
 }
 
 const Button = styled.button<ButtonProps>`
@@ -33,19 +35,21 @@ const Button = styled.button<ButtonProps>`
                   font-size: 0.8rem;
               `}
 
-    ${(props) =>
+  ${(props) =>
         props.variant === 'text'
             ? css`
-                  color: dodgerblue;
+                  color: ${props.color ? props.color : 'dodgerblue'};
                   background-color: unset;
               `
             : css`
                   color: #fff;
-                  background-color: var(--primary);
+                  background-color: ${props.color
+                      ? props.color
+                      : 'var(--primary)'};
                   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
               `}
 
-    max-width: 100%;
+  max-width: 100%;
     border: none;
     transition: all 80ms linear;
     user-select: none;
@@ -58,9 +62,12 @@ const Button = styled.button<ButtonProps>`
         css`
             padding: 0 1rem;
         `}
-
     &:hover {
-        background-color: var(--primary-lighter);
+        background-color: ${(props) =>
+            lighten(
+                0.2,
+                props.color ? props.color : cssVar('--primary').toString()
+            )};
         border: none;
     }
 
