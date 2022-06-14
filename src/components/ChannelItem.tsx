@@ -8,10 +8,11 @@ import useRoom from '@/hooks/useRoom';
 
 interface ChannelItemProps {
     channel: IChannel;
-    onContextMenu: (e: React.MouseEvent, channelId: number) => void
+    onContextMenu: (e: React.MouseEvent) => void
+    groupId: number
 }
 
-function ChannelItem({ channel, onContextMenu }: ChannelItemProps) {
+function ChannelItem({ channel, groupId, onContextMenu }: ChannelItemProps) {
     const { workspaceId } = useRoom();
     return (
         <NavLink
@@ -28,7 +29,7 @@ function ChannelItem({ channel, onContextMenu }: ChannelItemProps) {
                     <HiOutlinePresentationChartLine />
                 )}
             </IconContainer>
-            <p onContextMenu={(e: React.MouseEvent) => onContextMenu(e, channel.id)}>{channel.name}</p>
+            <p onContextMenu={(e: React.MouseEvent) => onContextMenu(e)}>{channel.name}</p>
         </NavLink>
     );
 }

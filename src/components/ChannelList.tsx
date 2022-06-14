@@ -8,7 +8,7 @@ interface ChannelListProps {
     channels: IChannel[];
     name: string;
     groupId: number;
-    onShowGroupContextMenu: (e: React.MouseEvent, groupId: number) => void;
+    onShowGroupContextMenu: (e: React.MouseEvent) => void;
     onShowChannelContextMenu: (e: React.MouseEvent, channelId: number) => void;
 }
 
@@ -24,13 +24,13 @@ function ChannelList({ channels, name, groupId, onShowGroupContextMenu, onShowCh
                 <CollapseButton collapse={collapsed} onClick={onToggleCollapse}>
                     <MdExpandMore />
                 </CollapseButton>
-                <span onContextMenu={(e: React.MouseEvent)=>onShowGroupContextMenu(e, groupId)}>{name}</span>
+                <span onContextMenu={onShowGroupContextMenu}>{name}</span>
             </h2>
             <div>
                 {!collapsed &&
                     channels.map((channel) => {
                         return (
-                            <ChannelItem key={channel.id} channel={channel} onContextMenu={(e: React.MouseEvent, channelId: number)=>onShowChannelContextMenu(e, channelId)}/>
+                            <ChannelItem key={channel.id} channel={channel} groupId={groupId} onContextMenu={(e: React.MouseEvent)=>onShowChannelContextMenu(e, channel.id)}/>
                         );
                     })}
             </div>
