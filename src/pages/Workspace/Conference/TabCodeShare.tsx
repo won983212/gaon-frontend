@@ -7,16 +7,16 @@ import {
     FlexLayout,
     InnerContent,
     SideMenuBar
-} from '@/pages/Channels/Conference/style';
+} from '@/pages/Workspace/Conference/style';
 import { ChannelHeader } from '@/layouts/Workspace/style';
-import CodeEditor from '@/pages/Channels/Conference/CodeEditor';
+import CodeEditor from '@/pages/Workspace/Conference/CodeEditor';
 import TabContainer from '@/components/TabContainer';
 import FileTree from '@/components/FileTree';
 import UserList from '@/components/UserList';
 import Terminal from '@/components/Terminal';
 import * as monaco from 'monaco-editor';
 import { CodeChange } from '@/types';
-import { ConferenceTabProps } from '@/pages/Channels/Conference/index';
+import { ConferenceTabProps } from '@/pages/Workspace/Conference/index';
 import { MonacoBinding } from './y-monaco';
 import { WebsocketProvider } from 'y-websocket';
 import * as yjs from 'yjs';

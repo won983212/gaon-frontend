@@ -5,12 +5,12 @@ import {
     FlexLayout,
     InnerContent,
     SideMenuBar
-} from '@/pages/Channels/Conference/style';
+} from '@/pages/Workspace/Conference/style';
 import useRoom from '@/hooks/useRoom';
 import TabContainer from '@/components/TabContainer';
 import UserList from '@/components/UserList';
 import Whiteboard from '@/components/Whiteboard';
-import { ConferenceTabProps } from '@/pages/Channels/Conference/index';
+import { ConferenceTabProps } from '@/pages/Workspace/Conference/index';
 
 export default function TabCodeShare({ users }: ConferenceTabProps) {
     const { channelInfo } = useRoom();

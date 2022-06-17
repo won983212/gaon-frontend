@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect } from 'react';
-import Chatting from '@/pages/Channels/Chatting';
-import Conference from '@/pages/Channels/Conference';
+import Chatting from '@/pages/Workspace/Chatting';
+import Conference from '@/pages/Workspace/Conference';
 import Workspace from '@/layouts/Workspace';
-import { IconContainer, NoChannelMessageWrapper } from '@/pages/Channels/style';
+import {
+    IconContainer,
+    NoChannelMessageWrapper
+} from '@/pages/Workspace/style';
 import { MdOutlineInsertEmoticon } from 'react-icons/all';
 import useRoom from '@/hooks/useRoom';
 import useSocket from '@/hooks/useSocket';
