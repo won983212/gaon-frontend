@@ -43,7 +43,7 @@ import {
     DropdownList
 } from '@/components/Dropdown';
 import Modal, { Action } from '@/components/Modal';
-import { Form, FormContainer, FormWrapper, Label } from '@/pages/Login/style';
+import { Form, Label } from '@/pages/Login/style';
 import Input from '@/components/Input';
 
 type MenuType = 'workspace' | 'user' | 'channel' | 'group';
@@ -83,12 +83,13 @@ function Workspace({ children }: WorkspaceProps) {
     const { mutate: setConferenceTabIndex } = useConferenceTabIndex();
     const { data: workspaceList } = useWorkspacesSWR(userData?.id);
     const { data: currentWorkspace } = useWorkspaceSWR(workspaceId);
+    const navigate = useNavigate();
 
-    const onLogout = useCallback(() => {
-        doLogout(identifier?.token).then(() => {
-            setCookie(undefined);
-        });
-    }, [identifier?.token, setCookie]);
+    const onLogout = useCallback(async () => {
+        await doLogout(identifier?.token);
+        setCookie(undefined);
+        navigate('/');
+    }, [identifier?.token, navigate, setCookie]);
 
     const onCloseProfileMenu = useCallback(() => {
         setShowProfileMenu(false);
@@ -106,7 +107,7 @@ function Workspace({ children }: WorkspaceProps) {
         setShowWorkspaceMenu((prev) => !prev);
     }, []);
 
-    const changeWorkspace = function (workspaceId: number) {
+    const changeWorkspace = function(workspaceId: number) {
         navigate(`/workspace/${workspaceId}/channel`);
         console.log(workspaceId);
     };
@@ -156,7 +157,6 @@ function Workspace({ children }: WorkspaceProps) {
         ContextMenu.contextMenu.show({ id: 'user-context-menu', event: e });
     };
 
-    const navigate = useNavigate();
     const onCloseDeleteDialog = useCallback(
         (action: Action) => {
             try {
@@ -286,7 +286,7 @@ function Workspace({ children }: WorkspaceProps) {
         [identifier.token, navigate, userData, workspaceId]
     );
     if (!userData) {
-        return <Navigate replace to="/login" />;
+        return <Navigate replace to='/login' />;
     }
 
     return (
@@ -339,13 +339,13 @@ function Workspace({ children }: WorkspaceProps) {
                                     name={category.name}
                                     channels={category.channels}
                                     groupId={1}
-                                    onShowGroupContextMenu={function (
+                                    onShowGroupContextMenu={function(
                                         e: React.MouseEvent
                                     ) {
                                         onShowGroupContextMenu(e, category.id);
                                         console.log(category.id);
                                     }}
-                                    onShowChannelContextMenu={function (
+                                    onShowChannelContextMenu={function(
                                         e: React.MouseEvent,
                                         channelId: number
                                     ) {
@@ -374,10 +374,10 @@ function Workspace({ children }: WorkspaceProps) {
                                     alt={userData.username}
                                 />
                                 <div>
-                                    <span id="profile-name">
+                                    <span id='profile-name'>
                                         {userData.username}
                                     </span>
-                                    <span id="profile-active">Active</span>
+                                    <span id='profile-active'>Active</span>
                                 </div>
                             </ProfileMenu>
                             <LogOutButton onClick={onLogout}>
@@ -388,7 +388,7 @@ function Workspace({ children }: WorkspaceProps) {
                     {channelInfo && channelInfo.type === 'conference' && (
                         <ConferenceMenu>
                             <Button
-                                size="small"
+                                size='small'
                                 style={{ flex: 1, marginRight: 8 }}
                                 noPadding
                                 onClick={() => setConferenceTabIndex(0)}
@@ -396,7 +396,7 @@ function Workspace({ children }: WorkspaceProps) {
                                 코드
                             </Button>
                             <Button
-                                size="small"
+                                size='small'
                                 style={{ flex: 1 }}
                                 noPadding
                                 onClick={() => setConferenceTabIndex(1)}
@@ -420,7 +420,7 @@ function Workspace({ children }: WorkspaceProps) {
             </WorkspaceWrapper>
             <div>
                 {/*함수의 몸체 부분에 modal에게 id를 전달하고 modal에게 api call을 위임합니다.*/}
-                <ContextMenu.Menu id="workspace-context-menu">
+                <ContextMenu.Menu id='workspace-context-menu'>
                     <ContextMenu.Item
                         onClick={() => {
                             setShowWorkspaceCreateDialog(true);
@@ -447,19 +447,23 @@ function Workspace({ children }: WorkspaceProps) {
                         </>
                     )}
                 </ContextMenu.Menu>
-                <ContextMenu.Menu id="channel-context-menu">
-                    <ContextMenu.Item onClick={() => {}}>
+                <ContextMenu.Menu id='channel-context-menu'>
+                    <ContextMenu.Item onClick={() => {
+                    }}>
                         New channel
                     </ContextMenu.Item>
-                    <ContextMenu.Item onClick={({ props }) => {}}>
+                    <ContextMenu.Item onClick={({ props }) => {
+                    }}>
                         Update
                     </ContextMenu.Item>
-                    <ContextMenu.Item onClick={({ props }) => {}}>
+                    <ContextMenu.Item onClick={({ props }) => {
+                    }}>
                         Delete
                     </ContextMenu.Item>
                 </ContextMenu.Menu>
-                <ContextMenu.Menu id="group-context-menu">
-                    <ContextMenu.Item onClick={() => {}}>
+                <ContextMenu.Menu id='group-context-menu'>
+                    <ContextMenu.Item onClick={() => {
+                    }}>
                         New group
                     </ContextMenu.Item>
                     <ContextMenu.Item
@@ -477,11 +481,13 @@ function Workspace({ children }: WorkspaceProps) {
                         Delete
                     </ContextMenu.Item>
                 </ContextMenu.Menu>
-                <ContextMenu.Menu id="user-context-menu">
-                    <ContextMenu.Item onClick={({ props }) => {}}>
+                <ContextMenu.Menu id='user-context-menu'>
+                    <ContextMenu.Item onClick={({ props }) => {
+                    }}>
                         Kick
                     </ContextMenu.Item>
-                    <ContextMenu.Item onClick={({ props }) => {}}>
+                    <ContextMenu.Item onClick={({ props }) => {
+                    }}>
                         Ban
                     </ContextMenu.Item>
                 </ContextMenu.Menu>
@@ -493,7 +499,7 @@ function Workspace({ children }: WorkspaceProps) {
                         onAction={(action: Action) =>
                             onCloseDeleteDialog(action)
                         }
-                        buttons="yesno"
+                        buttons='yesno'
                     >
                         정말로 삭제 하시겠습니까?
                     </Modal>
@@ -502,7 +508,7 @@ function Workspace({ children }: WorkspaceProps) {
                     <Modal
                         isOpen={true}
                         onAction={onCloseCreateDialog}
-                        buttons="yesno"
+                        buttons='yesno'
                     >
                         정말로 생성 하시겠습니까?
                     </Modal>
@@ -511,11 +517,11 @@ function Workspace({ children }: WorkspaceProps) {
                     <Modal
                         isOpen={true}
                         onAction={onCloseUpdateDialog}
-                        buttons="yesno"
+                        buttons='yesno'
                     >
                         <Form>
                             <Label>새 워크스페이스 이름</Label>
-                            <Input id="workspace-update-name"></Input>
+                            <Input id='workspace-update-name'></Input>
                         </Form>
                     </Modal>
                 )}
@@ -523,11 +529,11 @@ function Workspace({ children }: WorkspaceProps) {
                     <Modal
                         isOpen={true}
                         onAction={onCloseUpdateDialog}
-                        buttons="yesno"
+                        buttons='yesno'
                     >
                         <Form>
                             <Label>새 채널 이름</Label>
-                            <Input id="channel-update-name"></Input>
+                            <Input id='channel-update-name'></Input>
                         </Form>
                     </Modal>
                 )}
@@ -535,11 +541,11 @@ function Workspace({ children }: WorkspaceProps) {
                     <Modal
                         isOpen={true}
                         onAction={onCloseUpdateDialog}
-                        buttons="yesno"
+                        buttons='yesno'
                     >
                         <Form>
                             <Label>새 그룹 이름</Label>
-                            <Input id="group-update-name"></Input>
+                            <Input id='group-update-name'></Input>
                         </Form>
                     </Modal>
                 )}

@@ -4,6 +4,7 @@ import Button from '@/components/Button';
 import { doAcceptInvite, useInviteProjectInfoSWR } from '@/api/workspace';
 import { useCallback } from 'react';
 import useUser from '@/hooks/useUser';
+import Login from '@/pages/Login';
 
 const BackgroundContainer = styled.div`
   display: flex;
@@ -76,7 +77,7 @@ export default function Invite() {
     }
 
     if (!user) {
-        return <p>로그인 정보가 잘못되었습니다.</p>;
+        return <Login redirectTo={`/invite/${inviteId}`} />;
     }
 
     return (

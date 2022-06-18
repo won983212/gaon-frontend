@@ -15,7 +15,11 @@ import {
 } from './style';
 import useUser from '@/hooks/useUser';
 
-function Login() {
+interface LoginPageProps {
+    redirectTo?: string;
+}
+
+function Login({ redirectTo }: LoginPageProps) {
     const { user, isLoadingUser, setCookie } = useUser();
     const [logInError, setLogInError] = useState<string | undefined>(undefined);
     const [id, onChangeID] = useInput('');
@@ -41,7 +45,7 @@ function Login() {
 
     if (user) {
         // TODO set as default workspace
-        return <Navigate replace to='/workspace/0/channel' />;
+        return <Navigate replace to={redirectTo ?? '/workspace/0/channel'} />;
     }
 
     if (isLoadingUser) {
