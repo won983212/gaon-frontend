@@ -144,7 +144,8 @@ export const WorkspaceProfileWrapper = styled.div`
 
 export const MenuIconWrapper = styled.div`
     color: var(--primary-light);
-    margin-right: 12px;
+    margin-right: 8px;
+    margin-left: 8px;
 `;
 
 export const ConferenceMenu = styled.div`

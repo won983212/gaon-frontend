@@ -26,8 +26,7 @@ export function post<T = void>(
     headers?: AxiosRequestHeaders
 ) {
     if (!url) {
-        return new Promise<AxiosResponse<T>>(() => {
-        });
+        return new Promise<AxiosResponse<T>>(() => {});
     }
     return axios.post<T>(apiUrl(url), data, {
         headers: headers,
@@ -35,17 +34,19 @@ export function post<T = void>(
     });
 }
 
-export function get<T = void>(url: string, body?: any, headers?: AxiosRequestHeaders) {
+export function get<T = void>(
+    url: string,
+    body?: any,
+    headers?: AxiosRequestHeaders
+) {
     if (!url) {
-        return new Promise<AxiosResponse<T>>(() => {
-        });
+        return new Promise<AxiosResponse<T>>(() => {});
     }
-    return axios
-        .get<T>(apiUrl(url), {
-            data: body,
-            headers: headers,
-            withCredentials: true
-        });
+    return axios.get<T>(apiUrl(url), {
+        data: body,
+        headers: headers,
+        withCredentials: true
+    });
 }
 
 export function put<T = void>(
@@ -53,20 +54,21 @@ export function put<T = void>(
     data?: any,
     headers?: AxiosRequestHeaders
 ) {
-    if (!url) return new Promise<AxiosResponse<T>>(() => {
-    });
+    if (!url) {
+        return new Promise<AxiosResponse<T>>(() => {});
+    }
     return axios.put<T>(apiUrl(url), data, {
-        headers: headers
+        headers: headers,
+        withCredentials: true
     });
 }
 
-export function del<T = void>(
-    url: string,
-    headers?: AxiosRequestHeaders
-) {
-    if (!url) return new Promise<AxiosResponse<T>>(() => {
-    });
+export function del<T = void>(url: string, headers?: AxiosRequestHeaders) {
+    if (!url) {
+        return new Promise<AxiosResponse<T>>(() => {});
+    }
     return axios.delete<T>(apiUrl(url), {
-        headers: headers
+        headers: headers,
+        withCredentials: true
     });
 }

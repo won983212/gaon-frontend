@@ -67,7 +67,7 @@ export default function SelectWorkspace() {
                         >
                             <Profile
                                 username={workspace.name}
-                                nameColor="black"
+                                nameColor="var(--primary)"
                                 avatarUrl={gravatar.url(workspace.name, {
                                     s: '36px',
                                     d: 'retro'
