@@ -1,6 +1,7 @@
 import loadable from '@loadable/component';
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import SelectWorkspace from '@/pages/SelectWorkspace';
 
 const Login = loadable(() => import('@/pages/Login'));
 const SignUp = loadable(() => import('@/pages/SignUp'));
@@ -14,12 +15,14 @@ function App() {
                 <Route path="/" element={<Login />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
-                <Route path="/invite" element={<Invite />}>
+                <Route path="/invite">
                     <Route path=":inviteId" element={<Invite />} />
                 </Route>
-                <Route path="workspace" element={<Channels />}>
-                    <Route path=":workspaceId" element={<Channels />}>
-                        <Route path="channel" element={<Channels />}>
+                <Route path="workspace">
+                    <Route index element={<SelectWorkspace />} />
+                    <Route path=":workspaceId">
+                        <Route path="channel">
+                            <Route index element={<Channels />} />
                             <Route path=":channelId" element={<Channels />} />
                         </Route>
                     </Route>

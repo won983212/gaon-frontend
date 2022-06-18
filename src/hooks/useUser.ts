@@ -31,6 +31,9 @@ export default function useUser() {
     );
 
     const error = userCookie ? swrError : 'No login data';
+    if (userCookie) {
+        userCookie.id = user?.id;
+    }
 
     return {
         user,

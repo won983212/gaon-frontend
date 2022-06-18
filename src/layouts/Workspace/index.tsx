@@ -162,7 +162,6 @@ function Workspace({ children }: WorkspaceProps) {
             try {
                 if (!userData || !identifier) return;
                 if (action === 'yes') {
-                    console.log(currentContextMenuInfo);
                     switch (currentContextMenuInfo.type) {
                         case 'workspace':
                             if (
@@ -202,7 +201,6 @@ function Workspace({ children }: WorkspaceProps) {
                             break;
                     }
                     setShowDeleteDialog(false);
-                    navigate(`/workspace/0/channel`);
                     return;
                 }
                 setShowDeleteDialog(false);
@@ -215,6 +213,7 @@ function Workspace({ children }: WorkspaceProps) {
         },
         [identifier, navigate, userData, workspaceId]
     );
+
     //얘는 따로따로
     const onCloseUpdateDialog = useCallback(
         (action: Action) => {
@@ -233,7 +232,6 @@ function Workspace({ children }: WorkspaceProps) {
                             identifier.token,
                             new_name ?? 'New workspace'
                         ); //에러 처리 필요
-                        navigate(`/workspace/0/channel`);
                 }
                 setShowWorkspaceUpdateDialog(false);
                 return;

@@ -44,8 +44,7 @@ function Login({ redirectTo }: LoginPageProps) {
     );
 
     if (user) {
-        // TODO set as default workspace
-        return <Navigate replace to={redirectTo ?? '/workspace/0/channel'} />;
+        return <Navigate replace to={redirectTo ?? '/workspace'} />;
     }
 
     if (isLoadingUser) {
@@ -53,29 +52,29 @@ function Login({ redirectTo }: LoginPageProps) {
     }
 
     return (
-        <FormContainer id='container'>
+        <FormContainer id="container">
             <FormWrapper>
                 <Header>Gaon</Header>
                 <Form onSubmit={onSubmit}>
-                    <Label id='id-label'>
+                    <Label id="id-label">
                         <span>아이디</span>
                         <div>
                             <Input
-                                type='text'
-                                id='id'
-                                name='id'
+                                type="text"
+                                id="id"
+                                name="id"
                                 value={id}
                                 onChange={onChangeID}
                             />
                         </div>
                     </Label>
-                    <Label id='password-label'>
+                    <Label id="password-label">
                         <span>비밀번호</span>
                         <div>
                             <Input
-                                type='password'
-                                id='password'
-                                name='password'
+                                type="password"
+                                id="password"
+                                name="password"
                                 value={password}
                                 onChange={onChangePassword}
                             />
@@ -85,9 +84,9 @@ function Login({ redirectTo }: LoginPageProps) {
 
                     <LinkContainer>
                         아이디가 없다면&nbsp;
-                        <Link to='/signup'>회원가입</Link>
+                        <Link to="/signup">회원가입</Link>
                     </LinkContainer>
-                    <Button type='submit' fullWidth>
+                    <Button type="submit" fullWidth>
                         로그인
                     </Button>
                 </Form>
