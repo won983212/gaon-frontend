@@ -2,7 +2,7 @@ import React from 'react';
 import Button from '../Button';
 import { Actions, Content, ModalPanel, ModalWrapper } from './style';
 
-export type Buttons = 'ok' | 'yesno' | 'yesnocancel';
+export type Buttons = 'ok' | 'yesno' | 'yesnocancel' | 'okcancel';
 export type Action = 'ok' | 'yes' | 'no' | 'cancel';
 
 export interface ModelProps {
@@ -23,7 +23,7 @@ export default function Modal({
             <ModalPanel>
                 <Content>{children}</Content>
                 <Actions>
-                    {buttons === 'ok' ? (
+                    {(buttons === 'ok' || buttons === 'okcancel') && (
                         <Button
                             onClick={() => onAction('ok')}
                             size="small"
@@ -31,7 +31,8 @@ export default function Modal({
                         >
                             확인
                         </Button>
-                    ) : (
+                    )}
+                    {(buttons === 'yesno' || buttons === 'yesnocancel') && (
                         <>
                             <Button
                                 onClick={() => onAction('yes')}
@@ -47,18 +48,16 @@ export default function Modal({
                             >
                                 아니오
                             </Button>
-                            {buttons === 'yesnocancel' ? (
-                                <Button
-                                    onClick={() => onAction('cancel')}
-                                    size="small"
-                                    variant="text"
-                                >
-                                    취소
-                                </Button>
-                            ) : (
-                                <></>
-                            )}
                         </>
+                    )}
+                    {(buttons === 'yesnocancel' || buttons === 'okcancel') && (
+                        <Button
+                            onClick={() => onAction('cancel')}
+                            size="small"
+                            variant="text"
+                        >
+                            취소
+                        </Button>
                     )}
                 </Actions>
             </ModalPanel>

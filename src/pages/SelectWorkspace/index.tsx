@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import useUser from '@/hooks/useUser';
-import { useWorkspacesSWR } from '@/api/workspace';
+import { createWorkspace, useWorkspacesSWR } from '@/api/workspace';
 import {
     BackgroundContainer,
     BackgroundPanel,
@@ -9,12 +9,33 @@ import {
 import styled from 'styled-components';
 import Profile from '@/components/Profile';
 import gravatar from 'gravatar';
-import { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
+import Modal, { Action } from '@/components/Modal';
+import Input from '@/components/Input';
+import useInput from '@/hooks/useInput';
 
 export const ProjectList = styled.ul`
     list-style: none;
     margin: 0;
     padding: 0;
+`;
+
+export const ProjectCreate = styled.div`
+    user-select: none;
+    padding: 4px;
+    text-align: center;
+    border-radius: 4px;
+    color: var(--primary-lighter);
+
+    &:hover {
+        background-color: #efefef;
+    }
+`;
+
+export const Error = styled.div`
+    color: #e01e5a;
+    margin: 8px 0 16px;
+    font-weight: bold;
 `;
 
 export const ProjectListItem = styled.li`
@@ -32,14 +53,43 @@ export const ProjectListItem = styled.li`
 
 export default function SelectWorkspace() {
     const navigate = useNavigate();
-    const { user, isLoadingUser } = useUser();
-    const { data, error } = useWorkspacesSWR(user?.id);
+    const [showNewProjectDialog, setShowNewProjectDialog] = useState(false);
+    const [dialogError, setDialogError] = useState('');
+    const { user, identifier, isLoadingUser } = useUser();
+    const { data, mutate, error } = useWorkspacesSWR(user?.id);
+    const [projectName, onChangeProjectName] = useInput('');
 
     const onClickProject = useCallback(
         (id: number) => {
             navigate(`/workspace/${id}/channel`);
         },
         [navigate]
+    );
+
+    const onClickNewProject = useCallback(() => {
+        setShowNewProjectDialog(true);
+    }, []);
+
+    const onCloseNewProjectDialog = useCallback(
+        (action: Action) => {
+            if (action === 'ok' && user && identifier) {
+                if (!projectName) {
+                    setDialogError('프로젝트 이름을 입력해주세요.');
+                } else {
+                    createWorkspace(
+                        user.id,
+                        projectName,
+                        identifier.token
+                    ).then(() => mutate());
+                    setShowNewProjectDialog(false);
+                    setDialogError('');
+                }
+            } else {
+                setShowNewProjectDialog(false);
+                setDialogError('');
+            }
+        },
+        [identifier, mutate, projectName, user]
     );
 
     if (error) {
@@ -53,6 +103,27 @@ export default function SelectWorkspace() {
     if (!user) {
         navigate('/');
         return <></>;
+    }
+
+    if (showNewProjectDialog) {
+        return (
+            <Modal
+                isOpen={true}
+                onAction={onCloseNewProjectDialog}
+                buttons="okcancel"
+            >
+                <b>새로 만들 프로젝트 이름을 입력해주세요.</b>
+                {dialogError && <Error>{dialogError}</Error>}
+                <Input
+                    type="text"
+                    id="projectName"
+                    name="projectName"
+                    value={projectName}
+                    style={{ marginTop: '16px', marginBottom: '4px' }}
+                    onChange={onChangeProjectName}
+                />
+            </Modal>
+        );
     }
 
     return (
@@ -76,6 +147,9 @@ export default function SelectWorkspace() {
                         </ProjectListItem>
                     ))}
                 </ProjectList>
+                <ProjectCreate onClick={onClickNewProject}>
+                    + 프로젝트 추가
+                </ProjectCreate>
             </BackgroundPanel>
         </BackgroundContainer>
     );
