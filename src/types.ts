@@ -1,11 +1,5 @@
-export type ChannelType = 'chatting' | 'conference';
+export type ChannelType = 'empty' | 'chatting' | 'conference';
 
-
-export interface IProject {
-    id: number;
-    createdBy: number;
-    name: string;
-}
 
 export interface IChannel {
     id: number;
@@ -16,7 +10,6 @@ export interface IChannel {
 export interface IChannelGroup {
     id: number;
     name: string;
-    channels: IChannel[];
 }
 
 export interface IFileNode {
@@ -75,5 +68,5 @@ export interface IWorkspace {
     id: number;
     name: string;
     createdBy: number;
-    groups: Array<IChannelGroup>;
+    groups?: Array<IChannelGroup>;
 }

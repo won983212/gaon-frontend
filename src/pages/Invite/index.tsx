@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router';
 import Button from '@/components/Button';
-import { doAcceptInvite, useInviteProjectInfoSWR } from '@/api/workspace';
+import { doAcceptInvite, useInvitedProjectInfoSWR } from '@/api/workspace';
 import { useCallback } from 'react';
 import useUser from '@/hooks/useUser';
 import Login from '@/pages/Login';
@@ -18,7 +18,7 @@ export default function Invite() {
     const navigate = useNavigate();
     const { inviteId } = useParams();
     const { user, isLoadingUser, identifier } = useUser();
-    const { data, error } = useInviteProjectInfoSWR(inviteId ?? '');
+    const { data, error } = useInvitedProjectInfoSWR(inviteId ?? '');
 
     const onAccept = useCallback(() => {
         if (inviteId) {

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router';
+import { Navigate, useNavigate } from 'react-router';
 import useUser from '@/hooks/useUser';
 import { createWorkspace, useWorkspacesSWR } from '@/api/workspace';
 import {
@@ -9,7 +9,7 @@ import {
 import styled from 'styled-components';
 import Profile from '@/components/Profile';
 import gravatar from 'gravatar';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Modal, { Action } from '@/components/Modal';
 import Input from '@/components/Input';
 import useInput from '@/hooks/useInput';
@@ -92,17 +92,16 @@ export default function SelectWorkspace() {
         [identifier, mutate, projectName, user]
     );
 
-    if (error) {
-        return <p>* userId가 잘못되었습니다.</p>;
-    }
+    useEffect(() => {
+        mutate()
+    }, [mutate])
 
     if (!data || isLoadingUser) {
         return <p>Loading...</p>;
     }
 
-    if (!user) {
-        navigate('/');
-        return <></>;
+    if (!user || error) {
+        return <Navigate replace to="/" />;
     }
 
     if (showNewProjectDialog) {

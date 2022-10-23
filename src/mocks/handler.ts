@@ -4,23 +4,11 @@ import { rest } from 'msw';
 const dummyChannels: IChannelGroup[] = [
     {
         id: 1,
-        name: 'Group1',
-        channels: [
-            { id: 1, type: 'chatting', name: 'Chatting1' },
-            { id: 2, type: 'chatting', name: 'Chatting2' },
-            { id: 3, type: 'chatting', name: 'Chatting3' },
-            { id: 4, type: 'conference', name: 'Conference1' }
-        ]
+        name: 'Group1'
     },
     {
         id: 2,
-        name: 'Group2',
-        channels: [
-            { id: 5, type: 'chatting', name: 'Chatting1' },
-            { id: 6, type: 'chatting', name: 'Chatting2' },
-            { id: 7, type: 'conference', name: 'Conference1' },
-            { id: 8, type: 'conference', name: 'Conference2' }
-        ]
+        name: 'Group2'
     }
 ];
 
@@ -116,16 +104,7 @@ const workspaceHandlers = [
     }),
     rest.get('/api/channels/:channelId', async (req, res, ctx) => {
         const { channelId } = req.params;
-        let channel;
-        for (let group of dummyChannels) {
-            channel = group.channels.find(
-                (channel) => channel.id === +channelId
-            );
-            if (channel !== undefined) {
-                break;
-            }
-        }
-        return res(ctx.json<IChannel | undefined>(channel));
+        return res(ctx.json<IChannel>({ id: +channelId, type: 'chatting', name: 'Chatting1' }));
     }),
     rest.get('/api/workspace/:workspaceId/files', async (req, res, ctx) => {
         return res(ctx.json<IFileNode[]>(dummyFiles));

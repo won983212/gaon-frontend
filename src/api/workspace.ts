@@ -1,15 +1,10 @@
-import {
-    IChannel,
-    IChannelGroup,
-    IProject,
-    IUserIdentifier,
-    IWorkspace
-} from '@/types';
-import axios from 'axios';
+import { IChannel, IChannelGroup, IUserIdentifier, IWorkspace } from '@/types';
 import { del, get, post, put, useHTTPGetSWR } from './client';
 
-export const useInviteProjectInfoSWR = (code: string) =>
-    useHTTPGetSWR<IProject>(`/invite/${code}`);
+export const doInvite = () => {};
+
+export const useInvitedProjectInfoSWR = (code: string) =>
+    useHTTPGetSWR<IWorkspace>(`/invite/${code}`);
 
 export const doAcceptInvite = (code: string, accept: boolean, token: string) =>
     get<IUserIdentifier>(`/invite/accept/${code}`, undefined, {
@@ -17,17 +12,32 @@ export const doAcceptInvite = (code: string, accept: boolean, token: string) =>
         'x-access-token': token
     });
 
-export const useChannelsSWR = (workspaceId: number) =>
-    useHTTPGetSWR<IChannelGroup[]>(`/workspace/${workspaceId}/channels`);
+export const useGroupsSWR = (workspaceId: number) => {
+    const response = useHTTPGetSWR<IChannelGroup[]>(
+        `/group/list/${workspaceId}`
+    );
+    if (workspaceId === -1) {
+        response.mutate([]);
+    }
+    return response;
+};
 
 export const useChannelInfoSWR = (channelId: number) =>
     useHTTPGetSWR<IChannel>(`/channels/${channelId}`);
 
-export const useWorkspacesSWR = (userId?: number) =>
-    useHTTPGetSWR<IWorkspace[]>(`/project/list/${userId}`);
+export const useWorkspacesSWR = (userId?: number) => {
+    const response = useHTTPGetSWR<IWorkspace[]>(`/project/list/${userId}`);
+    if (!userId) {
+        response.mutate([]);
+    }
+    return response;
+};
 
 export const useWorkspaceSWR = (workspaceId: number) =>
     useHTTPGetSWR<IWorkspace>(`/project/${workspaceId}`);
+
+export const getChannels = (groupId: number) =>
+    get<IChannel[]>(`/channel/list/${groupId}`);
 
 export const createChannel = (
     groupId: number,
@@ -36,7 +46,7 @@ export const createChannel = (
     type: string,
     token: string
 ) =>
-    post(
+    post<IChannel>(
         `/channel/`,
         {
             groupId: groupId,
@@ -53,10 +63,8 @@ export const deleteChannel = (
     groupId: number,
     token: string
 ) =>
-    axios.delete(`/channel/${channelId}?userId=${userId}&groupId=${groupId}`, {
-        headers: {
-            'x-access-token': token
-        }
+    del(`/channel/${channelId}?userId=${userId}&groupId=${groupId}`, {
+        'x-access-token': token
     });
 
 export const updateChannel = (
@@ -68,20 +76,20 @@ export const updateChannel = (
     new_type?: string
 ) => {
     if (!(new_type || new_name)) {
-        return axios.put(
-            `/channel/${channelId}`,
-            {
-                userId: userId,
-                groupId: groupId,
-                name: new_name,
-                type: new_type
-            },
-            { headers: { 'x-access-token': token } }
-        );
+        return new Promise((resolve, reject) => {
+            reject('Invalid argument type.');
+        });
     }
-    return new Promise((resolve, reject) => {
-        reject('Invalid argument type.');
-    });
+    return put(
+        `/channel/${channelId}`,
+        {
+            userId: userId,
+            groupId: groupId,
+            name: new_name,
+            type: new_type
+        },
+        { 'x-access-token': token }
+    );
 };
 
 export const createGroup = (
@@ -91,7 +99,7 @@ export const createGroup = (
     userId: number,
     token: string
 ) =>
-    post(
+    post<IChannelGroup>(
         `/group/`,
         {
             name: name,
@@ -103,28 +111,24 @@ export const createGroup = (
     );
 
 export const deleteGroup = (groupId: number, userId: number, token: string) =>
-    axios.delete(`/api/group/${groupId}?&userId=${userId}`, {
-        headers: {
-            'x-access-token': token
-        }
+    del(`/group/${groupId}?&userId=${userId}`, {
+        'x-access-token': token
     });
 
 export const updateGroup = (
     groupId: number,
     userId: number,
     token: string,
-    new_name?: string
-) => {
-    if (!new_name) return;
-    return axios.put(
-        `/api/group/${groupId}`,
+    new_name: string
+) =>
+    put(
+        `/group/${groupId}`,
         {
             userId: userId,
             name: new_name
         },
-        { headers: { 'x-access-token': token } }
+        { 'x-access-token': token }
     );
-};
 
 export const createWorkspace = function (
     userId: number,
@@ -132,7 +136,7 @@ export const createWorkspace = function (
     token: string
 ) {
     console.log('userId', userId, 'name', name);
-    return post(
+    return post<IWorkspace>(
         `/project/`,
         {
             userId: userId,

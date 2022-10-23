@@ -110,7 +110,7 @@ export const Channels = styled.nav`
     & h2 {
         height: 36px;
         line-height: 36px;
-        margin: 12px 0 0 0;
+        margin: 0;
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;

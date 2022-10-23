@@ -10,13 +10,24 @@ interface ChannelListProps {
     groupId: number;
     onShowGroupContextMenu: (e: React.MouseEvent) => void;
     onShowChannelContextMenu: (e: React.MouseEvent, channelId: number) => void;
+    onNeedChannelList: (groupId: number) => void;
 }
 
-function ChannelList({ channels, name, groupId, onShowGroupContextMenu, onShowChannelContextMenu }: ChannelListProps) {
-    const [collapsed, setCollapsed] = useState(false);
+function ChannelList({
+    channels,
+    name,
+    groupId,
+    onShowGroupContextMenu,
+    onShowChannelContextMenu,
+    onNeedChannelList
+}: ChannelListProps) {
+    const [collapsed, setCollapsed] = useState(true);
     const onToggleCollapse = useCallback(() => {
         setCollapsed((prev) => !prev);
-    }, []);
+        if (collapsed) {
+            onNeedChannelList(groupId);
+        }
+    }, [collapsed, groupId, onNeedChannelList]);
 
     return (
         <>
@@ -28,11 +39,21 @@ function ChannelList({ channels, name, groupId, onShowGroupContextMenu, onShowCh
             </h2>
             <div>
                 {!collapsed &&
-                    channels.map((channel) => {
-                        return (
-                            <ChannelItem key={channel.id} channel={channel} groupId={groupId} onContextMenu={(e: React.MouseEvent)=>onShowChannelContextMenu(e, channel.id)}/>
-                        );
-                    })}
+                    (channels.length === 0 ? (
+                        <div className="menuitem">비어있음</div>
+                    ) : (
+                        channels.map((channel) => {
+                            return (
+                                <ChannelItem
+                                    key={channel.id}
+                                    channel={channel}
+                                    onContextMenu={(e: React.MouseEvent) =>
+                                        onShowChannelContextMenu(e, channel.id)
+                                    }
+                                />
+                            );
+                        })
+                    ))}
             </div>
         </>
     );
