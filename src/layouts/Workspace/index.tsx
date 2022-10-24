@@ -55,6 +55,7 @@ import {
     getChannels,
     updateChannel
 } from '@/api/channel';
+import { doInvite } from '@/api/invite';
 
 type CommandTarget = 'workspace' | 'channel' | 'group';
 
@@ -166,7 +167,13 @@ function Workspace({ children }: WorkspaceProps) {
                 alert('이름을 입력해주세요.');
                 return;
             }
-
+            doInvite(name, workspaceId, userData.id, identifier.token)
+                .then(() => {
+                    alert('초대 메시지를 보냈습니다.');
+                })
+                .catch(() => {
+                    alert('초대할 수 없습니다.');
+                });
             setInputText('');
         }
         setShowInviteDialog(false);
