@@ -8,9 +8,7 @@ import Text from '@/components/Whiteboard/tools/Text';
 import { PathElement } from '@/components/Whiteboard/elements/PathElement';
 import { CircleElement } from '@/components/Whiteboard/elements/CircleElement';
 import { LineElement } from '@/components/Whiteboard/elements/LineElement';
-import {
-    RectangleElement
-} from '@/components/Whiteboard/elements/RectangleElement';
+import { RectangleElement } from '@/components/Whiteboard/elements/RectangleElement';
 import { TextElement } from '@/components/Whiteboard/elements/TextElement';
 
 

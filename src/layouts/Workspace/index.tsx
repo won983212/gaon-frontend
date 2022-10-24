@@ -1,16 +1,8 @@
 import { doLogout } from '@/api/auth';
 import {
-    createChannel,
-    createGroup,
     createWorkspace,
-    deleteChannel,
-    deleteGroup,
     deleteWorkspace,
-    getChannels,
-    updateChannel,
-    updateGroup,
     updateWorkspace,
-    useGroupsSWR,
     useWorkspacesSWR,
     useWorkspaceSWR
 } from '@/api/workspace';
@@ -21,6 +13,7 @@ import gravatar from 'gravatar';
 import React, { useCallback, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router';
 import * as ContextMenu from 'react-contexify';
+import { useContextMenu } from 'react-contexify';
 import 'react-contexify/dist/ReactContexify.css';
 import {
     Channels,
@@ -49,8 +42,19 @@ import Modal, { Action } from '@/components/Modal';
 import { Form, Label } from '@/pages/Login/style';
 import Input from '@/components/Input';
 import useInput from '@/hooks/useInput';
-import { useContextMenu } from 'react-contexify';
 import { ChannelType, IChannel } from '@/types';
+import {
+    createGroup,
+    deleteGroup,
+    updateGroup,
+    useGroupsSWR
+} from '@/api/group';
+import {
+    createChannel,
+    deleteChannel,
+    getChannels,
+    updateChannel
+} from '@/api/channel';
 
 type CommandTarget = 'workspace' | 'channel' | 'group';
 

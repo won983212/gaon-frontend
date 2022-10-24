@@ -1,5 +1,5 @@
 import { useParams } from 'react-router';
-import { useChannelInfoSWR } from '@/api/workspace';
+import { useChannelInfoSWR } from '@/api/channel';
 
 /**
  * 현재 들어가있는 workspace / channel 정보 얻어오기

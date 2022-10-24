@@ -1,8 +1,6 @@
 import { Position } from '@/types';
 import { CanvasDrawingContext, ITool } from './ITool';
-import {
-    AbstractDrawElement
-} from '@/components/Whiteboard/elements/AbstractDrawElement';
+import { AbstractDrawElement } from '@/components/Whiteboard/elements/AbstractDrawElement';
 import { getDeserializer } from '@/components/Whiteboard/registry';
 
 export default function Eraser(): ITool {

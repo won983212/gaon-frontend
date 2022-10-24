@@ -2,9 +2,7 @@ import { Position } from '@/types';
 import { BrushStyle, SerializedDrawElement } from '../types';
 import { applyStyle } from '../utils/RenderUtils';
 import { AbstractDrawElement } from './AbstractDrawElement';
-import {
-    checkHitCircle
-} from '@/components/Whiteboard/utils/CollisionDetectors';
+import { checkHitCircle } from '@/components/Whiteboard/utils/CollisionDetectors';
 import { DrawElementType } from '@/components/Whiteboard/registry';
 
 export class CircleElement extends AbstractDrawElement {

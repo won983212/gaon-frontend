@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from 'react-router';
 import Button from '@/components/Button';
-import { doAcceptInvite, useInvitedProjectInfoSWR } from '@/api/workspace';
 import { useCallback } from 'react';
 import useUser from '@/hooks/useUser';
 import Login from '@/pages/Login';
@@ -13,6 +12,7 @@ import {
     ProjectNameMark,
     Title
 } from '@/pages/Invite/style';
+import { doAcceptInvite, useInvitedProjectInfoSWR } from '@/api/invite';
 
 export default function Invite() {
     const navigate = useNavigate();
