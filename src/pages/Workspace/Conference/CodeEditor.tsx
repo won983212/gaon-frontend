@@ -4,7 +4,7 @@ import * as monaco from 'monaco-editor';
 
 interface CodeEditorProps {
     value: string;
-    onChange: OnChange;
+    onChange?: OnChange;
     onMount?: (editor: monaco.editor.IStandaloneCodeEditor) => void;
 }
 
