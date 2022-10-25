@@ -4,6 +4,7 @@ import * as monaco from 'monaco-editor';
 
 interface CodeEditorProps {
     value: string;
+    language: string;
     onChange?: OnChange;
     onMount?: (editor: monaco.editor.IStandaloneCodeEditor) => void;
 }
@@ -11,7 +12,8 @@ interface CodeEditorProps {
 export default function CodeEditor({
     value,
     onChange,
-    onMount
+    onMount,
+    language
 }: CodeEditorProps) {
     const onMountEditor = useCallback(
         (editor: monaco.editor.IStandaloneCodeEditor, monaco: Monaco) => {
@@ -53,6 +55,7 @@ export default function CodeEditor({
         <Editor
             height="100%"
             defaultLanguage="javascript"
+            language={language}
             value={value}
             onChange={onChange}
             options={{

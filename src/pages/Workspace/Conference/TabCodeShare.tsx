@@ -19,11 +19,16 @@ import { ConferenceTabProps } from '@/pages/Workspace/Conference/index';
 import { MonacoBinding } from './y-monaco';
 import { WebsocketProvider } from 'y-websocket';
 import * as yjs from 'yjs';
+import SettingTab from '@/pages/Workspace/Conference/SettingTab';
+import { useMonaco } from '@monaco-editor/react';
 
 export default function TabCodeShare({ socket, users }: ConferenceTabProps) {
     const { data: files } = useFilesSWR(0);
     const { channelId, workspaceId, channelInfo } = useRoom();
     const [code, setCode] = useState('');
+    const [lang, setLang] = useState('javascript');
+    const [allLanguages, setAllLanguages] = useState<string[]>([]);
+    const monaco = useMonaco();
 
     const onMount = useCallback(
         (editor: monaco.editor.IStandaloneCodeEditor) => {
@@ -47,6 +52,16 @@ export default function TabCodeShare({ socket, users }: ConferenceTabProps) {
         [channelId, workspaceId]
     );
 
+    useEffect(() => {
+        setAllLanguages(
+            monaco?.languages.getLanguages().map((lang) => lang.id) ?? []
+        );
+    }, [monaco?.languages]);
+
+    const onChangeLang = useCallback((lang: string) => {
+        setLang(lang);
+    }, []);
+
     if (!files) {
         return null;
     }
@@ -61,12 +76,17 @@ export default function TabCodeShare({ socket, users }: ConferenceTabProps) {
                     <CodeEditor
                         value={code}
                         onMount={onMount}
+                        language={lang}
                     />
                 </ContentArea>
                 <SideMenuBar>
-                    <TabContainer tabNames={['설정', '참가자']}>
-                        <FileTree files={files} />
+                    <TabContainer tabNames={['참가자', '설정']}>
                         <UserList users={users} />
+                        <SettingTab
+                            allLangs={allLanguages}
+                            editorLang={lang}
+                            onChangeLang={onChangeLang}
+                        />
                     </TabContainer>
                 </SideMenuBar>
             </InnerContent>
