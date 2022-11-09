@@ -20,9 +20,11 @@ export const ChatArea = styled.form`
         padding-right: 20px;
         color: #444;
     }
+
     & button {
         color: #4a90e2;
         border: none;
+        border-radius: 8px;
         align-self: flex-start;
         background: #fff;
         font-size: 12px;
@@ -32,8 +34,14 @@ export const ChatArea = styled.form`
         line-height: 1;
         outline: none !important;
         cursor: pointer;
+
         &:hover {
             color: #333;
+            background: #ddd;
+        }
+
+        &.upload {
+            font-size: 24px;
         }
     }
 `;

@@ -21,6 +21,12 @@ export default defineConfig(({ mode }) => ({
                           changeOrigin: true,
                           ws: true,
                           rewrite: (path) => path.replace(/^\/ws/, '')
+                      },
+                      '/file': {
+                          target: 'http://localhost:6000',
+                          changeOrigin: true,
+                          ws: true,
+                          rewrite: (path) => path.replace(/^\/file/, '')
                       }
                   }
               }

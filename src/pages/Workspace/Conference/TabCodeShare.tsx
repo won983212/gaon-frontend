@@ -31,7 +31,7 @@ export default function TabCodeShare({ users }: ConferenceTabProps) {
         (editor: monaco.editor.IStandaloneCodeEditor) => {
             const ydocument = new yjs.Doc();
             const provider = new WebsocketProvider(
-                `ws://localhost:6000`,
+                `/ws`,
                 `${workspaceId}/${channelId}`,
                 ydocument
             );

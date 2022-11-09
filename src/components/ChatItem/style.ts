@@ -58,27 +58,20 @@ export const ChatImageThumbnail = styled.img`
 // 파일 보더
 export const ChatFileBox = styled.div`
     display: flex;
+    background: var(--primary);
     flex-direction: row;
-    border: 2px dotted #000;
+    align-items: center;
+    border-radius: 4px;
     width: fit-content;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
+    padding: 8px 12px;
     user-select: none;
 `;
 
-// 파일 이미지
-export const ChatFileImg = styled.img`
-    width: 3em;
-`;
-
-// 파일 정보
-export const ChatFileInfo = styled.div`
-    display: block;
-    margin-left: 10px;
-    margin-top: 5px;
-    margin-right: 1em;
+export const ChatFileText = styled.a`
+    color: var(--text-light);
+    text-decoration: none;
+    font-weight: bold;
+    margin-left: 8px;
 `;
 
 // 리스트 요소

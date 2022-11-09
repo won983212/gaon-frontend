@@ -1,10 +1,12 @@
 import autosize from 'autosize';
 import React, { useCallback, useEffect, useRef } from 'react';
 import { ChatArea as ChatForm } from './style';
+import { MdUploadFile } from 'react-icons/all';
 
 interface ChatInputProps {
     text: string;
     onSubmit: () => void;
+    onUploadFile: () => void;
     onChangeText: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
     placeHolder?: string;
 }
@@ -12,6 +14,7 @@ interface ChatInputProps {
 export default function ChatInput({
     text,
     onSubmit,
+    onUploadFile,
     onChangeText,
     placeHolder
 }: ChatInputProps) {
@@ -36,6 +39,22 @@ export default function ChatInput({
         [onSubmit]
     );
 
+    const onClickSubmit = useCallback(
+        (e: React.MouseEvent) => {
+            e.preventDefault();
+            onSubmit();
+        },
+        [onSubmit]
+    );
+
+    const onClickUploadFile = useCallback(
+        (e: React.MouseEvent) => {
+            e.preventDefault();
+            onUploadFile();
+        },
+        [onUploadFile]
+    );
+
     return (
         <ChatForm>
             <textarea
@@ -45,7 +64,10 @@ export default function ChatInput({
                 placeholder={placeHolder}
                 ref={chatInputRef}
             />
-            <button onClick={onSubmit}>전송</button>
+            <button className="upload" onClick={onClickUploadFile}>
+                <MdUploadFile />
+            </button>
+            <button onClick={onClickSubmit}>전송</button>
         </ChatForm>
     );
 }

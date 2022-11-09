@@ -1,6 +1,5 @@
 export type ChannelType = 'empty' | 'chatting' | 'conference';
 
-
 export interface IChannel {
     id: number;
     type: ChannelType;
@@ -18,13 +17,26 @@ export interface IFileNode {
     files?: IFileNode[];
 }
 
+export type MessageType = 'text' | 'file';
+
 export interface IMessage {
+    type: MessageType;
     sender: string;
-    message: string;
     date: number;
 }
 
-export type IStatus = 'online' | 'offline' | 'missed';
+export interface TextMessage extends IMessage {
+    type: 'text';
+    message: string;
+}
+
+export interface FileMessage extends IMessage {
+    type: 'file';
+    name: string;
+    url: string;
+}
+
+export type UserStatus = 'online' | 'offline' | 'missed';
 
 export interface IUser {
     id: number;
@@ -32,7 +44,7 @@ export interface IUser {
     username: string;
     name: string;
     email: string;
-    status: IStatus;
+    status: UserStatus;
     job: string;
 }
 
@@ -46,12 +58,6 @@ export interface IConnectedUser {
     socketId: string;
     username: string;
     mute: boolean;
-}
-
-export interface CodeChange {
-    rangeOffset: number;
-    rangeLength: number;
-    text: string;
 }
 
 export interface Position {

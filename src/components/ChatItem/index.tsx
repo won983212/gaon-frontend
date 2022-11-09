@@ -4,12 +4,12 @@ import {
     ChatBorderDiv,
     ChatDateSpan,
     ChatFileBox,
-    ChatFileImg,
-    ChatFileInfo,
+    ChatFileText,
     ChatImageThumbnail,
     ChatItem,
     NewChatBorder
 } from './style';
+import { MdOutlineInsertDriveFile } from 'react-icons/all';
 
 // 대화내용의 첫 내용은 반드시 들어가야함.
 export function ChatAvatar({ src, userName, date }: IChatAvatar) {
@@ -37,8 +37,9 @@ export function ChatPlainText({ children }: IChatText) {
         </ChatItem>
     );
 }
+
 // 사진
-export function ChatPicture({ src, date }: IChatImage) {
+export function ChatPicture({ src }: IChatImage) {
     return (
         <ChatItem>
             <a href={src}>
@@ -53,39 +54,26 @@ export function NewChat({ children }: IChatText) {
 }
 
 // 첨부파일
-export function ChatAttachment({
-    iconSrc,
-    path,
-    info,
-    filename,
-    date
-}: IChatAttachment) {
+export function ChatAttachment({ path, filename }: IChatAttachment) {
     return (
         <ChatItem draggable={false}>
             <ChatFileBox>
-                <ChatFileImg src={iconSrc}></ChatFileImg>
-                <ChatFileInfo>
-                    <a href={path}>
-                        <div>{filename}</div>
-                    </a>
-                    <div>{info}</div>
-                </ChatFileInfo>
+                <MdOutlineInsertDriveFile size="24px" color="var(--text)" />
+                <ChatFileText download={filename} href={path} target="_blank" rel="noreferrer">
+                    <div>{filename}</div>
+                </ChatFileText>
             </ChatFileBox>
         </ChatItem>
     );
 }
 
 interface IChatAttachment {
-    iconSrc: string;
     path: string;
-    info: string;
     filename: string;
-    date?: string;
 }
 
 interface IChatImage {
     src: string;
-    date?: string;
 }
 
 interface IChatText {
