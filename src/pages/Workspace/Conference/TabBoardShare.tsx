@@ -12,7 +12,7 @@ import UserList from '@/components/UserList';
 import Whiteboard from '@/components/Whiteboard';
 import { ConferenceTabProps } from '@/pages/Workspace/Conference/index';
 
-export default function TabCodeShare({ users }: ConferenceTabProps) {
+export default function TabBoardShare({ users }: ConferenceTabProps) {
     const { channelInfo } = useRoom();
 
     return (

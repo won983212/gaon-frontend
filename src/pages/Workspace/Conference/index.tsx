@@ -5,11 +5,9 @@ import { useNavigate } from 'react-router';
 import loadable from '@loadable/component';
 import useConferenceTabIndex from '@/hooks/useConferenceTabIndex';
 import useSocket from '@/hooks/useSocket';
-import { Socket } from 'socket.io-client';
 import { IConnectedUser } from '@/types';
 
 export interface ConferenceTabProps {
-    socket: Socket;
     users: IConnectedUser[];
 }
 
@@ -72,10 +70,10 @@ function Conference() {
     let routedTab = <p>Empty</p>;
     switch (conferenceTabIndex) {
         case 0:
-            routedTab = <TabCodeShare users={users} socket={socket} />;
+            routedTab = <TabCodeShare users={users} />;
             break;
         case 1:
-            routedTab = <TabBoardShare users={users} socket={socket} />;
+            routedTab = <TabBoardShare users={users} />;
             break;
     }
 

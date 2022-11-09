@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useFilesSWR } from '@/api/conference';
 import useRoom from '@/hooks/useRoom';
 import {
     ContentArea,
@@ -18,11 +17,12 @@ import { WebsocketProvider } from 'y-websocket';
 import * as yjs from 'yjs';
 import SettingTab from '@/pages/Workspace/Conference/SettingTab';
 import { useMonaco } from '@monaco-editor/react';
+import useSocket from '@/hooks/useSocket';
 
 export default function TabCodeShare({ users }: ConferenceTabProps) {
-    const { data: files } = useFilesSWR(0);
     const { channelId, workspaceId, channelInfo } = useRoom();
-    const [code, setCode] = useState('');
+    const [socket] = useSocket(workspaceId);
+    const [code] = useState('');
     const [lang, setLang] = useState('javascript');
     const [allLanguages, setAllLanguages] = useState<string[]>([]);
     const monaco = useMonaco();
@@ -50,24 +50,21 @@ export default function TabCodeShare({ users }: ConferenceTabProps) {
     );
 
     useEffect(() => {
+        socket.on('update-lang', setLang);
+        socket.emit('select-lang', channelId, setLang);
         setAllLanguages(
             monaco?.languages.getLanguages().map((lang) => lang.id) ?? []
         );
-    }, [monaco?.languages]);
+    }, [channelId, monaco?.languages, socket]);
 
     const onChangeLang = useCallback((lang: string) => {
         setLang(lang);
-    }, []);
-
-    if (!files) {
-        return null;
-    }
+        socket.emit('update-lang', lang);
+    }, [socket]);
 
     return (
         <FlexLayout>
-            <ChannelHeader onClick={() => setCode('Empty')}>
-                {channelInfo?.name}
-            </ChannelHeader>
+            <ChannelHeader>{channelInfo?.name}</ChannelHeader>
             <InnerContent>
                 <ContentArea>
                     <CodeEditor

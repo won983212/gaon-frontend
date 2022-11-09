@@ -39,7 +39,7 @@ export default function SettingTab({
         <TabWrapper>
             <p>에디터 언어</p>
             <Select
-                defaultValue={editorLang}
+                value={editorLang}
                 onChange={(e) => {
                     if (onChangeLang != null) {
                         onChangeLang(e.target.value);
