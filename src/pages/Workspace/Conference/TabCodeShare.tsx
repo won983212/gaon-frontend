@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useFilesSWR } from '@/api/conference';
 import useRoom from '@/hooks/useRoom';
 import {
-    BottomMenuBar,
     ContentArea,
     FlexLayout,
     InnerContent,
@@ -11,9 +10,7 @@ import {
 import { ChannelHeader } from '@/layouts/Workspace/style';
 import CodeEditor from '@/pages/Workspace/Conference/CodeEditor';
 import TabContainer from '@/components/TabContainer';
-import FileTree from '@/components/FileTree';
 import UserList from '@/components/UserList';
-import Terminal from '@/components/Terminal';
 import * as monaco from 'monaco-editor';
 import { ConferenceTabProps } from '@/pages/Workspace/Conference/index';
 import { MonacoBinding } from './y-monaco';
@@ -22,7 +19,7 @@ import * as yjs from 'yjs';
 import SettingTab from '@/pages/Workspace/Conference/SettingTab';
 import { useMonaco } from '@monaco-editor/react';
 
-export default function TabCodeShare({ socket, users }: ConferenceTabProps) {
+export default function TabCodeShare({ users }: ConferenceTabProps) {
     const { data: files } = useFilesSWR(0);
     const { channelId, workspaceId, channelInfo } = useRoom();
     const [code, setCode] = useState('');
@@ -90,11 +87,6 @@ export default function TabCodeShare({ socket, users }: ConferenceTabProps) {
                     </TabContainer>
                 </SideMenuBar>
             </InnerContent>
-            <BottomMenuBar>
-                <TabContainer tabNames={['콘솔']}>
-                    <Terminal />
-                </TabContainer>
-            </BottomMenuBar>
         </FlexLayout>
     );
 }
