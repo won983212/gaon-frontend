@@ -54,6 +54,11 @@ export interface IUserIdentifier {
     token: string;
 }
 
+export interface IUserSummary {
+    id: number;
+    name: string;
+}
+
 export interface IConnectedUser {
     socketId: string;
     username: string;

@@ -56,6 +56,7 @@ import {
     updateChannel
 } from '@/api/channel';
 import { doInvite } from '@/api/invite';
+import UserPermissionModal from '@/pages/Workspace/UserPermissionModal';
 
 type CommandTarget = 'workspace' | 'channel' | 'group';
 
@@ -76,6 +77,7 @@ function Workspace({ children }: WorkspaceProps) {
     const [showUpdateDialog, setShowUpdateDialog] = useState(false);
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [showInviteDialog, setShowInviteDialog] = useState(false);
+    const [showPermissionDialog, setShowPermissionDialog] = useState(false);
 
     const { show: showWorkspaceContextMenu } = useContextMenu({
         id: 'workspace-context-menu'
@@ -631,6 +633,13 @@ function Workspace({ children }: WorkspaceProps) {
                     </ContextMenu.Item>
                     <ContextMenu.Item
                         onClick={() => {
+                            setShowPermissionDialog(true);
+                        }}
+                    >
+                        유저 권한 설정
+                    </ContextMenu.Item>
+                    <ContextMenu.Item
+                        onClick={() => {
                             setShowCreateDialog(true);
                             setCommandContext({
                                 target: 'workspace'
@@ -804,6 +813,10 @@ function Workspace({ children }: WorkspaceProps) {
                         />
                     </Form>
                 </Modal>
+                <UserPermissionModal
+                    isOpen={showPermissionDialog}
+                    onAction={() => setShowPermissionDialog(false)}
+                />
             </div>
         </div>
     );
