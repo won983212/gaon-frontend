@@ -8,7 +8,7 @@ export default function useRoom() {
     const { channelId, workspaceId } = useParams();
     const channelNumId = channelId === undefined ? -1 : +channelId;
     const workspaceNumId = workspaceId === undefined ? -1 : +workspaceId;
-    const { data: channelInfo } = useChannelInfoSWR(channelNumId);
+    var { data: channelInfo } = useChannelInfoSWR(channelNumId);
 
     return {
         channelId: channelNumId,

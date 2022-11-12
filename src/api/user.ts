@@ -9,25 +9,37 @@ export const useUsersSWR = (userId: string, token: string) =>
         }
     );
 
-export const useAdminsSWR = (token: string) =>
-    useHTTPGetSWR<IUserSummary[]>('/user/admin', {
+export const useAdminsSWR = (workspaceId: number, token: string) =>
+    useHTTPGetSWR<IUserSummary[]>(`/user/admin?workspaceId=${workspaceId}`, {
         'x-access-token': token
     });
 
-export interface IAdminRequest {
-    id: number;
-}
-
-export const addAdmin = (newAdminUserId: number, token: string) =>
-    post<IAdminRequest>(
+export const addAdmin = (
+    workspaceId: number,
+    newAdminUsername: string,
+    token: string
+) =>
+    post<IUserSummary>(
         '/user/admin',
         {
-            id: newAdminUserId
+            workspaceId: workspaceId,
+            newAdminUsername: newAdminUsername
         },
         { 'x-access-token': token }
     );
 
-export const removeAdmin = (adminUserId: number, token: string) =>
-    del<IAdminRequest>(`/user/admin?id=${adminUserId}`, {
-        'x-access-token': token
-    });
+export const removeAdmin = (
+    workspaceId: number,
+    adminUserId: number,
+    token: string
+) =>
+    del(
+        '/user/admin',
+        {
+            'x-access-token': token
+        },
+        {
+            workspaceId: workspaceId,
+            deleteAdminUserId: adminUserId
+        }
+    );

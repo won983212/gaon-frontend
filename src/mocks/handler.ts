@@ -12,13 +12,30 @@ const dummyChannels: IChannelGroup[] = [
     }
 ];
 
-const dummyAdmins: IUserSummary[] = [
+var lastId = 7;
+var dummyAdmins: IUserSummary[] = [
     {
         id: 1,
         name: 'psvm'
     },
     {
         id: 2,
+        name: 'psvm2'
+    },
+    {
+        id: 3,
+        name: 'psvm2'
+    },
+    {
+        id: 4,
+        name: 'psvm2'
+    },
+    {
+        id: 5,
+        name: 'psvm2'
+    },
+    {
+        id: 6,
         name: 'psvm2'
     }
 ];
@@ -39,6 +56,29 @@ const workspaceHandlers = [
     }),
     rest.get('/api/user/admin', async (req, res, ctx) => {
         return res(ctx.json<IUserSummary[]>(dummyAdmins));
+    }),
+    rest.post('/api/user/admin', async (req, res, ctx) => {
+        // @ts-ignore
+        const { newAdminUsername } = req.body;
+        const newAdmin: IUserSummary = {
+            id: lastId++,
+            name: newAdminUsername
+        };
+        dummyAdmins.push(newAdmin);
+        return res(ctx.json<IUserSummary>(newAdmin));
+    }),
+    rest.delete('/api/user/admin', async (req, res, ctx) => {
+        // @ts-ignore
+        const { adminUserId } = req.body;
+        const itemIdx = dummyAdmins.findIndex(
+            (admin) => admin.id === adminUserId
+        );
+        if (itemIdx > -1) {
+            dummyAdmins.splice(itemIdx, 1);
+            return res(ctx.status(200));
+        } else {
+            return res(ctx.status(401));
+        }
     })
 ];
 

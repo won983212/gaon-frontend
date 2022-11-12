@@ -2,7 +2,9 @@ import { del, get, post, put, useHTTPGetSWR } from '@/api/client';
 import { IChannel } from '@/types';
 
 export const useChannelInfoSWR = (channelId: number) =>
-    useHTTPGetSWR<IChannel>(`/channel/${channelId}`);
+    useHTTPGetSWR<IChannel>(
+        channelId < 0 ? undefined : `/channel/${channelId}`
+    );
 
 export const getChannels = (groupId: number) =>
     get<IChannel[]>(`/channel/list/${groupId}`);

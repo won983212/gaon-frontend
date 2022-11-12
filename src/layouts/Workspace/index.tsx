@@ -636,7 +636,7 @@ function Workspace({ children }: WorkspaceProps) {
                             setShowPermissionDialog(true);
                         }}
                     >
-                        유저 권한 설정
+                        어드민 유저 설정
                     </ContextMenu.Item>
                     <ContextMenu.Item
                         onClick={() => {

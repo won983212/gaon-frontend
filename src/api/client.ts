@@ -63,12 +63,17 @@ export function put<T = void>(
     });
 }
 
-export function del<T = void>(url: string, headers?: AxiosRequestHeaders) {
+export function del<T = void>(
+    url: string,
+    headers?: AxiosRequestHeaders,
+    data?: any
+) {
     if (!url) {
         return new Promise<AxiosResponse<T>>(() => {});
     }
     return axios.delete<T>(apiUrl(url), {
         headers: headers,
+        data: data,
         withCredentials: true
     });
 }
