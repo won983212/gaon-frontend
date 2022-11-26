@@ -10,7 +10,7 @@ import ChannelList from '@/components/ChannelList';
 import Menu from '@/components/Menu';
 import Profile from '@/components/Profile';
 import gravatar from 'gravatar';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router';
 import * as ContextMenu from 'react-contexify';
 import { useContextMenu } from 'react-contexify';
@@ -57,6 +57,9 @@ import {
 } from '@/api/channel';
 import { doInvite } from '@/api/invite';
 import UserPermissionModal from '@/pages/Workspace/UserPermissionModal';
+import useSocket from '@/hooks/useSocket';
+import { SerializedDrawElement } from '@/components/Whiteboard/types';
+import { getDeserializer } from '@/components/Whiteboard/registry';
 
 type CommandTarget = 'workspace' | 'channel' | 'group';
 
@@ -77,7 +80,10 @@ function Workspace({ children }: WorkspaceProps) {
     const [showUpdateDialog, setShowUpdateDialog] = useState(false);
     const [showCreateDialog, setShowCreateDialog] = useState(false);
     const [showInviteDialog, setShowInviteDialog] = useState(false);
+    const [showCodeDialog, setShowCodeDialog] = useState(false);
     const [showPermissionDialog, setShowPermissionDialog] = useState(false);
+
+    const [inviteCode, setInviteCode] = useState<number | undefined>();
 
     const { show: showWorkspaceContextMenu } = useContextMenu({
         id: 'workspace-context-menu'
@@ -97,7 +103,8 @@ function Workspace({ children }: WorkspaceProps) {
     });
     const [inputText, onChangedInputText, setInputText] = useInput('');
 
-    const { channelInfo, workspaceId } = useRoom();
+    const { channelInfo, workspaceId, channelId } = useRoom();
+    const [socket] = useSocket(workspaceId, 'voice')
     const { user: userData, identifier, setCookie } = useUser();
     const { data: channelGroups, mutate: mutateChannelGroups } =
         useGroupsSWR(workspaceId);
@@ -106,6 +113,7 @@ function Workspace({ children }: WorkspaceProps) {
     const { data: currentWorkspace, mutate: mutateWorkspace } =
         useWorkspaceSWR(workspaceId);
     const navigate = useNavigate();
+
 
     const onLogout = useCallback(async () => {
         await doLogout(identifier?.token);
@@ -179,6 +187,10 @@ function Workspace({ children }: WorkspaceProps) {
             setInputText('');
         }
         setShowInviteDialog(false);
+    };
+
+    const onCloseCodeDialog = () => {
+        setShowCodeDialog(false);
     };
 
     const onCloseDeleteDialog = (action: Action) => {
@@ -488,6 +500,17 @@ function Workspace({ children }: WorkspaceProps) {
         });
     };
 
+    const onShowCodeDialog = useCallback(() => {
+        socket.emit("invitePhone", channelId, userData?.id, identifier.token, (result: number) => {
+            if(result > 0) {
+                setInviteCode(result)
+            } else {
+                console.error("Can't generate invite code.")
+            }
+        });
+        setShowCodeDialog(true)
+    }, [channelId, identifier.token, socket, userData?.id]);
+
     if (!userData) {
         return <Navigate replace to="/login" />;
     }
@@ -589,24 +612,36 @@ function Workspace({ children }: WorkspaceProps) {
                         </Menu>
                     )}
                     {channelInfo && channelInfo.type === 'conference' && (
-                        <ConferenceMenu>
-                            <Button
-                                size="small"
-                                style={{ flex: 1, marginRight: 8 }}
-                                noPadding
-                                onClick={() => setConferenceTabIndex(0)}
-                            >
-                                코드
-                            </Button>
-                            <Button
-                                size="small"
-                                style={{ flex: 1 }}
-                                noPadding
-                                onClick={() => setConferenceTabIndex(1)}
-                            >
-                                화이트보드
-                            </Button>
-                        </ConferenceMenu>
+                        <div>
+                            <ConferenceMenu>
+                                <Button
+                                    size="small"
+                                    style={{ flex: 1, marginRight: 8 }}
+                                    noPadding
+                                    onClick={() => setConferenceTabIndex(0)}
+                                >
+                                    코드
+                                </Button>
+                                <Button
+                                    size="small"
+                                    style={{ flex: 1 }}
+                                    noPadding
+                                    onClick={() => setConferenceTabIndex(1)}
+                                >
+                                    화이트보드
+                                </Button>
+                            </ConferenceMenu>
+                            <ConferenceMenu>
+                                <Button
+                                    size="small"
+                                    style={{ flex: 1 }}
+                                    noPadding
+                                    onClick={onShowCodeDialog}
+                                >
+                                    휴대폰 연결
+                                </Button>
+                            </ConferenceMenu>
+                        </div>
                     )}
                     <ProfileName onClick={onToggleProfileMenu}>
                         <Profile
@@ -812,6 +847,13 @@ function Workspace({ children }: WorkspaceProps) {
                             style={{ marginTop: '16px', marginBottom: '4px' }}
                         />
                     </Form>
+                </Modal>
+                <Modal
+                    isOpen={showCodeDialog}
+                    onAction={onCloseCodeDialog}
+                    buttons="ok"
+                >
+                    <p>Code : {inviteCode ?? "Loading..."}</p>
                 </Modal>
                 <UserPermissionModal
                     isOpen={showPermissionDialog}

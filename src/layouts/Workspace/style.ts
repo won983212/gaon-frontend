@@ -154,7 +154,6 @@ export const ConferenceMenu = styled.div`
     padding: 0 8px 0 8px;
     background: var(--primary-darker);
     height: 48px;
-    border-bottom: 1px solid var(--primary);
 `;
 
 export const ProfileName = styled(WorkspaceName)`

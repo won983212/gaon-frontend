@@ -22,6 +22,12 @@ export default defineConfig(({ mode }) => ({
                           ws: true,
                           rewrite: (path) => path.replace(/^\/ws/, '')
                       },
+                      '/voice-ws': {
+                          target: 'ws://localhost:8081',
+                          changeOrigin: true,
+                          ws: true,
+                          rewrite: (path) => path.replace(/^\/voice-ws/, '')
+                      },
                       '/file': {
                           target: 'http://localhost:6000',
                           changeOrigin: true,
