@@ -34,7 +34,7 @@ export const removeAdmin = (
     token: string
 ) =>
     del(
-        '/user/admin',
+        `/user/admin?projectId=${workspaceId}&adminUserId=${adminUserId}`,
         {
             'x-access-token': token
         },

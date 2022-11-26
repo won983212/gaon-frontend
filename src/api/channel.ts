@@ -10,6 +10,7 @@ export const getChannels = (groupId: number) =>
     get<IChannel[]>(`/channel/list/${groupId}`);
 
 export const createChannel = (
+    projectId: number,
     groupId: number,
     userId: number,
     name: string,
@@ -19,6 +20,7 @@ export const createChannel = (
     post<IChannel>(
         `/channel/`,
         {
+            projectId: projectId,
             groupId: groupId,
             userId: userId,
             name: name,

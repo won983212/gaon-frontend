@@ -7,7 +7,7 @@ export const doLogout = (token: string) =>
 export const doLogin = (username: string, password: string) =>
     post<IUserIdentifier>('/auth/login', {
         userId: username,
-        password
+        password: password
     });
 
 export const doSignUp = (

@@ -29,12 +29,13 @@ export const createGroup = (
         { 'x-access-token': token }
     );
 
-export const deleteGroup = (groupId: number, userId: number, token: string) =>
-    del(`/group/${groupId}?&userId=${userId}`, {
+export const deleteGroup = (projectId: number, groupId: number, userId: number, token: string) =>
+    del(`/group/${groupId}?&userId=${userId}&projectId=${projectId}`, {
         'x-access-token': token
     });
 
 export const updateGroup = (
+    projectId: number,
     groupId: number,
     userId: number,
     token: string,
@@ -43,6 +44,7 @@ export const updateGroup = (
     put(
         `/group/${groupId}`,
         {
+            projectId: projectId,
             userId: userId,
             name: new_name
         },
