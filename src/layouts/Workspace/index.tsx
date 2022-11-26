@@ -251,6 +251,7 @@ function Workspace({ children }: WorkspaceProps) {
                 case 'group':
                     if (commandContext.groupId && userData.id) {
                         deleteGroup(
+                            workspaceId,
                             commandContext.groupId,
                             userData.id,
                             identifier.token
@@ -308,6 +309,7 @@ function Workspace({ children }: WorkspaceProps) {
                 case 'group':
                     if (commandContext.groupId) {
                         updateGroup(
+                            workspaceId,
                             commandContext.groupId,
                             userData?.id,
                             identifier.token,
@@ -396,6 +398,7 @@ function Workspace({ children }: WorkspaceProps) {
                     if (commandContext.groupId) {
                         const groupId = commandContext.groupId as number;
                         createChannel(
+                            workspaceId,
                             groupId,
                             userData?.id,
                             name,
