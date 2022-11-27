@@ -6,6 +6,8 @@ import loadable from '@loadable/component';
 import useConferenceTabIndex from '@/hooks/useConferenceTabIndex';
 import useSocket from '@/hooks/useSocket';
 import { IConnectedUser } from '@/types';
+import { VoiceSingleton } from '@/hooks/useVoice';
+import useUser from '@/hooks/useUser';
 
 export interface ConferenceTabProps {
     users: IConnectedUser[];
@@ -17,10 +19,13 @@ const TabBoardShare = loadable(() => import('./TabBoardShare'));
 function Conference() {
     const navigate = useNavigate();
     const { channelInfo, channelId, workspaceId } = useRoom();
+    const {user, identifier} = useUser();
     const [socket] = useSocket(workspaceId);
+    const [voiceSocket] = useSocket(workspaceId, "voice");
     const [showEnterDialog, setShowEnterDialog] = useState(true);
     const { data: conferenceTabIndex } = useConferenceTabIndex();
     const [users, setUsers] = useState<IConnectedUser[]>([]);
+    const voiceController = VoiceSingleton.getInstance(voiceSocket, channelId, user?.id);
 
     const onCloseEnterDialog = useCallback(
         (action: Action) => {
@@ -58,6 +63,17 @@ function Conference() {
             setUsers(users);
         });
     }, [channelId, socket]);
+
+    useEffect(() => {
+        voiceController.join(identifier.token, user?.id, channelId);
+        navigator.mediaDevices.getUserMedia({video: false, audio: true}).then(
+            (value) => voiceController.startSend("Voice", "audio", identifier.token, value.getAudioTracks()[0])
+        ).catch(() => console.log("Failed to get user media"));
+        return () => {
+            voiceSocket.disconnect();
+            voiceController.cleanUpSocket();
+        }
+    }, [voiceController, channelId]);
 
     if (showEnterDialog) {
         return (

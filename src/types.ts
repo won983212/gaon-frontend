@@ -65,6 +65,13 @@ export interface IConnectedUser {
     mute: boolean;
 }
 
+export interface IMediaUser {
+    userId: number,
+    kind: "audio" | "video",
+    type: "Camera" | "Voice" | "Screen",
+    stream: MediaStream
+}
+
 export interface Position {
     x: number;
     y: number;

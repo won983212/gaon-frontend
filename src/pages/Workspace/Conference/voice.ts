@@ -10,8 +10,8 @@ import { IUserIdentifier } from '@/types';
 
 export class VoiceController extends EventEmitter {
     private socket: Socket;
-    private channelId: number;
-    private userId: number;
+    private _channelId: number;
+    private _userId: number;
     private consumers: Map<string, Consumer>;
     private producers: Map<string, Producer>;
     private recvTransport: Map<number, Transport>;
@@ -22,14 +22,18 @@ export class VoiceController extends EventEmitter {
     public constructor (socket: Socket, channelId: number, userId: number) {
         super();
         this.socket = socket;
-        this.channelId = channelId;
-        this.userId = userId;
+        this._channelId = channelId;
+        this._userId = userId;
         this.consumers = new Map<string, Consumer>();
         this.producers = new Map<string, Producer>();
         this.recvTransport = new Map<number, Transport>();
         this.configureSocket(socket);
         this.joined = false;
     }
+
+    //public static build(socket: Socket, channelId: number, userId: number) {
+    //    return new VoiceController(socket, channelId, userId);
+    //}
 
     private configureSocket(socket: Socket) {
         socket.on("newUser", ({userId}) => {
@@ -38,8 +42,8 @@ export class VoiceController extends EventEmitter {
     
         socket.on("establishNewSendTransport", async (userId: number) => {
             const token = this.getToken();
-            await this.createRecvTransport(this.channelId, this.userId, token);
-            console.log(`userId start new send transport`);
+            await this.createRecvTransport(this._channelId, this._userId, token);
+            console.log(`${userId} start new send transport`);
         });
     
         socket.on("userLeave", ({userId}) => {
@@ -62,8 +66,28 @@ export class VoiceController extends EventEmitter {
         socket.on("startProduce", async (userId: number, type: keyof MediaType, kind: MediaKind) => {
             const token = this.getToken();
             await this.startReceive(type, kind, userId, token);
-            this.emit("startProduce", userId, type, kind);
+            // this.emit("startProduce", userId, type, kind);
         });
+    }
+
+    public get channelId(): number {
+        return this._channelId;
+    }
+    
+    public set channelId(value: number) {
+        this._channelId = value;
+    }
+
+    public get userId(): number {
+        return this._userId;
+    }
+
+    public set userId(value: number) {
+        this._userId = value;
+    }
+
+    public get clean() {
+        return !this.joined;
     }
 // #region method called directly
     public cleanUpSocket() {
@@ -72,7 +96,7 @@ export class VoiceController extends EventEmitter {
         this.socket.off("establishNewSendTransport");
         this.socket.off("userLeave");
         this.socket.off("startProduce");
-        this.socket.emit("leave", this.channelId, this.userId, token);
+        this.socket.emit("leave", this._channelId, this._userId, token);
         for (let producer of this.producers.values()) {
             producer.close();
         }
@@ -85,22 +109,22 @@ export class VoiceController extends EventEmitter {
             transport.close();
         }
         this.device = undefined;
-        this.joined = false;
         this.sendTransport?.close();
+        this.socket.disconnect();
     }
 
     public async join(token: string, userId?: number, channelId?: number) {
         try {
-            if (this.joined && channelId !== this.channelId || userId !== this.channelId) {
+            if (this.joined && channelId !== this._channelId || userId !== this._channelId) {
                 this.cleanUpSocket();
                 if (!this.socket) throw new Error("Failed to re-join to server.");
-                if (userId) this.userId = userId;
-                if (channelId) this.channelId = channelId;
+                if (userId) this._userId = userId;
+                if (channelId) this._channelId = channelId;
                 this.configureSocket(this.socket);
             }
 
             this.device = new Device();
-            this.socket.emit("join", this.channelId.toString(), this.userId, token, async (rtpCapabilities: RtpCapabilities) => {
+            this.socket.emit("join", this._channelId.toString(), this._userId, token, async (rtpCapabilities: RtpCapabilities) => {
                 if (!this.device?.loaded) {
                     await this.device?.load({routerRtpCapabilities: rtpCapabilities});
                 }
@@ -108,11 +132,11 @@ export class VoiceController extends EventEmitter {
                 this.emit("join");
             });
 
-            this.socket.emit("userList", this.channelId.toString(), token, async (peers: any) => {
+            this.socket.emit("userList", this._channelId.toString(), token, async (peers: any) => {
                 for (let mediaUser of peers) {
                     if (mediaUser.userId === userId) continue; // 본인 제외
                     for (let producer of mediaUser.producerIds) {
-                        await this.createRecvTransport(this.channelId, this.userId, token); // RecvTransport 만들고
+                        await this.createRecvTransport(this._channelId, this._userId, token); // RecvTransport 만들고
                         await this.startReceive(producer.type, producer.kind, mediaUser.userId, token); // Consumer 생성
                     }
                 }
@@ -122,7 +146,7 @@ export class VoiceController extends EventEmitter {
         }
     }
 
-    public async startSend(type: MediaType, kind: any, token: string, track: MediaStreamTrack) {
+    public async startSend(type: keyof MediaType, kind: MediaKind, token: string, track: MediaStreamTrack) {
         if (!this.sendTransport) {
             await this.createSendTransport(token);
         }
@@ -136,7 +160,7 @@ export class VoiceController extends EventEmitter {
     
         if (producer.track) {
             producer.track.onended = async () => {
-                this.socket.emit("closeProducer", this.channelId, this.userId, producer.id);
+                this.socket.emit("closeProducer", this._channelId, this._userId, producer.id);
             }
         }
     
@@ -147,14 +171,14 @@ export class VoiceController extends EventEmitter {
         let found = this.recvTransport.get(mediaUserId);
     
         if (!found) {
-            await this.createRecvTransport(this.channelId, this.userId, token);
+            await this.createRecvTransport(this._channelId, this._userId, token);
             found = this.recvTransport.get(mediaUserId);
             if (!found) {
                 throw new Error("Failed to create RecvTransport.");
             }
         }
     
-        this.socket.emit("receiveTransport", this.channelId.toString(), this.userId, found.id, mediaUserId, type, kind, this.device?.rtpCapabilities, token, async (consumer: any) => {
+        this.socket.emit("receiveTransport", this._channelId.toString(), this._userId, found.id, mediaUserId, type, kind, this.device?.rtpCapabilities, token, async (consumer: any) => {
             let newConsumer = await found!.consume({
                 id: consumer.consumerId,
                 producerId: consumer.producerId,
@@ -162,7 +186,7 @@ export class VoiceController extends EventEmitter {
                 rtpParameters: consumer.rtpParameters,
                 appData: {
                     type: consumer.type,
-                    userId: this.userId
+                    userId: this._userId
                 }
             });
     
@@ -186,7 +210,7 @@ export class VoiceController extends EventEmitter {
             throw new Error("use device without initialization");
         }
         if (!this.sendTransport) {
-            this.socket.emit("createSendTransport", this.channelId.toString(), this.userId, token, (transportId: string, iceParameters: IceParameters, iceCandidates: IceCandidate[], dtlsParameters: DtlsParameters) => {
+            this.socket.emit("createSendTransport", this._channelId.toString(), this._userId, token, (transportId: string, iceParameters: IceParameters, iceCandidates: IceCandidate[], dtlsParameters: DtlsParameters) => {
                 let newTransport = this.device!.createSendTransport({
                     id: transportId,
                     iceCandidates: iceCandidates,
@@ -197,7 +221,7 @@ export class VoiceController extends EventEmitter {
     
                 newTransport.on("connect", async ({dtlsParameters}, callback, errback) => {
                     try {
-                        this.socket.emit("connectTransport", this.channelId.toString(), this.userId, newTransport.id, dtlsParameters, token, (response: any) => {
+                        this.socket.emit("connectTransport", this._channelId.toString(), this._userId, newTransport.id, dtlsParameters, token, (response: any) => {
                             if (response.error) {
                                 errback(response.error);
                                 return;
@@ -213,7 +237,7 @@ export class VoiceController extends EventEmitter {
                 newTransport.on("produce", async ({kind, rtpParameters, appData}, callback, errback) => {
                     try {
                         let paused = true;
-                        this.socket.emit("sendTransport", this.channelId, this.userId, newTransport.id, paused, appData.type, kind, rtpParameters, token, (producer: any) => {
+                        this.socket.emit("sendTransport", this._channelId, this._userId, newTransport.id, paused, appData.type, kind, rtpParameters, token, (producer: any) => {
                             if (producer.error) {
                                 errback(producer.error);
                                 return;
@@ -269,37 +293,37 @@ export class VoiceController extends EventEmitter {
 // #endregion
 // #region consumer and producers
     public async pauseConsumer(consumerId: string, token: string) {
-        this.socket.emit("pauseConsumer",  this.channelId, this.userId, consumerId, token, ({result}: any) => {
+        this.socket.emit("pauseConsumer",  this._channelId, this._userId, consumerId, token, ({result}: any) => {
             if (result) this.consumers.get(consumerId)?.pause();
         });
     }
     
     public async pauseProducer(producerId: string, token: string) {
-        this.socket.emit("pauseProducer",  this.channelId, this.userId, producerId, token, ({result}: any) => {
+        this.socket.emit("pauseProducer",  this._channelId, this._userId, producerId, token, ({result}: any) => {
             if (result) this.producers.get(producerId)?.pause();
         });
     }
     
     public async resumeConsumer(consumerId: string, token: string) {
-        this.socket.emit("resumeConsumer",  this.channelId, this.userId, consumerId, token, ({result}: any) => {
+        this.socket.emit("resumeConsumer",  this._channelId, this._userId, consumerId, token, ({result}: any) => {
             if (result) this.consumers.get(consumerId)?.resume();
         });
     }
     
     public async resumeProducer(producerId: string, token: string) {
-        this.socket.emit("resumeProducer",  this.channelId, this.userId, producerId, token, ({result}: any) => {
+        this.socket.emit("resumeProducer",  this._channelId, this._userId, producerId, token, ({result}: any) => {
             if (result) this.producers.get(producerId)?.resume();
         });
     }
     
     public async closeProducer(producerId: string, token: string) {
-        this.socket.emit("closeProducer",  this.channelId, this.userId, producerId, token, ({result}: any) => {
+        this.socket.emit("closeProducer",  this._channelId, this._userId, producerId, token, ({result}: any) => {
             if (result) this.producers.get(producerId)?.close();
         });
     }
     
     public async closeConsumer(consumerId: string, token: string) {
-        this.socket.emit("closeConsumer",  this.channelId, this.userId, consumerId, token, ({result}: any) => {
+        this.socket.emit("closeConsumer",  this._channelId, this._userId, consumerId, token, ({result}: any) => {
             if (result) this.consumers.get(consumerId)?.resume();
         });
     }
