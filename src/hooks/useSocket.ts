@@ -35,9 +35,7 @@ const useSocket = (
                 transports: ['websocket']
             });
         } else if (type === 'voice') {
-            connectedSockets[key] = io('ws://localhost:8081', {
-                transports: ['websocket']
-            });
+            connectedSockets[key] = io('ws://localhost:8081');
         }
     }
 

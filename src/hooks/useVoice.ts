@@ -7,24 +7,25 @@ export class VoiceSingleton {
     private static userId: number = -1;
     private constructor() {}
 
-    public static getInstance(socket?: Socket, channelId?: number, userId?: number) {
-        if (VoiceSingleton._instance && socket?.disconnected) {
-            if (VoiceSingleton._instance.clean === false) {
-                if (!channelId || !userId) throw new Error("Failed to discard VoiceController");
-                VoiceSingleton._instance = new VoiceController(socket, channelId, userId);
-                return VoiceSingleton._instance;
-            }
-
-            if (channelId === channelId && userId === userId) {
-                return VoiceSingleton._instance;
-            }
-
+    public static getInstance(socket: Socket | undefined, channelId: number, userId: number | undefined, token: string | undefined) {
+        if (VoiceSingleton._instance) {
             if (!socket) {
                 throw new Error("Failed to create new VoiceController");
             }
 
-            if (userId && channelId) {
-                VoiceSingleton._instance.cleanUpSocket();
+            if (!VoiceSingleton._instance.clean) {
+                if (!channelId || !userId || !token) throw new Error("Failed" +
+                    " to discard VoiceController");
+                VoiceSingleton._instance = new VoiceController(socket, channelId, userId, token);
+                return VoiceSingleton._instance;
+            }
+
+            if (this.channelId === channelId && this.userId === userId) {
+                return VoiceSingleton._instance;
+            }
+
+            if (userId && channelId >= 0 && token) {
+                VoiceSingleton._instance.cleanUpSocket(token);
                 VoiceSingleton._instance.userId = userId;
                 VoiceSingleton._instance.channelId = channelId;
                 VoiceSingleton.channelId = channelId;
@@ -32,10 +33,10 @@ export class VoiceSingleton {
             }
         }
         
-        if (socket && channelId && userId) {
+        if (socket && channelId >= 0 && userId && token) {
             VoiceSingleton.channelId = channelId;
             VoiceSingleton.userId = userId;
-            VoiceSingleton._instance = new VoiceController(socket, channelId, userId);
+            VoiceSingleton._instance = new VoiceController(socket, channelId, userId, token);
             return VoiceSingleton._instance;
         }
 
