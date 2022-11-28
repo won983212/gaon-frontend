@@ -116,7 +116,7 @@ function Workspace({ children }: WorkspaceProps) {
 
 
     const onLogout = useCallback(async () => {
-        await doLogout(identifier?.token);
+        await doLogout(identifier.id, identifier?.token);
         setCookie(undefined);
         navigate('/');
     }, [identifier?.token, navigate, setCookie]);
@@ -221,6 +221,7 @@ function Workspace({ children }: WorkspaceProps) {
                         const groupId = commandContext.groupId as number;
                         const channelId = commandContext.channelId as number;
                         deleteChannel(
+                            workspaceId,
                             userData.id,
                             commandContext.channelId,
                             commandContext.groupId,
@@ -337,6 +338,7 @@ function Workspace({ children }: WorkspaceProps) {
                         const groupId = commandContext.groupId as number;
                         const channelId = commandContext.channelId as number;
                         updateChannel(
+                            workspaceId,
                             userData.id,
                             commandContext.channelId,
                             commandContext.groupId,
@@ -465,6 +467,7 @@ function Workspace({ children }: WorkspaceProps) {
         }
 
         updateChannel(
+            workspaceId,
             userData.id,
             channelId,
             groupId,

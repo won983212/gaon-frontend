@@ -30,16 +30,18 @@ export const createChannel = (
     );
 
 export const deleteChannel = (
+    projectId: number,
     userId: number,
     channelId: number,
     groupId: number,
     token: string
 ) =>
-    del(`/channel/${channelId}?userId=${userId}&groupId=${groupId}`, {
+    del(`/channel/${channelId}?userId=${userId}&groupId=${groupId}&projectId=${projectId}`, {
         'x-access-token': token
     });
 
 export const updateChannel = (
+    projectId: number,
     userId: number,
     channelId: number,
     groupId: number,
@@ -52,9 +54,11 @@ export const updateChannel = (
             reject('Invalid argument type.');
         });
     }
+
     return put(
         `/channel/${channelId}`,
         {
+            projectId: projectId,
             userId: userId,
             groupId: groupId,
             name: new_name,
