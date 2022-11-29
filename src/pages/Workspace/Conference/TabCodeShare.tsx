@@ -30,6 +30,7 @@ export default function TabCodeShare({ users }: ConferenceTabProps) {
     const onMount = useCallback(
         (editor: monaco.editor.IStandaloneCodeEditor) => {
             const ydocument = new yjs.Doc();
+            console.log('Mount', workspaceId, channelId)
             const provider = new WebsocketProvider(
                 `ws://localhost:6000`,
                 `${workspaceId}/${channelId}`,

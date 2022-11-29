@@ -17,10 +17,12 @@ import {
     leaveContext
 } from '@/pages/Workspace/Conference/voice-client';
 import { ChannelType } from '@/types';
+import useUser from '@/hooks/useUser';
 
 function Channels() {
     const navigate = useNavigate();
     const { channelId, channelInfo, workspaceId } = useRoom();
+    const {identifier} = useUser();
     const [socket] = useSocket(workspaceId);
 
     let pageElement: JSX.Element = (
@@ -49,8 +51,8 @@ function Channels() {
             await leaveContext();
         }
         if (channelId !== -1 && channelType === 'conference') {
-            await initializeContext();
-            await joinToVoiceServer();
+            await initializeContext(identifier?.id, channelId);
+            await joinToVoiceServer(identifier?.id);
         }
     };
 

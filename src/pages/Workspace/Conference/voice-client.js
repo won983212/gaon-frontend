@@ -7,8 +7,6 @@ import { EventEmitter } from 'events';
 const host = "";
 const socketHost = "ws://127.0.0.1:8081";
 const mediaType = "voice";
-const roomId = "2";
-const userId = Math.floor(Math.random() * 0xff);
 const root = document.getElementById("rtc-root");
 
 let manager;
@@ -22,7 +20,7 @@ export function isContextActive(){
     return ctx !== undefined;
 }
 
-export async function initializeContext(){
+export async function initializeContext(userId, roomId){
     if(ctx === undefined) {
         manager = new ElementManager(root);
         ctx = new Context(userId, roomId, "token");
@@ -58,8 +56,7 @@ export async function initializeContext(){
     }
 }
 
-export async function joinToVoiceServer() {
-    console.log("userId:", userId, "roomId", roomId);
+export async function joinToVoiceServer(userId) {
     await ctx.join();
     let media = await ctx.startMedia(mediaType);
     let send = await ctx.startSend(media, mediaType);
