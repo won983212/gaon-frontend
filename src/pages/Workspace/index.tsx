@@ -101,7 +101,7 @@ function Channels() {
     useEffect(() => {
         console.log('JOIN', channelId);
         if (voiceController) {
-            voiceController.join(identifier.token, user?.id, channelId);
+            /*voiceController.join(identifier.token, user?.id, channelId);
             navigator.mediaDevices.getDisplayMedia({video: true, audio: false})
                 .then((value) => {
                         voiceController.startSend(
@@ -112,7 +112,7 @@ function Channels() {
                         )
                     }
                 )
-                .catch((e) => console.log('Failed to get user media', e));
+                .catch((e) => console.log('Failed to get user media', e));*/
             /*navigator.mediaDevices
                 .getUserMedia({
                     video: false,

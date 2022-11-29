@@ -1,5 +1,5 @@
 import { get, post, useHTTPGetSWR } from '@/api/client';
-import { IUserIdentifier, IWorkspace } from '@/types';
+import { IProjectInvite, IWorkspace } from '@/types';
 
 export const doInvite = (
     userToInvite: string,
@@ -7,7 +7,7 @@ export const doInvite = (
     userId: number,
     token: string
 ) =>
-    post(
+    post<IProjectInvite>(
         `/invite`,
         {
             userId: userId,
@@ -20,8 +20,8 @@ export const doInvite = (
 export const useInvitedProjectInfoSWR = (code: string) =>
     useHTTPGetSWR<IWorkspace>(`/invite/${code}`);
 
-export const doAcceptInvite = (code: string, accept: boolean, token: string) =>
-    get<IUserIdentifier>(`/invite/accept/${code}`, undefined, {
+export const doAcceptInvite = (code: string, accept: boolean, userId: number, token: string) =>
+    get(`/invite/accept/${code}?userId=${userId}`, undefined, {
         accept: accept,
         'x-access-token': token
     });

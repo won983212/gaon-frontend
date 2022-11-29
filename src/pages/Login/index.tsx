@@ -28,17 +28,28 @@ function Login({ redirectTo }: LoginPageProps) {
     const onSubmit = useCallback(
         (e: React.FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-            setLogInError(undefined);
-            doLogin(id, password)
-                .then((response) => {
-                    setCookie({
-                        userId: response.data.userId,
-                        token: response.data.token
+            if (!id) {
+                setLogInError('아이디를 입력하세요.');
+            } else if (!password) {
+                setLogInError('비밀번호를 입력하세요.');
+            } else {
+                setLogInError(undefined);
+                doLogin(id, password)
+                    .then((response) => {
+                        setCookie({
+                            userId: response.data.userId,
+                            token: response.data.token
+                        });
+                    })
+                    .catch((error) => {
+                        const message = error.response.data;
+                        if (message) {
+                            setLogInError(message);
+                        } else {
+                            setLogInError(error.message);
+                        }
                     });
-                })
-                .catch((error) => {
-                    setLogInError(error.response.data.message);
-                });
+            }
         },
         [id, password, setCookie]
     );
@@ -79,8 +90,8 @@ function Login({ redirectTo }: LoginPageProps) {
                                 onChange={onChangePassword}
                             />
                         </div>
-                        {logInError && <Error>{logInError}</Error>}
                     </Label>
+                    {logInError && <Error>{logInError}</Error>}
 
                     <LinkContainer>
                         아이디가 없다면&nbsp;

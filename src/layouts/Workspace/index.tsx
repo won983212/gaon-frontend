@@ -10,7 +10,7 @@ import ChannelList from '@/components/ChannelList';
 import Menu from '@/components/Menu';
 import Profile from '@/components/Profile';
 import gravatar from 'gravatar';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router';
 import * as ContextMenu from 'react-contexify';
 import { useContextMenu } from 'react-contexify';
@@ -58,10 +58,15 @@ import {
 import { doInvite } from '@/api/invite';
 import UserPermissionModal from '@/pages/Workspace/UserPermissionModal';
 import useSocket from '@/hooks/useSocket';
-import { SerializedDrawElement } from '@/components/Whiteboard/types';
-import { getDeserializer } from '@/components/Whiteboard/registry';
+import { useSWRConfig } from 'swr';
+import { apiUrl } from '@/api/client';
+import styled from 'styled-components';
 
 type CommandTarget = 'workspace' | 'channel' | 'group';
+
+const InviteLink = styled.a`
+    margin-top: 16px;
+`;
 
 interface CommandContext {
     target: CommandTarget;
@@ -103,23 +108,25 @@ function Workspace({ children }: WorkspaceProps) {
     });
     const [inputText, onChangedInputText, setInputText] = useInput('');
 
+    const { mutate } = useSWRConfig();
     const { channelInfo, workspaceId, channelId } = useRoom();
-    const [socket] = useSocket(workspaceId, 'voice')
+    const [socket] = useSocket(workspaceId, 'voice');
+    const [inviteLink, setInviteLink] = useState('');
     const { user: userData, identifier, setCookie } = useUser();
     const { data: channelGroups, mutate: mutateChannelGroups } =
         useGroupsSWR(workspaceId);
     const { mutate: setConferenceTabIndex } = useConferenceTabIndex();
-    const { data: workspaceList } = useWorkspacesSWR(userData?.id);
+    const { data: workspaceList, mutate: mutateWorkspaceList } =
+        useWorkspacesSWR(userData?.id);
     const { data: currentWorkspace, mutate: mutateWorkspace } =
         useWorkspaceSWR(workspaceId);
     const navigate = useNavigate();
-
 
     const onLogout = useCallback(async () => {
         await doLogout(identifier.id, identifier?.token);
         setCookie(undefined);
         navigate('/');
-    }, [identifier?.token, navigate, setCookie]);
+    }, [identifier.id, identifier?.token, navigate, setCookie]);
 
     const onCloseProfileMenu = useCallback(() => {
         setShowProfileMenu(false);
@@ -178,15 +185,19 @@ function Workspace({ children }: WorkspaceProps) {
                 return;
             }
             doInvite(name, workspaceId, userData.id, identifier.token)
-                .then(() => {
-                    alert('초대 메시지를 보냈습니다.');
+                .then((response) => {
+                    setInviteLink(
+                        `http://localhost:3000/invite/${response.data.code}`
+                    );
+                    alert('아래 생성된 초대 링크를 보내세요.');
                 })
-                .catch(() => {
-                    alert('초대할 수 없습니다.');
+                .catch((err) => {
+                    alert(`초대할 수 없습니다. (${err.response.data})`);
                 });
             setInputText('');
+        } else {
+            setShowInviteDialog(false);
         }
-        setShowInviteDialog(false);
     };
 
     const onCloseCodeDialog = () => {
@@ -207,8 +218,10 @@ function Workspace({ children }: WorkspaceProps) {
                             .then(() => {
                                 navigate(`/`);
                             })
-                            .catch(() => {
-                                alert('삭제하지 못했습니다.');
+                            .catch((err) => {
+                                alert(
+                                    `삭제하지 못했습니다. (${err.response.data})`
+                                );
                             });
                     }
                     break;
@@ -244,8 +257,10 @@ function Workspace({ children }: WorkspaceProps) {
                                 });
                                 navigate(`/workspace/${workspaceId}/channel`);
                             })
-                            .catch(() => {
-                                alert('삭제하지 못했습니다.');
+                            .catch((err) => {
+                                alert(
+                                    `삭제하지 못했습니다. (${err.response.data})`
+                                );
                             });
                     }
                     break;
@@ -266,8 +281,10 @@ function Workspace({ children }: WorkspaceProps) {
                                 );
                                 navigate(`/workspace/${workspaceId}/channel`);
                             })
-                            .catch(() => {
-                                alert('삭제하지 못했습니다.');
+                            .catch((err) => {
+                                alert(
+                                    `삭제하지 못했습니다. (${err.response.data})`
+                                );
                             });
                     }
                     break;
@@ -303,8 +320,10 @@ function Workspace({ children }: WorkspaceProps) {
                                 });
                             }
                         })
-                        .catch(() => {
-                            alert('수정하지 못했습니다.');
+                        .catch((err) => {
+                            alert(
+                                `수정하지 못했습니다. (${err.response.data})`
+                            );
                         });
                     break;
                 case 'group':
@@ -328,8 +347,10 @@ function Workspace({ children }: WorkspaceProps) {
                                     )
                                 );
                             })
-                            .catch(() => {
-                                alert('수정하지 못했습니다.');
+                            .catch((err) => {
+                                alert(
+                                    `수정하지 못했습니다. (${err.response.data})`
+                                );
                             });
                     }
                     break;
@@ -364,9 +385,20 @@ function Workspace({ children }: WorkspaceProps) {
                                         return prev;
                                     }
                                 });
+                                mutate(
+                                    apiUrl(`/channel/${channelId}`),
+                                    (prev: IChannel) =>
+                                        prev && {
+                                            id: prev.id,
+                                            name: name,
+                                            type: prev.type
+                                        }
+                                );
                             })
-                            .catch(() => {
-                                alert('수정하지 못했습니다.');
+                            .catch((err) => {
+                                alert(
+                                    `수정하지 못했습니다. (${err.response.data})`
+                                );
                             });
                     }
                     break;
@@ -391,9 +423,14 @@ function Workspace({ children }: WorkspaceProps) {
                     createWorkspace(userData?.id, name, identifier.token)
                         .then((response) => {
                             navigate(`/workspace/${response.data.id}/channel`);
+                            mutateWorkspaceList(
+                                (workspaceList ?? []).concat(response.data)
+                            );
                         })
-                        .catch(() => {
-                            alert('생성하지 못했습니다.');
+                        .catch((err) => {
+                            alert(
+                                `생성하지 못했습니다. (${err.response.data})`
+                            );
                         });
                     break;
                 case 'channel':
@@ -424,8 +461,10 @@ function Workspace({ children }: WorkspaceProps) {
                                     }
                                 });
                             })
-                            .catch(() => {
-                                alert('생성하지 못했습니다.');
+                            .catch((err) => {
+                                alert(
+                                    `생성하지 못했습니다. (${err.response.data})`
+                                );
                             });
                     }
                     break;
@@ -446,8 +485,10 @@ function Workspace({ children }: WorkspaceProps) {
                                     })
                                 );
                             })
-                            .catch(() => {
-                                alert('생성하지 못했습니다.');
+                            .catch((err) => {
+                                alert(
+                                    `생성하지 못했습니다. (${err.response.data})`
+                                );
                             });
                     }
                     break;
@@ -494,9 +535,18 @@ function Workspace({ children }: WorkspaceProps) {
                         return prev;
                     }
                 });
+                mutate(
+                    apiUrl(`/channel/${channelId}`),
+                    (prev: IChannel) =>
+                        prev && {
+                            id: prev.id,
+                            name: prev.name,
+                            type: type
+                        }
+                );
             })
-            .catch(() => {
-                alert('수정하지 못했습니다.');
+            .catch((err) => {
+                alert(`수정하지 못했습니다. (${err.response.data})`);
             });
     };
 
@@ -507,14 +557,20 @@ function Workspace({ children }: WorkspaceProps) {
     };
 
     const onShowCodeDialog = useCallback(() => {
-        socket.emit("invitePhone", channelId, userData?.id, identifier.token, (result: number) => {
-            if(result > 0) {
-                setInviteCode(result)
-            } else {
-                console.error("Can't generate invite code.")
+        socket.emit(
+            'invitePhone',
+            channelId,
+            userData?.id,
+            identifier.token,
+            (result: number) => {
+                if (result > 0) {
+                    setInviteCode(result);
+                } else {
+                    console.error("Can't generate invite code.");
+                }
             }
-        });
-        setShowCodeDialog(true)
+        );
+        setShowCodeDialog(true);
     }, [channelId, identifier.token, socket, userData?.id]);
 
     if (!userData) {
@@ -667,6 +723,7 @@ function Workspace({ children }: WorkspaceProps) {
                 <ContextMenu.Menu id="workspace-context-menu">
                     <ContextMenu.Item
                         onClick={() => {
+                            setInviteLink('');
                             setShowInviteDialog(true);
                         }}
                     >
@@ -817,7 +874,7 @@ function Workspace({ children }: WorkspaceProps) {
                     onAction={onCloseCreateDialog}
                     buttons="okcancel"
                 >
-                    <Form>
+                    <Form onSubmit={(e) => e.preventDefault()}>
                         <Label>사용할 이름을 입력해주세요.</Label>
                         <Input
                             value={inputText}
@@ -831,7 +888,7 @@ function Workspace({ children }: WorkspaceProps) {
                     onAction={onCloseUpdateDialog}
                     buttons="okcancel"
                 >
-                    <Form>
+                    <Form onSubmit={(e) => e.preventDefault()}>
                         <Label>새로운 이름을 입력해주세요.</Label>
                         <Input
                             value={inputText}
@@ -845,13 +902,18 @@ function Workspace({ children }: WorkspaceProps) {
                     onAction={onCloseInviteDialog}
                     buttons="okcancel"
                 >
-                    <Form>
+                    <Form onSubmit={(e) => e.preventDefault()}>
                         <Label>초대할 상대의 이름을 입력해주세요.</Label>
                         <Input
                             value={inputText}
                             onChange={onChangedInputText}
                             style={{ marginTop: '16px', marginBottom: '4px' }}
                         />
+                        {inviteLink && (
+                            <InviteLink href={inviteLink}>
+                                {inviteLink}
+                            </InviteLink>
+                        )}
                     </Form>
                 </Modal>
                 <Modal
@@ -859,7 +921,7 @@ function Workspace({ children }: WorkspaceProps) {
                     onAction={onCloseCodeDialog}
                     buttons="ok"
                 >
-                    <p>Code : {inviteCode ?? "Loading..."}</p>
+                    <p>Code : {inviteCode ?? 'Loading...'}</p>
                 </Modal>
                 <UserPermissionModal
                     isOpen={showPermissionDialog}

@@ -3,6 +3,12 @@ import CollapseButton from '@/components/CollapseButton';
 import { IChannel } from '@/types';
 import React, { useCallback, useState } from 'react';
 import { MdExpandMore } from 'react-icons/md';
+import styled from 'styled-components';
+
+
+const ChannelWrapper = styled.h2`
+  cursor: pointer;
+`
 
 interface ChannelListProps {
     channels: IChannel[];
@@ -31,12 +37,12 @@ function ChannelList({
 
     return (
         <>
-            <h2>
-                <CollapseButton collapse={collapsed} onClick={onToggleCollapse}>
+            <ChannelWrapper onClick={onToggleCollapse}>
+                <CollapseButton collapse={collapsed}>
                     <MdExpandMore />
                 </CollapseButton>
                 <span onContextMenu={onShowGroupContextMenu}>{name}</span>
-            </h2>
+            </ChannelWrapper>
             <div>
                 {!collapsed &&
                     (channels.length === 0 ? (

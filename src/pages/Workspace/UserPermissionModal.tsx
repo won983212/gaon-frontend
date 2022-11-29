@@ -75,26 +75,26 @@ function UserPermissionModal({ isOpen, onAction }: UserPermissionModalProps) {
 
     const onDeleteAdmin = useCallback(
         (adminId: number) => {
-            removeAdmin(workspaceId, adminId, identifier?.token)
+            removeAdmin(workspaceId, adminId, identifier?.id, identifier?.token)
                 .then(() => {
                     mutate(admins?.filter((admin) => admin.id !== adminId));
                 })
                 .catch((err) => {
                     console.error(err);
-                    alert('삭제하지 못했습니다.');
+                    alert(`삭제하지 못했습니다 (${err.response.data})`);
                 });
         },
-        [admins, identifier?.token, mutate, workspaceId]
+        [admins, identifier?.id, identifier?.token, mutate, workspaceId]
     );
 
     const onAddAdmin = () => {
-        addAdmin(workspaceId, toAddAdminName, identifier?.token)
+        addAdmin(workspaceId, toAddAdminName, identifier?.id, identifier?.token)
             .then((admin) => {
                 mutate(admins?.concat(admin.data));
             })
             .catch((err) => {
                 console.error(err);
-                alert('추가하지 못했습니다.');
+                alert(`추가하지 못했습니다 (${err.response.data})`);
             });
         setToAddAdminName('');
     };
@@ -114,15 +114,17 @@ function UserPermissionModal({ isOpen, onAction }: UserPermissionModalProps) {
                         {admins.map((admin) => (
                             <AdminListItem key={admin.id}>
                                 <div className="name">{admin.name}</div>
-                                <div
-                                    className="delete"
-                                    onClick={() => onDeleteAdmin(admin.id)}
-                                >
-                                    <MdDelete
-                                        color="var(--primary-lighter)"
-                                        size="20px"
-                                    />
-                                </div>
+                                {admin.id !== identifier.id &&
+                                    <div
+                                        className="delete"
+                                        onClick={() => onDeleteAdmin(admin.id)}
+                                    >
+                                        <MdDelete
+                                            color="var(--primary-lighter)"
+                                            size="20px"
+                                        />
+                                    </div>
+                                }
                             </AdminListItem>
                         ))}
                     </AdminList>

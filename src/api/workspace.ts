@@ -47,6 +47,7 @@ export const updateWorkspace = (
     return put(
         `/project/${projectId}`,
         {
+            projectId: projectId,
             userId: userId,
             name: new_name
         },

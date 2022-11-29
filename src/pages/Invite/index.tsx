@@ -22,19 +22,19 @@ export default function Invite() {
 
     const onAccept = useCallback(() => {
         if (inviteId) {
-            doAcceptInvite(inviteId, true, identifier.token)
+            doAcceptInvite(inviteId, true, identifier.id, identifier.token)
                 .catch(() => alert('에러가 발생했습니다.'))
                 .then(() => navigate(`/workspace/${data?.id}/channel`));
         }
-    }, [data?.id, identifier?.token, inviteId, navigate]);
+    }, [data?.id, identifier.id, identifier.token, inviteId, navigate]);
 
     const onDecline = useCallback(() => {
         if (inviteId) {
-            doAcceptInvite(inviteId, false, identifier.token)
+            doAcceptInvite(inviteId, false, identifier.id, identifier.token)
                 .catch(() => alert('에러가 발생했습니다.'))
                 .then(() => navigate('/'));
         }
-    }, [identifier?.token, inviteId, navigate]);
+    }, [identifier.id, identifier.token, inviteId, navigate]);
 
     if (!inviteId || error) {
         return <p>* inviteId가 잘못되었습니다.</p>;

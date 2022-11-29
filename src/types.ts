@@ -88,3 +88,11 @@ export interface IWorkspace {
     createdBy: number;
     groups?: Array<IChannelGroup>;
 }
+
+export interface IProjectInvite {
+    id: number;
+    code: string;
+    projectId: number;
+    userId?: number;
+    expired?: number;
+}

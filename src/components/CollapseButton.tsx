@@ -10,7 +10,6 @@ export default styled.button<{ collapse: boolean }>`
     align-items: center;
     color: white;
     margin-left: 10px;
-    cursor: pointer;
     transition: 200ms;
     transform: none;
 

@@ -57,7 +57,7 @@ export default function SelectWorkspace() {
     const [dialogError, setDialogError] = useState('');
     const { user, identifier, isLoadingUser } = useUser();
     const { data, mutate, error } = useWorkspacesSWR(user?.id);
-    const [projectName, onChangeProjectName] = useInput('');
+    const [projectName, onChangeProjectName, setProjectName] = useInput('');
 
     const onClickProject = useCallback(
         (id: number) => {
@@ -88,8 +88,9 @@ export default function SelectWorkspace() {
                 setShowNewProjectDialog(false);
                 setDialogError('');
             }
+            setProjectName('')
         },
-        [identifier, mutate, projectName, user]
+        [identifier, mutate, projectName, setProjectName, user]
     );
 
     useEffect(() => {
