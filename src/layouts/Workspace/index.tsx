@@ -126,7 +126,7 @@ function Workspace({ children }: WorkspaceProps) {
         await doLogout(identifier.id, identifier?.token);
         setCookie(undefined);
         navigate('/');
-    }, [identifier.id, identifier?.token, navigate, setCookie]);
+    }, [identifier?.id, identifier?.token, navigate, setCookie]);
 
     const onCloseProfileMenu = useCallback(() => {
         setShowProfileMenu(false);
