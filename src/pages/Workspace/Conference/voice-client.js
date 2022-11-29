@@ -4,8 +4,8 @@ import { connect } from 'socket.io-client';
 import { EventEmitter } from 'events';
 
 //const client = require("mediasoup-client");
-const host = "";
-const socketHost = "ws://127.0.0.1:8081";
+const host = "/voice";
+const socketHost = "http://localhost:8081"; // Proxy가 잘못 설정되었다.
 const mediaType = "voice";
 const root = document.getElementById("rtc-root");
 

@@ -32,6 +32,11 @@ export default defineConfig(({ mode }) => ({
                           target: 'http://localhost:6000',
                           changeOrigin: true,
                           rewrite: (path) => path.replace(/^\/file/, '')
+                      },
+                      '/voice': {
+                          target: 'http://localhost:8080/',
+                          changeOrigin: true,
+                          rewrite: (path) => path.replace(/^\/voice/, '')
                       }
                   }
               }

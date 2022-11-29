@@ -22,7 +22,6 @@ import useSocket from '@/hooks/useSocket';
 export default function TabCodeShare({ users }: ConferenceTabProps) {
     const { channelId, workspaceId, channelInfo } = useRoom();
     const [socket] = useSocket(workspaceId);
-    const [code] = useState('');
     const [lang, setLang] = useState('javascript');
     const [allLanguages, setAllLanguages] = useState<string[]>([]);
     const monaco = useMonaco();
@@ -30,7 +29,6 @@ export default function TabCodeShare({ users }: ConferenceTabProps) {
     const onMount = useCallback(
         (editor: monaco.editor.IStandaloneCodeEditor) => {
             const ydocument = new yjs.Doc();
-            console.log('Mount', workspaceId, channelId)
             const provider = new WebsocketProvider(
                 `ws://localhost:6000`,
                 `${workspaceId}/${channelId}`,
@@ -69,7 +67,6 @@ export default function TabCodeShare({ users }: ConferenceTabProps) {
             <InnerContent>
                 <ContentArea>
                     <CodeEditor
-                        value={code}
                         onMount={onMount}
                         language={lang}
                     />

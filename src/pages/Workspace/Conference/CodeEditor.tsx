@@ -3,15 +3,11 @@ import Editor, { Monaco, OnChange } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 
 interface CodeEditorProps {
-    value: string;
     language: string;
-    onChange?: OnChange;
     onMount?: (editor: monaco.editor.IStandaloneCodeEditor) => void;
 }
 
 export default function CodeEditor({
-    value,
-    onChange,
     onMount,
     language
 }: CodeEditorProps) {
@@ -56,8 +52,6 @@ export default function CodeEditor({
             height="100%"
             defaultLanguage="javascript"
             language={language}
-            value={value}
-            onChange={onChange}
             options={{
                 minimap: { enabled: false },
                 automaticLayout: false
