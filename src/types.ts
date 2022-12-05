@@ -59,7 +59,16 @@ export interface IUserSummary {
     name: string;
 }
 
+export interface IUserAdmin {
+    id: number;
+    projectId: number;
+    userId: number;
+    permission: number;
+}
+
 export interface IConnectedUser {
+    id: number;
+    userId: string;
     socketId: string;
     username: string;
     mute: boolean;

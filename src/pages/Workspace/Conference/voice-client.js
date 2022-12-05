@@ -75,6 +75,10 @@ export async function leaveContext() {
     ctx = undefined;
 }
 
+export async function kick(targetId, token) {
+    ctx.kick(targetId, token);
+}
+
 export class ElementManager {
     /**
      * @param {HTMLElement} rootElement 
@@ -323,6 +327,20 @@ export class Context extends EventEmitter {
         return false;
     }
 
+    async kick(targetId, token) {
+        if (!this.joined) {
+            return false;
+        }
+
+        try {
+            this.io.emit("kick", this._roomId, this._userId, targetId, token, ({userId}) => {
+                console.log(userId, " kicked");
+            })
+        } catch (err) {
+            console.error(err);
+        }
+        return true;
+    }
     /**
      * @param {"Voice" | "Camera" | "Screen"} mediaType
      * 미디어를 시작
@@ -752,8 +770,4 @@ export class Context extends EventEmitter {
         }
     }
 //#endregion
-}
-
-function removeMediaView(consumer) {
-    throw new Error('Function not implemented.');
 }

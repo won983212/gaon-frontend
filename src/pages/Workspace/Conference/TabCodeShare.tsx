@@ -19,7 +19,7 @@ import SettingTab from '@/pages/Workspace/Conference/SettingTab';
 import { useMonaco } from '@monaco-editor/react';
 import useSocket from '@/hooks/useSocket';
 
-export default function TabCodeShare({ users }: ConferenceTabProps) {
+export default function TabCodeShare({ users, onShowUserContextMenu }: ConferenceTabProps) {
     const { channelId, workspaceId, channelInfo } = useRoom();
     const [socket] = useSocket(workspaceId);
     const [lang, setLang] = useState('javascript');
@@ -73,7 +73,7 @@ export default function TabCodeShare({ users }: ConferenceTabProps) {
                 </ContentArea>
                 <SideMenuBar>
                     <TabContainer tabNames={['참가자', '설정']}>
-                        <UserList users={users} />
+                        <UserList users={users} onShowUserContextMenu={onShowUserContextMenu}/>
                         <SettingTab
                             allLangs={allLanguages}
                             editorLang={lang}

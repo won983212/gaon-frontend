@@ -12,7 +12,7 @@ import UserList from '@/components/UserList';
 import Whiteboard from '@/components/Whiteboard';
 import { ConferenceTabProps } from '@/pages/Workspace/Conference/index';
 
-export default function TabBoardShare({ users }: ConferenceTabProps) {
+export default function TabBoardShare({ users, onShowUserContextMenu }: ConferenceTabProps) {
     const { channelInfo } = useRoom();
 
     return (
@@ -24,7 +24,7 @@ export default function TabBoardShare({ users }: ConferenceTabProps) {
                 </ContentArea>
                 <SideMenuBar>
                     <TabContainer tabNames={['참가자']}>
-                        <UserList users={users} />
+                        <UserList users={users} onShowUserContextMenu={onShowUserContextMenu}/>
                     </TabContainer>
                 </SideMenuBar>
             </InnerContent>
