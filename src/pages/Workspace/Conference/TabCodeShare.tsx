@@ -13,11 +13,12 @@ import UserList from '@/components/UserList';
 import * as monaco from 'monaco-editor';
 import { ConferenceTabProps } from '@/pages/Workspace/Conference/index';
 import { MonacoBinding } from './y-monaco';
-import { WebsocketProvider } from 'y-websocket';
 import * as yjs from 'yjs';
 import SettingTab from '@/pages/Workspace/Conference/SettingTab';
 import { useMonaco } from '@monaco-editor/react';
 import useSocket from '@/hooks/useSocket';
+import { SocketIOProvider } from '@/pages/Workspace/Conference/provider';
+
 
 export default function TabCodeShare({ users }: ConferenceTabProps) {
     const { channelId, workspaceId, channelInfo } = useRoom();
@@ -29,11 +30,18 @@ export default function TabCodeShare({ users }: ConferenceTabProps) {
     const onMount = useCallback(
         (editor: monaco.editor.IStandaloneCodeEditor) => {
             const ydocument = new yjs.Doc();
-            const provider = new WebsocketProvider(
-                `ws://localhost:6000`,
+            const provider = new SocketIOProvider(
+                '',
                 `${workspaceId}/${channelId}`,
-                ydocument
+                ydocument, {
+                    autoConnect: true
+                }
             );
+
+            provider.on('status', ({ status }: { status: string }) => {
+                console.log(status) // Logs "connected" or "disconnected"
+            })
+
             const type = ydocument.getText('monaco');
             const model = editor.getModel();
             if (model) {

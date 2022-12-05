@@ -65,13 +65,6 @@ export interface IConnectedUser {
     mute: boolean;
 }
 
-export interface IMediaUser {
-    userId: number,
-    kind: "audio" | "video",
-    type: "Camera" | "Voice" | "Screen",
-    stream: MediaStream
-}
-
 export interface Position {
     x: number;
     y: number;
@@ -95,4 +88,22 @@ export interface IProjectInvite {
     projectId: number;
     userId?: number;
     expired?: number;
+}
+
+/**
+ * Clients added, updated and deleted to awareness.
+ */
+export interface AwarenessChange {
+    /**
+     * The clients added
+     */
+    added: number[]
+    /**
+     * The clients updated
+     */
+    updated: number[]
+    /**
+     * The clients removed
+     */
+    removed: number[]
 }
