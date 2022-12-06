@@ -31,7 +31,6 @@ export default function TabCodeShare({ users, onShowUserContextMenu }: Conferenc
         (editor: monaco.editor.IStandaloneCodeEditor) => {
             const ydocument = new yjs.Doc();
             const provider = new SocketIOProvider(
-                '',
                 `${workspaceId}/${channelId}`,
                 ydocument, {
                     autoConnect: true

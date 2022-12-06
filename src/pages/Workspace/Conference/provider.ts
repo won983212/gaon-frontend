@@ -44,11 +44,6 @@ export interface ProviderConfiguration {
  */
 export class SocketIOProvider extends Observable<string> {
     /**
-     * The connection url to server. Example: `ws://localhost:3001`
-     * @type {string}
-     */
-    private readonly _url: string
-    /**
      * The name of the document room
      * @type {string}
      */
@@ -105,7 +100,7 @@ export class SocketIOProvider extends Observable<string> {
      * @param {Y.Doc} doc The yjs document
      * @param {ProviderConfiguration} options Configuration options to the SocketIOProvider
      */
-    constructor (url: string, roomName: string, doc: Y.Doc = new Y.Doc(), {
+    constructor (roomName: string, doc: Y.Doc = new Y.Doc(), {
         autoConnect = true,
         awareness = new AwarenessProtocol.Awareness(doc),
         resyncInterval = -1,
@@ -113,18 +108,14 @@ export class SocketIOProvider extends Observable<string> {
         auth = {}
     }: ProviderConfiguration) {
         super()
-        while (url[url.length - 1] === '/') {
-            url = url.slice(0, url.length - 1)
-        }
-        this._url = url
         this.roomName = roomName
         this.doc = doc
         this.awareness = awareness
 
-        this._broadcastChannel = `${url}/${roomName}`
+        this._broadcastChannel = `/${roomName}`
         this.disableBc = disableBc
 
-        this.socket = io(`${this.url}/yjs|${roomName}`, {
+        this.socket = io(`/yjs|${roomName}`, {
             path: '/ws/socket.io',
             autoConnect: false,
             transports: ['websocket'],
@@ -157,14 +148,6 @@ export class SocketIOProvider extends Observable<string> {
      */
     public get broadcastChannel (): string {
         return this._broadcastChannel
-    }
-
-    /**
-     * URL getter
-     * @type {string}
-     */
-    public get url (): string {
-        return this._url
     }
 
     /**

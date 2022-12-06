@@ -35,7 +35,10 @@ const useSocket = (
                 transports: ['websocket']
             });
         } else if (type === 'voice') {
-            connectedSockets[key] = io('ws://localhost:8081');
+            connectedSockets[key] = io(`/`, {
+                path: '/voice-ws/socket.io',
+                transports: ['websocket']
+            });
         }
     }
 
