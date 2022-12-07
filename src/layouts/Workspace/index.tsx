@@ -187,7 +187,7 @@ function Workspace({ children }: WorkspaceProps) {
             doInvite(name, workspaceId, userData.id, identifier.token)
                 .then((response) => {
                     setInviteLink(
-                        `http://localhost:3000/invite/${response.data.code}`
+                        `https://gaoncapstone.kro.kr/invite/${response.data.code}`
                     );
                     alert('아래 생성된 초대 링크를 보내세요.');
                 })

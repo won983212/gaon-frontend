@@ -1,6 +1,6 @@
 import * as client from 'mediasoup-client';
 import { Consumer, Producer } from 'mediasoup-client/lib/types';
-import { connect } from 'socket.io-client';
+import io, { connect } from 'socket.io-client';
 import { EventEmitter } from 'events';
 
 //const client = require("mediasoup-client");
@@ -208,7 +208,11 @@ export class Context extends EventEmitter {
      */
     constructor(userId, roomId, token) {
         super();
-        this.io = connect(socketHost, {withCredentials: false});
+        this.io = io(`/`, {
+            path: '/voice-ws/socket.io',
+            transports: ['websocket']
+        });
+        // connect(socketHost, {withCredentials: false});
         this._device = new client.Device();
         this._roomId = roomId;
         this._userId = userId;
@@ -230,9 +234,10 @@ export class Context extends EventEmitter {
             let {routerRtpCapabilities} = await this.HttpRequest(`/room/${this._roomId}/user/${this._userId}/join`);
             this.loadDevice(routerRtpCapabilities);
             this.joined = true;
-            let socket_conn = await this.waitSocketConnection(100, 5000);
+            let socket_conn = await this.waitSocketConnection(100, 10000);
+            console.log("Request result: ", socket_conn);
             if (!socket_conn) {
-                console.log("Failed to connect socket server.");
+                console.log("Failed to connect socket server.1");
             }
             console.log("getRoom state");
             this.emit("join", this._roomId, this._userId);
@@ -268,7 +273,7 @@ export class Context extends EventEmitter {
             i++;
             await this.sleep(checkInterval);
             if (i >= timeout / checkInterval) {
-                console.log("Failed to connect socket server.");
+                console.log("Failed to connect socket server.2");
                 await this.leave();
                 this.io.disconnect();
                 return false;
@@ -480,7 +485,7 @@ export class Context extends EventEmitter {
             rtpParameters: response.rtpParameters,
             appData: {
                 kind: response.kind,
-                type: response.type,
+                type: response.mediaType,
                 userId: otherUserId
             }
         });
@@ -572,7 +577,7 @@ export class Context extends EventEmitter {
      * @param {number} userId
      */
     async pauseConsumer(consumer, roomId, userId) {
-        await this.HttpRequest(`room/${roomId}/user/${userId}/consume/${consumer.id}/pause`);
+        await this.HttpRequest(`/room/${roomId}/user/${userId}/consume/${consumer.id}/pause`);
         await consumer.pause();
         return consumer.paused;
     }
@@ -583,7 +588,7 @@ export class Context extends EventEmitter {
      * @param {number} userId
      */
     async pauseProducer(producer, roomId, userId) {
-        await this.HttpRequest(`room/${roomId}/user/${userId}/produce/${producer.id}/pause`);
+        await this.HttpRequest(`/room/${roomId}/user/${userId}/produce/${producer.id}/pause`);
         await producer.pause();
         return producer.paused;
     }
@@ -622,7 +627,7 @@ export class Context extends EventEmitter {
      * @param {number} userId
      */
     async closeConsumer(consumer, roomId, userId) {
-        await this.HttpRequest(`room/${roomId}/user/${userId}/consume/${consumer.id}/close`);
+        await this.HttpRequest(`/room/${roomId}/user/${userId}/consume/${consumer.id}/close`);
         await consumer.close();
         this.consumers.delete(consumer);
         removeMediaView(consumer);
@@ -679,7 +684,7 @@ export class Context extends EventEmitter {
 
             transport.on("connect", async ({dtlsParameters}, callback, errback) => {
                 try {
-                    await this.HttpRequest(`room/${this._roomId}/user/${this._userId}/transport/${transport.id}/connect`, {dtlsParameters});
+                    await this.HttpRequest(`/room/${this._roomId}/user/${this._userId}/transport/${transport.id}/connect`, {dtlsParameters});
                     callback();
                     console.log("[SEND]Connection Success", JSON.stringify(dtlsParameters));
                 } catch (err) {
@@ -691,7 +696,7 @@ export class Context extends EventEmitter {
             transport.on("produce", async ({kind, rtpParameters, appData}, callback, errback) => {
                 let type = appData.type;
                 try {
-                    let {id} = await this.HttpRequest(`room/${this._roomId}/user/${this._userId}/transport/${transport.id}/send`, {kind, type, rtpParameters, paused: true});
+                    let {id} = await this.HttpRequest(`/room/${this._roomId}/user/${this._userId}/transport/${transport.id}/send`, {kind, type, rtpParameters, paused: true});
                     callback({id});
                     console.log(`Produce Success ${type}-${kind}`);
                 } catch (err) {
@@ -728,7 +733,7 @@ export class Context extends EventEmitter {
 
             transport.on("connect", async ({dtlsParameters}, callback, errback) => {
                 try {
-                    await this.HttpRequest(`room/${this._roomId}/user/${this._userId}/transport/${transport.id}/connect`, {
+                    await this.HttpRequest(`/room/${this._roomId}/user/${this._userId}/transport/${transport.id}/connect`, {
                         dtlsParameters
                     });
                     console.log(dtlsParameters);
