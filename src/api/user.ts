@@ -1,4 +1,4 @@
-import { del, post, useHTTPGetSWR } from '@/api/client';
+import { del, post, put, useHTTPGetSWR } from '@/api/client';
 import { IUser, IUserAdmin, IUserSummary } from '@/types';
 
 export const useUsersSWR = (userId: string, token: string) =>
@@ -41,7 +41,7 @@ export const removeAdmin = (
     userId: number,
     token: string
 ) =>
-    post(
+    put(
         `/user/admin/permission?userId=${userId}&projectId=${workspaceId}&deleteAdminUserId=${adminUserId}`,
         {
             userId: userId,
